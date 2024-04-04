@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: ''
+title: "[Feature-오늘날짜] - {수정클래스명} 간단설명"
 labels: ''
 assignees: ''
 
