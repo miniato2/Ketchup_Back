@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ketchup
+    username: devsplan
+    password: devsplan
+
+  jpa:
+    show-sql: true
+    database: mysql
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+# MySQL 스키마 생성(ketchup)
+
+# CREATE USER 'devsplan'@'%' IDENTIFIED BY 'devsplan';
+# SHOW databases;
+# USE mysql;
+# SHOW tables;
+# SELECT * FROM user;
+# CREATE DATABASE ketchup;
+# GRANT ALL PRIVILEGES ON ketchup.* TO 'devsplan'@'%';
+# SHOW GRANTS FOR 'devsplan'@'%';
+# SHOW GRANTS;
