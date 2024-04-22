@@ -46,15 +46,17 @@ public class BoardService {
 
     public Object selectBoardList(String title) {
 
-        List<Board> boardListByTitle = boardRepository.findByBoardNameContaining(title);
+//        List<Board> boardListByTitle = boardRepository.findByBoardNameContaining(title);
 
-        List<BoardDTO> boardDTOList = boardListByTitle.stream()
-                                                .map(board -> modelMapper.map(board, BoardDTO.class))
-                                                .collect(Collectors.toList());
+//        List<BoardDTO> boardDTOList = boardListByTitle.stream()
+//                                                .map(board -> modelMapper.map(board, BoardDTO.class))
+//                                                .collect(Collectors.toList());
 
 
-        return boardDTOList;
+//        return boardDTOList;
+        return null;
     }
+
 
     @Transactional
     public String insertBoard(BoardDTO boardDTO, MultipartFile boardFile) {
