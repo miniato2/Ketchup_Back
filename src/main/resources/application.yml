@@ -5,6 +5,14 @@ spring:
     url: jdbc:mysql://mysql.coffit.today:3306/ketchup
     username: hikdt2312
     password: hikdt2312
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+  web:
+    resources:
+      static-locations: classpath:/uploadfiles/
 
   # jpa config
   jpa:
@@ -14,3 +22,12 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+
+## 이미지 저장할 위치와 응답할 때 이미지 주소 세팅
+image:
+  ## WebConfig에 세팅
+  add-resource-locations: classpath:/static/uploadfiles/
+  add-resource-handler: /uploadfiles/**
+
+  image-dir: src/main/resources/static/uploadfiles
+  image-url: http://mysql.coffit.today:3306/uploadfile
