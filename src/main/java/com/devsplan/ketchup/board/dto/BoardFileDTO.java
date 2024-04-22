@@ -2,10 +2,10 @@ package com.devsplan.ketchup.board.dto;
 
 public class BoardFileDTO {
 
-    private Long boardFileNo;
-    private String boardFileName;
-    private String boardFilePath;
-    private String boardOrigName;
+    private Long boardFileNo;           // 게시물 파일 번호
+    private String boardFileName;       // 게시물 파일명
+    private String boardFilePath;       // 게시물 파일 경로
+    private String boardOrigName;       // 게시물 원본 파일명
 
     public BoardFileDTO() {
     }
