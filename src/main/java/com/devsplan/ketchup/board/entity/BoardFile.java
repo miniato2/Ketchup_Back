@@ -1,6 +1,8 @@
 package com.devsplan.ketchup.board.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -15,6 +17,7 @@ public class BoardFile {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_No", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)          // 부모 엔티티(게시글)가 삭제될 때 자식 엔티티(이미지)도 함께 삭제
     private Board board;
 
     @Column(name = "board_file_name", nullable = false)
