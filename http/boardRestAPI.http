@@ -6,15 +6,21 @@ GET http://localhost:8080/boards/{boardNo}
 
 ### 게시글 등록
 POST http://localhost:8080/boards
-Content-Type: application/json; multipart/form-data; boundary=WebAppBoundary
-Accept: */*
+Content-Type: application/json
 
-#--WebAppBoundary
-#Content-Disposition: form-data; name="BoardName"
-#
-#1
-#--WebAppBoundary
-#Content-Disposition: form-data; name="productImage"; filename="pikachu.png"
+{
+  "boardTitle": "게시물1",
+  "boardContent": "게시물 내용 1",
+  "boardCreateDttm": "2024-03-01"
+}
+
+### Content-Type: application/json; multipart/form-data; boundary=WebAppBoundary
+### Accept: */*
+### --WebAppBoundary
+### Content-Disposition: form-data; name="BoardName"
+### 1
+### --WebAppBoundary
+### Content-Disposition: form-data; name="productImage"; filename="pikachu.png"
 
 ### 게시글 수정
 PUT http://localhost:8080/boards/{boardNo}

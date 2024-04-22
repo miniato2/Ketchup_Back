@@ -4,14 +4,14 @@ import java.time.LocalDateTime;
 
 public class BoardDTO {
 
-    private int boardNo;    // 게시물 번호
-    private int memberNo;   // 사번
-    private int departmentNo;   // 부서번호
-    private String boardTitle;  // 게시물 제목
-    private int boardFileNo;    // 게시물파일 번호
-    private String boardfileUrl;    // 파일 업로드 url
-    private String boardContent;    // 게시물 내용
-    private LocalDateTime boardCreateDttm;    // 게시글 등록일시
+    private int boardNo;                        // 게시물 번호
+    private int memberNo;                       // 사번
+    private int departmentNo;                   // 부서번호
+    private String boardTitle;                  // 게시물 제목
+    private int boardFileNo;                    // 게시물파일 번호
+    private String boardfileUrl;                // 파일 업로드 url
+    private String boardContent;                // 게시물 내용
+    private LocalDateTime boardCreateDttm;      // 게시글 등록일시
 
     protected LocalDateTime boardUpdateDttm;    // 게시글 수정일시
 

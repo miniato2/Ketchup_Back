@@ -29,8 +29,6 @@ public class Board {
     @Column(name = "board_title", nullable = false,  length = 150)
     private String boardTitle;
 
-//    @Column(name = "board_file_no")
-//@JoinColumn(name = "boardFileNo")
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<BoardFile> boardFiles;
 
