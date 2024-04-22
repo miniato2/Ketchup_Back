@@ -2,8 +2,10 @@ package com.devsplan.ketchup.board;
 
 import com.devsplan.ketchup.board.dto.BoardDTO;
 import com.devsplan.ketchup.board.entity.Board;
+import com.devsplan.ketchup.board.entity.BoardFile;
 import com.devsplan.ketchup.board.repository.BoardRepository;
 import com.devsplan.ketchup.board.service.BoardService;
+import com.devsplan.ketchup.util.FileUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,6 +35,20 @@ public class BoardRestTests {
 
     @Autowired
     private BoardService boardService;
+
+    @Autowired
+    private FileUtils fileUtils;
+
+    @Autowired
+    private BoardRepository boardRepository;
+
+    @DisplayName("자료실 게시글 등록")
+    @Test
+    void insertBoard() {
+        //given
+        //when
+        //then
+    }
 
     @DisplayName("자료실 게시글 목록조회")
     @Test
@@ -56,13 +75,7 @@ public class BoardRestTests {
         //then
     }
 
-    @DisplayName("자료실 게시글 등록")
-    @Test
-    void insertBoard() {
-        //given
-        //when
-        //then
-    }
+
 
     @DisplayName("자료실 게시글 수정")
     @Test
