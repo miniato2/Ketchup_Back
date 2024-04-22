@@ -13,7 +13,7 @@ public class Receiver {
     private int receiverNo;
 
     @ManyToOne
-    @JoinColumn(name = "MAIL_NO", nullable = false)
+    @JoinColumn(name = "Reciver", nullable = false)
     private Mail mailNo;
 
     @Column(name = "RECEIVER_NAME", nullable = false)

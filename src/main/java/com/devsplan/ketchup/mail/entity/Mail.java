@@ -27,11 +27,11 @@ public class Mail {
     @Column(name = "SEND_DEL_STATUS", nullable = false)
     private char sendDelStatus;
 
-    @OneToMany(mappedBy = "MAIL")
-    private List<MailFile> mailFiles;
+    @OneToMany(mappedBy = "mailNo")
+    private List<MailFile> mailFile;
 
-    @OneToMany(mappedBy = "MAIL")
-    private List<Receiver> Receivers;
+    @OneToMany(mappedBy = "mailNo")
+    private List<Receiver> Receiver;
 
     protected Mail() {}
 }
