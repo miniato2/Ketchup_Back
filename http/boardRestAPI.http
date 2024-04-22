@@ -1,0 +1,26 @@
+### 전체 목록조회 / 제목 검색 / 권한자 부서 선택
+GET http://localhost:8080/boards?departmentNo={departmentNo}&title={title}&page={page}
+
+### 상세 조회
+GET http://localhost:8080/boards/{boardNo}
+
+### 게시글 등록
+POST http://localhost:8080/boards
+Content-Type: application/json; multipart/form-data; boundary=WebAppBoundary
+Accept: */*
+
+#--WebAppBoundary
+#Content-Disposition: form-data; name="BoardName"
+#
+#1
+#--WebAppBoundary
+#Content-Disposition: form-data; name="productImage"; filename="pikachu.png"
+
+### 게시글 수정
+PUT http://localhost:8080/boards/{boardNo}
+
+### 게시글 삭제
+DELETE http://localhost:8080/boards/{boardNo}
+
+
+
