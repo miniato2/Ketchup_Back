@@ -44,7 +44,7 @@ public class ScheduleRestTests {
     @DisplayName("부서별 일정 등록")
     @Test
     void insertSchedule() {
-        // /members
+        // /schedules
 
         // given
 

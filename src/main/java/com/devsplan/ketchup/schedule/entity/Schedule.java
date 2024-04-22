@@ -37,4 +37,6 @@ public class Schedule {
     private String skdMemo;
 
     protected Schedule() {}
+
+
 }
