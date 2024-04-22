@@ -27,11 +27,22 @@ public class Mail {
     @Column(name = "SEND_DEL_STATUS", nullable = false)
     private char sendDelStatus;
 
-    @OneToMany(mappedBy = "MAIL")
+    @OneToMany(mappedBy = "mailNo")
     private List<MailFile> mailFiles;
 
-    @OneToMany(mappedBy = "MAIL")
+    @OneToMany(mappedBy = "mailNo")
     private List<Receiver> Receivers;
 
     protected Mail() {}
+
+    public Mail(int mailNo, String sender, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus, List<MailFile> mailFiles, List<Receiver> receivers) {
+        this.mailNo = mailNo;
+        this.sender = sender;
+        this.mailTitle = mailTitle;
+        this.mailContent = mailContent;
+        this.sendCancelStatus = sendCancelStatus;
+        this.sendDelStatus = sendDelStatus;
+        this.mailFiles = mailFiles;
+        Receivers = receivers;
+    }
 }

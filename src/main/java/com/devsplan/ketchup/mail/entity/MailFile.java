@@ -24,4 +24,12 @@ public class MailFile {
     private String mailFileOriName;
 
     protected MailFile() {}
+
+    public MailFile(int mailFileNo, Mail mailNo, String mailFilePath, String mailFileName, String mailFileOriName) {
+        this.mailFileNo = mailFileNo;
+        this.mailNo = mailNo;
+        this.mailFilePath = mailFilePath;
+        this.mailFileName = mailFileName;
+        this.mailFileOriName = mailFileOriName;
+    }
 }
