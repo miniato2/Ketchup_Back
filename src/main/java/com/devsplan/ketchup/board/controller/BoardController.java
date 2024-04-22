@@ -32,29 +32,11 @@ public class BoardController {
 
     /* 게시글 목록 조회 */
     @GetMapping("/boards")
-    public ResponseEntity<ResponseDTO> selectBoardList(
-            @RequestParam(name = "departmentno", required = false) int departmentNo,
-            @RequestParam(name = "title", required = false) String title,
-            @RequestParam(name = "page", defaultValue = "0") int pageNo,
-            @RequestParam(name = "size", defaultValue = "10") int pageSize
-    ) {
-//        /boards?departmentno={departmentno}&title={title}&page={pageno}
+    public ResponseEntity<ResponseDTO> selectBoardList() {
 
-//        List<BoardDTO> boardList;
-//        if (departmentNo != null && title != null) {
-//            // 부서별 자료실에서 특정 제목으로 검색하는 경우
-//            boardList = boardService.getBoardListByDepartmentAndTitle(departmentNo, title, pageNo, pageSize);
-//        } else if (departmentNo != null) {
-//            // 특정 부서의 게시글 목록을 조회하는 경우
-//            boardList = boardService.getBoardListByDepartment(departmentNo, pageNo, pageSize);
-//        } else {
-//            // 모든 부서의 게시글 목록을 조회하는 경우
-//            boardList = boardService.getAllBoardList(pageNo, pageSize);
-//        }
-//        return ResponseEntity.ok(ResponseDTO.builder().data(boardList).build());
         return null;
-
     }
+
 
     /* 게시글 검색 */
     @GetMapping("/boards/{title}")
@@ -67,11 +49,7 @@ public class BoardController {
     /* 게시글 상세 조회 */
     @GetMapping("/{boardNo}")
     public ResponseEntity<ResponseDTO> selectBoardDetail() {
-
-
         return null;
-
-        //        return "boards/detail-board";
     }
 
     /* 게시글 등록 */
@@ -80,16 +58,13 @@ public class BoardController {
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시글 등록 성공"
                         , boardService.insertBoard(boardDTO, boardFile)));
-    //        return "boards/insert-board";
     }
 
     /* 게시글 수정*/
     @PutMapping("/{boardNo}")
     public ResponseEntity<ResponseDTO> updateBoard(@PathVariable int boardNo, MultipartFile files, Principal principal) {
 
-
         return null;
-//            return "redirect:/boards/detail-board";
     }
 
     /* 게시글 삭제 */
@@ -97,8 +72,6 @@ public class BoardController {
     public ResponseEntity<ResponseDTO> deleteBoard() {
 
         return null;
-
-    //        return  "redirect:/boards/list";
     }
 
 }
