@@ -28,10 +28,21 @@ public class Mail {
     private char sendDelStatus;
 
     @OneToMany(mappedBy = "mailNo")
-    private List<MailFile> mailFile;
+    private List<MailFile> mailFiles;
 
     @OneToMany(mappedBy = "mailNo")
-    private List<Receiver> Receiver;
+    private List<Receiver> Receivers;
 
     protected Mail() {}
+
+    public Mail(int mailNo, String sender, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus, List<MailFile> mailFiles, List<Receiver> receivers) {
+        this.mailNo = mailNo;
+        this.sender = sender;
+        this.mailTitle = mailTitle;
+        this.mailContent = mailContent;
+        this.sendCancelStatus = sendCancelStatus;
+        this.sendDelStatus = sendDelStatus;
+        this.mailFiles = mailFiles;
+        Receivers = receivers;
+    }
 }
