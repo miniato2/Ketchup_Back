@@ -1,13 +1,13 @@
 package com.devsplan.ketchup.board.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.List;
-
 @Entity
 @Table(name = "board_file")
+@Builder(toBuilder = true)
 public class BoardFile {
 
     @Id
@@ -16,7 +16,7 @@ public class BoardFile {
     private Long boardFileNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_No", nullable = false)
+    @JoinColumn(name = "board_no")
     @OnDelete(action = OnDeleteAction.CASCADE)          // 부모 엔티티(게시글)가 삭제될 때 자식 엔티티(이미지)도 함께 삭제
     private Board board;
 
@@ -29,13 +29,56 @@ public class BoardFile {
     @Column(name = "board_origin_name", nullable = false)
     private String boardOriginName;
 
-    protected BoardFile() {}
+    @Column(name = "board_file_size", nullable = false)
+    private Long boardFileSize;              // 파일 사이즈
 
-    public BoardFile(Long boardFileNo, String boardFileName, String boardFilePath, String boardOriginName) {
+    public BoardFile boardFileNo(Long val) {
+        this.boardFileNo = val;
+        return this;
+    }
+
+    public BoardFile board(Board val) {
+        this.board = val;
+        return this;
+    }
+
+    public BoardFile boardFileName(String val) {
+        this.boardFileName = val;
+        return this;
+    }
+
+    public BoardFile boardFilePath(String val) {
+        this.boardFilePath = val;
+        return this;
+    }
+
+    public BoardFile boardOriginName(String val) {
+        this.boardOriginName = val;
+        return this;
+    }
+
+    public BoardFile boardFileSize(Long val) {
+        this.boardFileSize = val;
+        return this;
+    }
+
+    public BoardFile() {}
+
+    public BoardFile(Long boardFileNo, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize) {
         this.boardFileNo = boardFileNo;
         this.boardFileName = boardFileName;
         this.boardFilePath = boardFilePath;
         this.boardOriginName = boardOriginName;
+        this.boardFileSize = boardFileSize;
+    }
+
+    public BoardFile(Long boardFileNo, Board board, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize) {
+        this.boardFileNo = boardFileNo;
+        this.board = board;
+        this.boardFileName = boardFileName;
+        this.boardFilePath = boardFilePath;
+        this.boardOriginName = boardOriginName;
+        this.boardFileSize = boardFileSize;
     }
 
     public Long getBoardFileNo() {
