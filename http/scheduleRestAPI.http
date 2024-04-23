@@ -1,0 +1,36 @@
+### 부서별 일정 목록 조회
+GET http://localhost:8080/department/1
+
+### 부서별 일정 상세 조회
+GET http://localhost:8080/department/1/schedules/2
+
+### 부서별 일정 등록
+POST http://localhost:8080/schedules
+Content-Type: application/json
+
+{
+  "skdNo": 2,
+  "dptNo": 1,
+  "skdName": "새로 등록한 일정",
+  "skdStartDttm": "2024-05-22 오전 8시",
+  "skdEndDttm": "2024-05-22 오전 11시",
+  "skdLocation": "코스트코 광명점 5층 ㅇㅅㅇ 부장실",
+  "skdMemo": "새로 등록한 일정이 정상적으로 반영되었습니다."
+}
+
+### 부서별 일정 수정
+PUT http://localhost:8080/schedules/2
+Content-Type: application/json
+
+{
+  "skdNo": 1,
+  "dptNo": 2,
+  "skdName": "수정한 일정",
+  "skdStartDttm": "2024-04-22 오후 2시",
+  "skdEndDttm": "2024-04-22 오후 7시",
+  "skdLocation": "삼성역 코엑스 Exhibition C",
+  "skdMemo": "수정한 일정이 정상적으로 반영되었습니다."
+}
+
+### 부서별 일정 삭제
+DELETE http://localhost:8080/schedules/{skdNo}

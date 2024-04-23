@@ -11,9 +11,11 @@ import java.util.Date;
 @ToString
 public class ScheduleDTO {
     private int skdNo;
+    private DepartmentDTO dptNo;
     private String skdName;
-    private Date skdStartDttm;
-    private Date skdEndDttm;
+    private String skdStartDttm;
+    private String skdEndDttm;
     private String skdLocation;
     private String skdMemo;
+
 }
