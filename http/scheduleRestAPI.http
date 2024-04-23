@@ -23,14 +23,12 @@ PUT http://localhost:8080/schedules/2
 Content-Type: application/json
 
 {
-  "skdNo": 1,
-  "dptNo": 2,
   "skdName": "수정한 일정",
-  "skdStartDttm": "2024-04-22 오후 2시",
-  "skdEndDttm": "2024-04-22 오후 7시",
-  "skdLocation": "삼성역 코엑스 Exhibition C",
+  "skdStartDttm": "2024-12-25 오전 10시",
+  "skdEndDttm": "2024-12-25 오후 7시",
+  "skdLocation": "효자로 15길 다모여빌딩",
   "skdMemo": "수정한 일정이 정상적으로 반영되었습니다."
 }
 
 ### 부서별 일정 삭제
-DELETE http://localhost:8080/schedules/{skdNo}
+DELETE http://localhost:8080/schedules/2
