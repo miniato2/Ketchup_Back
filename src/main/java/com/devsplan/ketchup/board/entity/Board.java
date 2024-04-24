@@ -4,7 +4,6 @@ import com.devsplan.ketchup.member.DepartmentBoard;
 import com.devsplan.ketchup.member.Member;
 import jakarta.persistence.*;
 import lombok.Builder;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;

@@ -2,11 +2,7 @@ package com.devsplan.ketchup.board;
 
 import com.devsplan.ketchup.board.dto.BoardDTO;
 import com.devsplan.ketchup.board.dto.BoardFileDTO;
-import com.devsplan.ketchup.board.entity.Board;
-import com.devsplan.ketchup.board.entity.BoardFile;
 import com.devsplan.ketchup.board.service.BoardService;
-import com.devsplan.ketchup.member.DepartmentDTO;
-import com.devsplan.ketchup.member.MemberDTO;
 import com.devsplan.ketchup.util.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +12,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

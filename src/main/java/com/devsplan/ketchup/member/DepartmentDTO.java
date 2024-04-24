@@ -1,4 +1,4 @@
-package com.devsplan.ketchup.member;
+package com.devsplan.ketchup.board.member;
 
 import lombok.*;
 
