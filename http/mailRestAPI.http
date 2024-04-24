@@ -1,0 +1,13 @@
+### 메일 목록 조회
+GET http://localhost:8080/mails/list
+Content-Type: application/json
+
+{
+  "mailNo": "1",
+  "sender": "홍길동",
+  "mailTitle": "프로젝트 제안서",
+  "mailContent": "안녕하세요 기획팀 홍길동입니다.",
+  "sendCancelStatus": "N",
+  "sendDelStatus": "N"
+}
+
