@@ -43,42 +43,50 @@ public class BoardService {
     }
 
     @Transactional
-    public void insertBoard(BoardDTO boardDTO) throws IOException {
+    public Object insertBoard(BoardDTO boardDTO) {
         log.info("[BoardService] insertBoard Start ===================");
+
+        int result = 0;
         try {
             // 게시글 엔티티 생성
             Board board = Board.builder()
                     .boardNo(boardDTO.getBoardNo())
+                    .memberNo(boardDTO.getMemberNo())
+                    .departmentNo(boardDTO.getDepartmentNo())
                     .boardTitle(boardDTO.getBoardTitle())
                     .boardContent(boardDTO.getBoardContent())
                     .boardCreateDttm(boardDTO.getBoardCreateDttm())
                     .build();
 
             // 게시글과 파일 엔티티 관계 설정
-            List<BoardFileDTO> boardFileDTOs = boardDTO.getBoardFile();
-            if (boardFileDTOs != null && !boardFileDTOs.isEmpty()) {
-                List<BoardFile> boardFiles = new ArrayList<>();
-                for (BoardFileDTO fileDTO : boardFileDTOs) {
-                    // 파일 업로드 및 엔티티 생성
-//                    String uploadedFileName = fileUtils.saveFile("upload-dir", "testFile", MediaType.IMAGE_PNG_VALUE);
-                    BoardFile boardFile = new BoardFile(
-                        fileDTO.getBoardFileNo(),
-                        fileDTO.getBoardFileName(),
-                        null,
-                        fileDTO.getBoardOrigName(),
-                        fileDTO.getBoardFileSize()
-                    );
-                    boardFiles.add(boardFile);
-                }
-                board.boardFiles(boardFiles);
-            }
+//            List<BoardFileDTO> boardFileDTOs = boardDTO.getBoardFile();
+//            if (boardFileDTOs != null && !boardFileDTOs.isEmpty()) {
+//                List<BoardFile> boardFiles = new ArrayList<>();
+//                for (BoardFileDTO fileDTO : boardFileDTOs) {
+//                    // 파일 업로드 및 엔티티 생성
+////                    String uploadedFileName = fileUtils.saveFile("upload-dir", "testFile", MediaType.IMAGE_PNG_VALUE);
+//                    BoardFile boardFile = new BoardFile(
+//                        fileDTO.getBoardFileNo(),
+//                        fileDTO.getBoardFileName(),
+//                        null,
+//                        fileDTO.getBoardOrigName(),
+//                        fileDTO.getBoardFileSize()
+//                    );
+//                    boardFiles.add(boardFile);
+//                }
+//                board.boardFiles(boardFiles);
+//            }
 
             // 게시글 저장
             boardRepository.save(modelMapper.map(board, Board.class));
             log.info("[BoardService] insertBoard End ===================");
+
+            result = 1;
         } catch (Exception e) {
             log.error("Failed to insert board", e);
         }
+
+        return (result > 0) ? "성공" : "실패";
     }
 
 

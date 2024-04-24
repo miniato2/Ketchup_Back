@@ -30,4 +30,4 @@ image:
   add-resource-handler: /uploadfiles/**
 
   image-dir: src/main/resources/static/uploadfiles
-  image-url: http://mysql.coffit.today:3306/uploadfile
+  image-url: http://mysql.coffit.today:3306/ketchup/uploadfile

@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @Getter
 public class BoardFileDTO {
-    private Long boardFileNo;           // 게시물 파일 번호
+    private int boardFileNo;           // 게시물 파일 번호
     private String boardFileName;       // 게시물 파일명
     private String boardFilePath;       // 게시물 파일 경로
     private String boardOrigName;       // 게시물 원본 파일명
