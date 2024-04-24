@@ -22,10 +22,8 @@ public class BoardRestTests {
 
     @DisplayName("자료실 게시글 등록")
     @Test
-    void insertBoard(/*int boardNo, String boardTitle, List<BoardFileDTO> boardFiles, String boardContent, LocalDateTime boardCreateDttm*/) {
+    void insertBoard() {
         // given
-
-
         BoardDTO boardInfo = new BoardDTO();
         boardInfo.setBoardNo(1);
         boardInfo.setMemberNo(1);

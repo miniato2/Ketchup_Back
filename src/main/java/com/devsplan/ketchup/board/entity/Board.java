@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "board")
+@Table(name = "tbl_board")
 @Builder(toBuilder = true)
 public class Board {
 
