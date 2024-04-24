@@ -13,10 +13,6 @@ public class BoardAndMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int boardNo;
 
-//    @ManyToOne
-//    @JoinColumn(name = "member_no")
-//    private Member member;
-
     @Column(name = "board_title", nullable = false,  length = 150)
     private String boardTitle;
 

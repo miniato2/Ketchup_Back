@@ -43,8 +43,10 @@ public class BoardService {
     }
 
     @Transactional
-    public void insertBoard(BoardDTO boardDTO) throws IOException {
+    public Object insertBoard(BoardDTO boardDTO) {
         log.info("[BoardService] insertBoard Start ===================");
+
+        int result = 0;
         try {
             // 게시글 엔티티 생성
             Board board = Board.builder()
@@ -76,9 +78,13 @@ public class BoardService {
             // 게시글 저장
             boardRepository.save(modelMapper.map(board, Board.class));
             log.info("[BoardService] insertBoard End ===================");
+
+            result = 1;
         } catch (Exception e) {
             log.error("Failed to insert board", e);
         }
+
+        return (result > 0) ? "성공" : "실패";
     }
 
 

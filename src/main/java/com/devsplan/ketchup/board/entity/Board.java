@@ -1,9 +1,8 @@
 package com.devsplan.ketchup.board.entity;
 
-import com.devsplan.ketchup.member.DepartmentBoard;
-import com.devsplan.ketchup.member.Member;
 import jakarta.persistence.*;
 import lombok.Builder;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
@@ -25,19 +24,17 @@ public class Board {
     @Column(name = "board_content", nullable = false)
     private String boardContent;
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<BoardFile> boardFiles;
+    @Column(name = "board_file_no")
+    private int boardFileNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberNo")
-    private Member member;
+    @Column(name = "member_no")
+    private int memberNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "departmentNo")
-    private DepartmentBoard departmentBoard;
+    @Column(name = "department_no")
+    private int departmentNo;
 
     @Column(name = "board_create_dttm", nullable = false)
-//    @CreatedDate
+    @CreatedDate
     private LocalDateTime boardCreateDttm;
 
     @Column(name = "board_update_dttm")
@@ -53,8 +50,8 @@ public class Board {
         return this;
     }
 
-    public Board boardFiles(List<BoardFile> val) {
-        this.boardFiles = val;
+    public Board boardFileNo(int val) {
+        this.boardFileNo = val;
         return this;
     }
 
@@ -77,10 +74,10 @@ public class Board {
         this.boardCreateDttm = boardCreateDttm;
     }
 
-    public Board(int boardNo, String boardTitle, List<BoardFile> boardFiles, String boardContent, LocalDateTime boardCreateDttm) {
+    public Board(int boardNo, String boardTitle, int boardFileNo, String boardContent, LocalDateTime boardCreateDttm) {
         this.boardNo = boardNo;
         this.boardTitle = boardTitle;
-        this.boardFiles = boardFiles;
+        this.boardFileNo = boardFileNo;
         this.boardContent = boardContent;
         this.boardCreateDttm = boardCreateDttm;
     }
@@ -93,8 +90,8 @@ public class Board {
         return boardTitle;
     }
 
-    public List<BoardFile> getBoardFiles() {
-        return boardFiles;
+    public int getBoardFileNo() {
+        return boardFileNo;
     }
 
     public String getBoardContent() {
@@ -109,13 +106,13 @@ public class Board {
         return boardUpdateDttm;
     }
 
-    public Board(int boardNo, String boardTitle, String boardContent, List<BoardFile> boardFiles, Member member, DepartmentBoard departmentBoard, LocalDateTime boardCreateDttm, LocalDateTime boardUpdateDttm) {
+    public Board(int boardNo, String boardTitle, String boardContent, int boardFileNo, int memberNo, int departmentNo, LocalDateTime boardCreateDttm, LocalDateTime boardUpdateDttm) {
         this.boardNo = boardNo;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
-        this.boardFiles = boardFiles;
-        this.member = member;
-        this.departmentBoard = departmentBoard;
+        this.boardFileNo = boardFileNo;
+        this.memberNo = memberNo;
+        this.departmentNo = departmentNo;
         this.boardCreateDttm = boardCreateDttm;
         this.boardUpdateDttm = boardUpdateDttm;
     }
