@@ -8,31 +8,34 @@ public class Member {
 
 
     @Id
-    @Column(name="MEMBER")
+    @Column(name="MEMBER_NO")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int memberNo;
-    @Column(name="member_pw")
+    @Column(name="MEMBER_PW")
     private String memberPW;
-    @Column(name="member_phone")
+    @Column(name="MEMBER_PHONE")
     private String phone;
-    @Column(name="member_birthdate")
+    @Column(name="MEMBER_BIRTHDATE")
     private String birthDate;
-    @Column(name="member_gender")
+    @Column(name="MEMBER_GENDER")
     private char gender;
-    @Column(name="member_address")
+    @Column(name="MEMBER_ADDRESS")
     private String address;
-    @Column(name="member_privateEmail")
+    @Column(name="MEMBER_PRIVATEEMAIL")
     private String privateEmail;
-    @Column(name="member_companyEmail")
+    @Column(name="MEMBER_COMPANYEMAIL")
     private String companyEmail;
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name= "depNo")
+    @JoinColumn(name= "DEP_NO")
     private Dep department;
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name= "POSITION_NO")
     private Position position;
+    @Column(name="MEMBER_ACCOUNT")
     private String account;
+    @Column(name="MEMBER_STATUS")
     private char status;
+    @Column(name="MEMBER_IMGURL")
     private String imgUrl;
 
     protected Member() {
