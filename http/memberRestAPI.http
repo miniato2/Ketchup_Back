@@ -1,0 +1,7 @@
+POST http://localhost:8080/member
+Content-Type: application/json
+
+{
+  "memberNo": "2401001",
+  "memberPW": "3158"
+}
