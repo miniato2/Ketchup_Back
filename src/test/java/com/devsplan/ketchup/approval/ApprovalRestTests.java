@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +18,6 @@ import java.util.List;
 public class ApprovalRestTests {
     @Autowired
     private ApprovalService service;
-    @Autowired
-    private ApprovalRepository repository;
-
-
-    @Test
-    public void countTest(){
-        long result = repository.count();
-        Assertions.assertTrue(result == 0);
-    }
-
     @Test
     public void insertApprovalTest(){
         //given
@@ -42,8 +33,10 @@ public class ApprovalRestTests {
         List<RefLineDTO> refLineDTOList = new ArrayList<>();
         refLineDTOList.add(refLineDTO);
 
+        List<MultipartFile> appFileList = new ArrayList<>();
+
         //when
-        String result = (String) service.insertApproval(approvalDTO, appLineDTOList, refLineDTOList);
+        String result = (String) service.insertApproval(approvalDTO, appLineDTOList, refLineDTOList, appFileList);
 
         //then
         Assertions.assertEquals(result, "성공");

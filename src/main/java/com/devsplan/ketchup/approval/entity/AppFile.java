@@ -9,16 +9,16 @@ import lombok.ToString;
 @Getter
 @ToString
 @Entity
-@Table(name = "TBL_REF_LINE")
-public class RefLine {
+@Table(name = "TBL_APPFILE")
+public class AppFile {
     @Id
-    @Column(name = "REF_LINE_NO" )
+    @Column(name = "APPFILE_NO")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int refLineNo;
+    private int appFileNo;
     @Column(name = "APPROVAL_NO", nullable = false)
     private int approvalNo;
-    @Column(name = "REF_MEMBER_NO", nullable = false)
-    private int refMemberNo;
+    @Column(name = "APPFILE_URL", nullable = false)
+    private String fileUrl;
 
-    protected RefLine(){}
+    protected AppFile(){}
 }
