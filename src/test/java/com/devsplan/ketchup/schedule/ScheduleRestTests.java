@@ -25,8 +25,6 @@ public class ScheduleRestTests {
     @DisplayName("부서별 일정 목록 조회")
     @Test
     void selectScheduleList() {
-        // /department/{departmentno}
-
         // given
         int dptNo = 1;
 
@@ -35,24 +33,28 @@ public class ScheduleRestTests {
 
         // then
         Assertions.assertNotNull(foundSchedule);
-        System.out.println("조회한 일정 = " + foundSchedule);
+        System.out.println("부서별 일정 목록 조회 = " + foundSchedule);
+
     }
 
     @DisplayName("부서별 일정 상세 조회")
     @Test
     void selectScheduleDetail() {
-        // /department/{departmentno}/schedules/{scheduleno}
-
         // given
+        int dptNo = 1;
+        int skdNo = 2;
 
         // when
+        List<ScheduleDTO> foundSchedule = scheduleService.selectScheduleDetail(dptNo, skdNo);
 
         // then
+        Assertions.assertNotNull(foundSchedule);
+        System.out.println("부서별 일정 상세 조회 = " + foundSchedule);
     }
 
     private static Stream<Arguments> getScheduleInfo() {
         return Stream.of(
-                Arguments.of(5, 1, "새로 등록한 일정 번호는 6", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "새로운 위치", "새로 등록한 일정이 정상적으로 반영되었습니다22222")
+                Arguments.of(3, 1, "신규 등록한 일정1", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
         );
     }
 
@@ -60,8 +62,6 @@ public class ScheduleRestTests {
     @ParameterizedTest
     @MethodSource("getScheduleInfo")
     void insertSchedule(int skdNo, int dptNo, String skdName, LocalDateTime skdStartDttm, LocalDateTime skdEndDttm, String skdLocation, String skdMemo) {
-        // /schedules
-
         // given
         ScheduleDTO newSchedule = new ScheduleDTO(
                 skdNo,

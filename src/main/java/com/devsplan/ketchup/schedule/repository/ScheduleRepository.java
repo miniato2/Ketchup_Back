@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findByDepartment(Department department);
+
+    List<Schedule> findByDepartmentAndSkdNo(Department department, int skdNo);
 }

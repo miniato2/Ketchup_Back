@@ -47,6 +47,25 @@ public class ScheduleService {
                 }).collect(Collectors.toList());
     }
 
+    public List<ScheduleDTO> selectScheduleDetail(int dptNo, int skdNo) {
+        Department department = departmentRepository.findById(dptNo)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 부서를 찾을 수 없습니다: " + dptNo));
+
+        List<Schedule> scheduleDetail = scheduleRepository.findByDepartmentAndSkdNo(department, skdNo);
+        return scheduleDetail.stream()
+                .map(schedule -> {
+                    ScheduleDTO scheduleDTO = new ScheduleDTO();
+                    scheduleDTO.setSkdNo(schedule.getSkdNo());
+                    scheduleDTO.setDptNo(new DepartmentDTO(schedule.getDepartment().getDptNo()));
+                    scheduleDTO.setSkdName(schedule.getSkdName());
+                    scheduleDTO.setSkdStartDttm(schedule.getSkdStartDttm());
+                    scheduleDTO.setSkdEndDttm(schedule.getSkdEndDttm());
+                    scheduleDTO.setSkdLocation(schedule.getSkdLocation());
+                    scheduleDTO.setSkdMemo(schedule.getSkdMemo());
+                    return scheduleDTO;
+                }).collect(Collectors.toList());
+    }
+
     @Transactional
     public void insertSchedule(ScheduleDTO newSchedule) {
 
@@ -73,5 +92,6 @@ public class ScheduleService {
 
         scheduleRepository.save(schedule);
     }
+
 
 }
