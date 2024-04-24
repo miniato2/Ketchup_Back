@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -19,16 +20,16 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name = "DPT_NO")
-    private Department dptNo;
+    private Department department;
 
     @Column(name = "SKD_NAME")
     private String skdName;
 
     @Column(name = "SKD_START_DTTM")
-    private Date skdStartDttm;
+    private LocalDateTime skdStartDttm;
 
     @Column(name = "SKD_END_DTTM")
-    private Date skdEndDttm;
+    private LocalDateTime skdEndDttm;
 
     @Column(name = "SKD_LOCATION")
     private String skdLocation;
@@ -37,6 +38,5 @@ public class Schedule {
     private String skdMemo;
 
     protected Schedule() {}
-
 
 }

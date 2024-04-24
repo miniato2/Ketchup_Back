@@ -2,7 +2,8 @@ package com.devsplan.ketchup.schedule.dto;
 
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,8 +14,8 @@ public class ScheduleDTO {
     private int skdNo;
     private DepartmentDTO dptNo;
     private String skdName;
-    private String skdStartDttm;
-    private String skdEndDttm;
+    private LocalDateTime skdStartDttm;
+    private LocalDateTime skdEndDttm;
     private String skdLocation;
     private String skdMemo;
 
