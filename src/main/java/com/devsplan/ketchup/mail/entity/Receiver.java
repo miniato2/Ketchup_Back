@@ -5,16 +5,17 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "RECEIVER")
+@Table(name = "tbl_receiver")
 public class Receiver {
     @Id
     @Column(name = "RECEIVER_NO", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int receiverNo;
 
-    @ManyToOne
-    @JoinColumn(name = "Reciver", nullable = false)
-    private Mail mailNo;
+//    @ManyToOne
+//    @JoinColumn(name = "Recivers", nullable = false)
+    @Column(name = "MAIL_NO")
+    private int mailNo;
 
     @Column(name = "RECEIVER_NAME", nullable = false)
     private String receiverName;
@@ -27,7 +28,7 @@ public class Receiver {
 
     protected Receiver() {}
 
-    public Receiver(int receiverNo, Mail mailNo, String receiverName, Timestamp readTime, char receiverDelStatus) {
+    public Receiver(int receiverNo, int mailNo, String receiverName, Timestamp readTime, char receiverDelStatus) {
         this.receiverNo = receiverNo;
         this.mailNo = mailNo;
         this.receiverName = receiverName;
