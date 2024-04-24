@@ -1,11 +1,16 @@
 package com.devsplan.ketchup.mail.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Entity
-@Table(name = "MAIL")
+@Table(name = "tbl_mail")
+@Getter
+@ToString
 public class Mail {
     @Id
     @Column(name = "MAIL_NO", nullable = false)
@@ -27,22 +32,21 @@ public class Mail {
     @Column(name = "SEND_DEL_STATUS", nullable = false)
     private char sendDelStatus;
 
-    @OneToMany(mappedBy = "mailNo")
-    private List<MailFile> mailFiles;
+//    @OneToMany(mappedBy = "mailNo")
+//    private List<MailFile> mailFiles;
 
-    @OneToMany(mappedBy = "mailNo")
-    private List<Receiver> Receivers;
+//    @Setter
+//    @OneToMany(mappedBy = "mailNo", cascade = CascadeType.PERSIST)
+//    private List<Receiver> Receivers;
 
     protected Mail() {}
 
-    public Mail(int mailNo, String sender, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus, List<MailFile> mailFiles, List<Receiver> receivers) {
+    public Mail(int mailNo, String sender, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
         this.mailNo = mailNo;
         this.sender = sender;
         this.mailTitle = mailTitle;
         this.mailContent = mailContent;
         this.sendCancelStatus = sendCancelStatus;
         this.sendDelStatus = sendDelStatus;
-        this.mailFiles = mailFiles;
-        Receivers = receivers;
     }
 }

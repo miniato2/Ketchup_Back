@@ -2,8 +2,6 @@ package com.devsplan.ketchup.mail.dto;
 
 import lombok.*;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -13,4 +11,17 @@ public class MailFileDTO {
     private String mailFilePath;        // 메일 파일 경로
     private String mailFileName;        // 메일 파일 이름
     private String mailFileOriName;     // 메일 원본 파일 이름
+
+    public MailFileDTO() {
+    }
+
+    public MailFileDTO(int mailFileNo, int mailNo, String mailFilePath, String mailFileName, String mailFileOriName) {
+        this.mailFileNo = mailFileNo;
+        this.mailNo = mailNo;
+        this.mailFilePath = mailFilePath;
+        this.mailFileName = mailFileName;
+        this.mailFileOriName = mailFileOriName;
+    }
+
+
 }

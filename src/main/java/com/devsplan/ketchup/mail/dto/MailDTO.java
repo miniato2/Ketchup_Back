@@ -2,16 +2,39 @@ package com.devsplan.ketchup.mail.dto;
 
 import lombok.*;
 
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
 public class MailDTO {
-    private int mailNo;                 // 메일 번호
-    private String sender;              // 발신자
-    private String mailTitle;           // 메일 제목
-    private String mailContent;         // 메일 내용
-    private char sendCancelStatus;      // 메일 발송 취소 여부
-    private char sendDelStatus;         // 발신 메일 삭제 여부
+    private int mailNo;                     // 메일 번호
+    private String sender;                  // 발신자(사원 번호)
+    private String mailTitle;               // 메일 제목
+    private String mailContent;             // 메일 내용
+    private char sendCancelStatus;          // 메일 발송 취소 여부
+    private char sendDelStatus;             // 발신 메일 삭제 여부
+    private List<ReceiverDTO> receivers;
+
+    public MailDTO() {
+    }
+
+    public MailDTO(int mailNo, String sender, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
+        this.mailNo = mailNo;
+        this.sender = sender;
+        this.mailTitle = mailTitle;
+        this.mailContent = mailContent;
+        this.sendCancelStatus = sendCancelStatus;
+        this.sendDelStatus = sendDelStatus;
+    }
+
+    public MailDTO(int mailNo, String sender, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus, List<ReceiverDTO> receivers) {
+        this.mailNo = mailNo;
+        this.sender = sender;
+        this.mailTitle = mailTitle;
+        this.mailContent = mailContent;
+        this.sendCancelStatus = sendCancelStatus;
+        this.sendDelStatus = sendDelStatus;
+        this.receivers = receivers;
+    }
 }
