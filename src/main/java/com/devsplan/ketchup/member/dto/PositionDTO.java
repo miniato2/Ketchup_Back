@@ -1,74 +1,74 @@
 package com.devsplan.ketchup.member.dto;
 
+
+import com.devsplan.ketchup.common.Authority;
+
 public class PositionDTO {
-    private String roleNo;
-    private String roleName;
-    private int roleLevel;
-    private AuthorityDTO Authority;
-    private char status;
-
-
-
+    private int positionNo;
+    private String positionName;
+    private int positionLevel;
+    private Authority authority;
+    private char positionStatus;
 
     public PositionDTO() {
     }
 
-    public PositionDTO(String roleNo, String roleName, int roleLevel, AuthorityDTO authority, char status) {
-        this.roleNo = roleNo;
-        this.roleName = roleName;
-        this.roleLevel = roleLevel;
-        Authority = authority;
-        this.status = status;
+    public PositionDTO(int positionNo, String positionName, int positionLevel, Authority authority, char positionStatus) {
+        this.positionNo = positionNo;
+        this.positionName = positionName;
+        this.positionLevel = positionLevel;
+        this.authority = authority;
+        this.positionStatus = positionStatus;
     }
 
-    public String getRoleNo() {
-        return roleNo;
+    public int getPositionNo() {
+        return positionNo;
     }
 
-    public void setRoleNo(String roleNo) {
-        this.roleNo = roleNo;
+    public void setPositionNo(int positionNo) {
+        this.positionNo = positionNo;
     }
 
-    public String getRoleName() {
-        return roleName;
+    public String getPositionName() {
+        return positionName;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
     }
 
-    public int getRoleLevel() {
-        return roleLevel;
+    public int getPositionLevel() {
+        return positionLevel;
     }
 
-    public void setRoleLevel(int roleLevel) {
-        this.roleLevel = roleLevel;
+    public void setPositionLevel(int positionLevel) {
+        this.positionLevel = positionLevel;
     }
 
-    public AuthorityDTO getAuthority() {
-        return Authority;
+    public Authority getAuthority() {
+        return authority;
     }
 
-    public void setAuthority(AuthorityDTO authority) {
-        Authority = authority;
+    public void setAuthority(Authority authority) {
+        this.authority = authority;
     }
 
-    public char getStatus() {
-        return status;
+    public char getPositionStatus() {
+        return positionStatus;
     }
 
-    public void setStatus(char status) {
-        this.status = status;
+    public void setPositionStatus(char positionStatus) {
+        this.positionStatus = positionStatus;
     }
 
     @Override
     public String toString() {
         return "PositionDTO{" +
-                "roleNo='" + roleNo + '\'' +
-                ", roleName='" + roleName + '\'' +
-                ", roleLevel=" + roleLevel +
-                ", Authority=" + Authority +
-                ", status=" + status +
+                "positionNo=" + positionNo +
+                ", positionName='" + positionName + '\'' +
+                ", positionLevel=" + positionLevel +
+                ", authority=" + authority +
+                ", positionStatus=" + positionStatus +
                 '}';
     }
 }

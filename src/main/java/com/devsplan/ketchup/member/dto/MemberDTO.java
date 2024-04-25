@@ -3,6 +3,8 @@ package com.devsplan.ketchup.member.dto;
 public class MemberDTO {
 
     private int memberNo;
+
+    private String memberName;
     private String memberPW;
     private String phone;
     private String birthDate;
@@ -11,7 +13,7 @@ public class MemberDTO {
     private String privateEmail;
     private String companyEmail;
     private DepDTO department;
-    private PositionDTO role;
+    private PositionDTO position;
     private String account;
     private char status;
     private String imgUrl;
@@ -20,8 +22,9 @@ public class MemberDTO {
     public MemberDTO() {
     }
 
-    public MemberDTO(int memberNo, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, DepDTO department, PositionDTO role, String account, char status, String imgUrl) {
+    public MemberDTO(int memberNo, String memberName, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, DepDTO department, PositionDTO position, String account, char status, String imgUrl) {
         this.memberNo = memberNo;
+        this.memberName = memberName;
         this.memberPW = memberPW;
         this.phone = phone;
         this.birthDate = birthDate;
@@ -30,7 +33,7 @@ public class MemberDTO {
         this.privateEmail = privateEmail;
         this.companyEmail = companyEmail;
         this.department = department;
-        this.role = role;
+        this.position = position;
         this.account = account;
         this.status = status;
         this.imgUrl = imgUrl;
@@ -42,6 +45,14 @@ public class MemberDTO {
 
     public void setMemberNo(int memberNo) {
         this.memberNo = memberNo;
+    }
+
+    public String getMemberName() {
+        return memberName;
+    }
+
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
     }
 
     public String getMemberPW() {
@@ -108,12 +119,12 @@ public class MemberDTO {
         this.department = department;
     }
 
-    public PositionDTO getRole() {
-        return role;
+    public PositionDTO getPosition() {
+        return position;
     }
 
-    public void setRole(PositionDTO role) {
-        this.role = role;
+    public void setPosition(PositionDTO position) {
+        this.position = position;
     }
 
     public String getAccount() {
@@ -144,6 +155,7 @@ public class MemberDTO {
     public String toString() {
         return "MemberDTO{" +
                 "memberNo=" + memberNo +
+                ", memberName='" + memberName + '\'' +
                 ", memberPW='" + memberPW + '\'' +
                 ", phone='" + phone + '\'' +
                 ", birthDate='" + birthDate + '\'' +
@@ -152,7 +164,7 @@ public class MemberDTO {
                 ", privateEmail='" + privateEmail + '\'' +
                 ", companyEmail='" + companyEmail + '\'' +
                 ", department=" + department +
-                ", role=" + role +
+                ", position=" + position +
                 ", account='" + account + '\'' +
                 ", status=" + status +
                 ", imgUrl='" + imgUrl + '\'' +

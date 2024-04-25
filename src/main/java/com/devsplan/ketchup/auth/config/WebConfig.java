@@ -1,9 +1,9 @@
 //package com.devsplan.ketchup.auth.config;
 //
 //
+//
 //import com.devsplan.ketchup.auth.filter.HeaderFilter;
 //import com.devsplan.ketchup.auth.interceptor.JwtTokenInterceptor;
-//import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.boot.web.servlet.FilterRegistrationBean;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;
@@ -11,15 +11,16 @@
 //import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 //import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 //
+///*
+//* Web configuration을 위한 클래스
+//* */
 //@Configuration
 //@EnableWebMvc
 //public class WebConfig implements WebMvcConfigurer {
 //
-//
-//    // 정적 자원에 접근을 허용하게 하기 위함
 //    //요청이 들어왔을때 정적자원은 허용해주기 위함
 //    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
-//            "classpath:/static/", "classpath:/public/", "classpath:/", "classpath:/resources/",
+//            "classpath:/static/", "classpath:/public/", "classpath:/", "classpath:/resources/","classpath:/profile/",
 //            "classpath:/META-INF/resources/", "classpath:/META-INF/resources/webjars/"
 //    };
 //
@@ -46,4 +47,3 @@
 //        return new JwtTokenInterceptor();
 //    }
 //}
-//

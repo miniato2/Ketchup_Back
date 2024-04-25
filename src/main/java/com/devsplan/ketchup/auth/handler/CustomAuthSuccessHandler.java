@@ -1,6 +1,11 @@
 //package com.devsplan.ketchup.auth.handler;
 //
-
+//
+//import com.devsplan.ketchup.auth.model.DetailsMember;
+//import com.devsplan.ketchup.common.AuthConstants;
+//import com.devsplan.ketchup.common.utils.ConvertUtil;
+//import com.devsplan.ketchup.common.utils.TokenUtils;
+//import com.devsplan.ketchup.member.entity.Member;
 //import jakarta.servlet.ServletException;
 //import jakarta.servlet.http.HttpServletRequest;
 //import jakarta.servlet.http.HttpServletResponse;
@@ -16,16 +21,16 @@
 //
 //    @Override
 //    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-//        User user = ((DetailsUser) authentication.getPrincipal()).getUser();
-//        JSONObject jsonValue = (JSONObject) ConvertUtil.converObjectToJsonObject(user);
+//        Member member = ((DetailsMember) authentication.getPrincipal()).getMember();
+//        JSONObject jsonValue = (JSONObject) ConvertUtil.converObjectToJsonObject(member);
 //        HashMap<String, Object> responseMap = new HashMap<>();
 //
 //        JSONObject jsonObject;
-//        if(user.getState().equals("N")) {
+//        if(member.getState().equals("N")) {
 //            responseMap.put("userInfo", jsonValue);
 //            responseMap.put("message", "휴면 상태의 계정입니다.");
 //        } else {
-//            String token = TokenUtils.generateJwtToken(user);
+//            String token = TokenUtils.generateJwtToken(member);
 //            responseMap.put("userInfo", jsonValue);
 //            responseMap.put("message", "로그인 성공입니다.");
 //
