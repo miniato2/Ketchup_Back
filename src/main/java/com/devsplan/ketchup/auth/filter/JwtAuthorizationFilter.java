@@ -1,6 +1,9 @@
 //package com.devsplan.ketchup.auth.filter;
 //
-
+//
+//
+//import com.devsplan.ketchup.common.AuthConstants;
+//import com.devsplan.ketchup.member.entity.Member;
 //import io.jsonwebtoken.Claims;
 //import io.jsonwebtoken.ExpiredJwtException;
 //import io.jsonwebtoken.JwtException;
@@ -51,11 +54,11 @@
 //                    Claims claims = TokenUtils.getClaimsFromToken(token); //그럼 토큰에서 클레임 부분을 추출해서 저장해
 //
 //
-//                    DetailsUser authentication = new DetailsUser(); // DetailsUser 형식의 인가를 만들고
-//                    User user = new User(); //유저 형식의 새 유저를 만들어
-//                    user.setUserName(claims.get("userName").toString());  //클레임에서 userName부분을 때서 출력한 값으로 userName 셋팅
-//                    user.setRole(UserRole.valueOf(claims.get("Role").toString())); //같은방식으로 Role부분 때서 UserRole 셋팅
-//                    authentication.setUser(user); // 인가에다가 해당 유저를 세팅
+//                    DetailsMember authentication = new DetailsMember(); // DetailsUser 형식의 인가를 만들고
+//                    Member member = new Member(); //유저 형식의 새 유저를 만들어
+//                    member.setMemberName(claims.get("userName").toString());  //클레임에서 userName부분을 때서 출력한 값으로 userName 셋팅
+//                    member.getPosition().getAuthority().setRole(claims.get("Role").toString()); //같은방식으로 Role부분 때서 UserRole 셋팅
+//                    authentication.setMember(member); // 인가에다가 해당 유저를 세팅
 //
 //
 //                    //인증에 성공하고 나서 저장될 토큰의 타입이 AbstractAuthenticationToken 인거고
