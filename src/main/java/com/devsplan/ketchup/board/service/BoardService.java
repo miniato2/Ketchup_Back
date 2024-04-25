@@ -10,13 +10,13 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,56 +43,62 @@ public class BoardService {
     }
 
     @Transactional
-    public Object insertBoard(BoardDTO boardDTO) {
+    public String insertBoard(BoardDTO boardDTO) {
         log.info("[BoardService] insertBoard Start ===================");
 
-        int result = 0;
         try {
-            // 게시글 엔티티 생성
-            Board board = Board.builder()
-                    .boardNo(boardDTO.getBoardNo())
-                    .memberNo(boardDTO.getMemberNo())
-                    .departmentNo(boardDTO.getDepartmentNo())
-                    .boardTitle(boardDTO.getBoardTitle())
-                    .boardContent(boardDTO.getBoardContent())
-                    .boardCreateDttm(boardDTO.getBoardCreateDttm())
-                    .build();
 
-            // 게시글과 파일 엔티티 관계 설정
-//            List<BoardFileDTO> boardFileDTOs = boardDTO.getBoardFile();
-//            if (boardFileDTOs != null && !boardFileDTOs.isEmpty()) {
-//                List<BoardFile> boardFiles = new ArrayList<>();
-//                for (BoardFileDTO fileDTO : boardFileDTOs) {
-//                    // 파일 업로드 및 엔티티 생성
-////                    String uploadedFileName = fileUtils.saveFile("upload-dir", "testFile", MediaType.IMAGE_PNG_VALUE);
-//                    BoardFile boardFile = new BoardFile(
-//                        fileDTO.getBoardFileNo(),
-//                        fileDTO.getBoardFileName(),
-//                        null,
-//                        fileDTO.getBoardOrigName(),
-//                        fileDTO.getBoardFileSize()
-//                    );
-//                    boardFiles.add(boardFile);
-//                }
-//                board.boardFiles(boardFiles);
-//            }
+            // 게시글 엔티티 생성
+            Board board = modelMapper.map(boardDTO, Board.class);
+
+           /* // 파일업로드
+            List<BoardFile> boardFiles = new ArrayList<>();
+            if (boardDTO.getBoardFile() != null && !boardDTO.getBoardFile().isEmpty()) {
+                for (BoardFileDTO fileDTO : boardDTO.getBoardFile()) {
+                    MultipartFile file = fileDTO.getFile();
+                    String savedFilePath = fileUtils.saveFile(IMAGE_DIR, file.getOriginalFilename(), file);
+
+                    BoardFile boardFile = BoardFile.builder()
+                            .boardNo(board.getBoardNo()) // 게시글 번호 설정
+                            .boardFileName(file.getOriginalFilename())
+                            .boardFilePath(savedFilePath)
+                            .boardOriginName(file.getOriginalFilename())
+                            .boardFileSize(file.getSize())
+                            .build();
+
+                    boardFiles.add(boardFile);
+                }
+                board.boardFiles(boardFiles);
+            }*/
+
 
             // 게시글 저장
-            boardRepository.save(modelMapper.map(board, Board.class));
+            boardRepository.save(board);
             log.info("[BoardService] insertBoard End ===================");
 
-            result = 1;
+            return "성공";
         } catch (Exception e) {
             log.error("Failed to insert board", e);
+            return "실패";
         }
 
-        return (result > 0) ? "성공" : "실패";
     }
 
 
-    public List<BoardDTO> selectBoardList() {
+    /* 부서별 자료실 게시물 목록조회 & 페이징 */
+    public Page<BoardDTO> selectBoardList(int departmentNo, int page, int size) {
 
-        List<Board> boardList = boardRepository.findAll(Sort.by("boardNo").descending());
-        return boardList.stream().map(board -> modelMapper.map(board, BoardDTO.class)).collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("boardNo").descending());
+
+        Page<Board> boardList = boardRepository.findByDepartmentNo(departmentNo, pageable);
+
+//        return boardList.stream().map(board -> modelMapper.map(board, BoardDTO.class)).collect(Collectors.toList());
+        return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
+    }
+
+    /* 부서별 자료실 게시물 목록 검색조회 & 페이징 */
+    public Page<BoardDTO> selectBoardSearchList(int departmentNo, int page, int size, String title) {
+
+        return null;
     }
 }

@@ -15,8 +15,12 @@ public class BoardFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int boardFileNo;
 
-    @Column(name = "board_no")
-    @OnDelete(action = OnDeleteAction.CASCADE)          // 부모 엔티티(게시글)가 삭제될 때 자식 엔티티(이미지)도 함께 삭제
+//    @Column(name = "board_no")
+//    @OnDelete(action = OnDeleteAction.CASCADE)          // 부모 엔티티(게시글)가 삭제될 때 자식 엔티티(이미지)도 함께 삭제
+//    private int boardNo;
+
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Column(name = "board_no", insertable = false, updatable = false) // 여기에 추가
     private int boardNo;
 
     @Column(name = "board_file_name", nullable = false)
@@ -30,6 +34,10 @@ public class BoardFile {
 
     @Column(name = "board_file_size", nullable = false)
     private Long boardFileSize;              // 파일 사이즈
+
+    @ManyToOne
+    @JoinColumn(name = "board_no")
+    private Board board;
 
     public BoardFile boardFileNo(int val) {
         this.boardFileNo = val;
@@ -61,6 +69,11 @@ public class BoardFile {
         return this;
     }
 
+    public BoardFile board(Board val) {
+        this.board = val;
+        return this;
+    }
+
     protected BoardFile() {}
 
     public BoardFile(int boardFileNo, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize) {
@@ -78,6 +91,16 @@ public class BoardFile {
         this.boardFilePath = boardFilePath;
         this.boardOriginName = boardOriginName;
         this.boardFileSize = boardFileSize;
+    }
+
+    public BoardFile(int boardFileNo, int boardNo, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize, Board board) {
+        this.boardFileNo = boardFileNo;
+        this.boardNo = boardNo;
+        this.boardFileName = boardFileName;
+        this.boardFilePath = boardFilePath;
+        this.boardOriginName = boardOriginName;
+        this.boardFileSize = boardFileSize;
+        this.board = board;
     }
 
     public int getBoardFileNo() {

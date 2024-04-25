@@ -16,7 +16,7 @@ public class BoardFileDTO {
     private String boardFilePath;       // 게시물 파일 경로
     private String boardOrigName;       // 게시물 원본 파일명
     private Long boardFileSize;              // 파일 사이즈
-//    private MultipartFile file;         // 파일 데이터
+    private MultipartFile file;         // 파일 데이터
 //
 //    public BoardFileDTO() {
 //    }
