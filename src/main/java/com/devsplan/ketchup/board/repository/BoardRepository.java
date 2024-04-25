@@ -8,10 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface BoardRepository extends JpaRepository <Board, Integer> {
+    Page<Board> findByDepartmentNo(int departmentNo, Pageable pageable);
 
-//    Page<Board> findByDepartmentNoAndTitleContaining(int departmentNo, String title, Pageable pageable);
-
-//    Page<Board> findByDepartmentNo(int departmentNo, Pageable pageable);
-
-//    List<Board> findByBoardNameContaining(String title);
 }

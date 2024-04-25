@@ -41,6 +41,14 @@ public class Board {
     @LastModifiedDate
     protected LocalDateTime boardUpdateDttm;
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    private List<BoardFile> boardFiles;
+
+    public Board boardFiles(List<BoardFile> val) {
+        this.boardFiles = val;
+        return this;
+    }
+
     public Board boardTitle(String val) {
         this.boardTitle = val;
         return this;
@@ -115,5 +123,18 @@ public class Board {
         this.departmentNo = departmentNo;
         this.boardCreateDttm = boardCreateDttm;
         this.boardUpdateDttm = boardUpdateDttm;
+    }
+
+
+    public Board(int boardNo, String boardTitle, String boardContent, int boardFileNo, int memberNo, int departmentNo, LocalDateTime boardCreateDttm, LocalDateTime boardUpdateDttm, List<BoardFile> boardFiles) {
+        this.boardNo = boardNo;
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+        this.boardFileNo = boardFileNo;
+        this.memberNo = memberNo;
+        this.departmentNo = departmentNo;
+        this.boardCreateDttm = boardCreateDttm;
+        this.boardUpdateDttm = boardUpdateDttm;
+        this.boardFiles = boardFiles;
     }
 }
