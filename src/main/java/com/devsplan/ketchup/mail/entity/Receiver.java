@@ -1,11 +1,15 @@
 package com.devsplan.ketchup.mail.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "tbl_receiver")
+@Getter
+@ToString
 public class Receiver {
     @Id
     @Column(name = "RECEIVER_NO", nullable = false)
@@ -17,8 +21,8 @@ public class Receiver {
     @Column(name = "MAIL_NO")
     private int mailNo;
 
-    @Column(name = "RECEIVER_NAME", nullable = false)
-    private String receiverName;
+    @Column(name = "RECEIVER_MEM", nullable = false)
+    private int receiverMem;
 
     @Column(name = "READ_TIME")
     private Timestamp readTime;
@@ -28,10 +32,10 @@ public class Receiver {
 
     protected Receiver() {}
 
-    public Receiver(int receiverNo, int mailNo, String receiverName, Timestamp readTime, char receiverDelStatus) {
+    public Receiver(int receiverNo, int mailNo, int receiverMem, Timestamp readTime, char receiverDelStatus) {
         this.receiverNo = receiverNo;
         this.mailNo = mailNo;
-        this.receiverName = receiverName;
+        this.receiverMem = receiverMem;
         this.readTime = readTime;
         this.receiverDelStatus = receiverDelStatus;
     }
