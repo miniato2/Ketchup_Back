@@ -17,8 +17,8 @@ public class Mail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int mailNo;
 
-    @Column(name = "SENDER", length = 50, nullable = false)
-    private String sender;
+    @Column(name = "SENDER_MEM", length = 50, nullable = false)
+    private int senderMem;
 
     @Column(name = "MAIL_TITLE", length = 200, nullable = false)
     private String mailTitle;
@@ -35,15 +35,15 @@ public class Mail {
 //    @OneToMany(mappedBy = "mailNo")
 //    private List<MailFile> mailFiles;
 
-//    @Setter
-//    @OneToMany(mappedBy = "mailNo", cascade = CascadeType.PERSIST)
-//    private List<Receiver> Receivers;
+    @Setter
+    @OneToMany(mappedBy = "mailNo", cascade = CascadeType.PERSIST)
+    private List<Receiver> Receivers;
 
     protected Mail() {}
 
-    public Mail(int mailNo, String sender, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
+    public Mail(int mailNo, int senderMem, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
         this.mailNo = mailNo;
-        this.sender = sender;
+        this.senderMem = senderMem;
         this.mailTitle = mailTitle;
         this.mailContent = mailContent;
         this.sendCancelStatus = sendCancelStatus;
