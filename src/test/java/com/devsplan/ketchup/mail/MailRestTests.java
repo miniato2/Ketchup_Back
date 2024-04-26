@@ -157,9 +157,7 @@ public class MailRestTests {
     @Test
     void replyMail() {
         // given
-
         // when
-
         // then
     }
 }

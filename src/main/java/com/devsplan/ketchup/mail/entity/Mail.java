@@ -49,4 +49,5 @@ public class Mail {
         this.sendCancelStatus = sendCancelStatus;
         this.sendDelStatus = sendDelStatus;
     }
+
 }

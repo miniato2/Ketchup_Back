@@ -39,4 +39,5 @@ public class Receiver {
         this.readTime = readTime;
         this.receiverDelStatus = receiverDelStatus;
     }
+
 }

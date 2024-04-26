@@ -60,7 +60,6 @@ public class MailService {
                 ))
                 .toList();
 
-
 //        for(int i = 0; i < mailList.size(); i++) {
 //            if(mailList.get(i).getSendDelStatus() != 'Y') {
 //                return mailList.stream()
