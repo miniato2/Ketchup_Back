@@ -1,23 +1,19 @@
 package com.devsplan.ketchup.mail;
 
 import com.devsplan.ketchup.mail.dto.MailDTO;
-import com.devsplan.ketchup.mail.dto.MailFileDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
-import com.devsplan.ketchup.mail.entity.Mail;
-import com.devsplan.ketchup.mail.entity.MailFile;
 import com.devsplan.ketchup.mail.service.MailService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -64,8 +60,6 @@ public class MailRestTests {
 //        List<ReceiverDTO>receiverList = new ArrayList<>();
 //        receiverList.add(receiverInfo);
 
-
-
         // when
 
         // then
@@ -104,5 +98,68 @@ public class MailRestTests {
         for(MailDTO mail : mailList) {
             System.out.println(receiverTest +  "받은 메일 목록 : " + mail);
         }
+    }
+
+    @DisplayName("메일 상세 조회")
+    @Test
+    void selectMailDetail() {
+        // given
+        int mailNo = 1;
+
+        // when
+        MailDTO mailDetail = mailService.selectMailDetail(mailNo);
+
+        // then
+        Assertions.assertNotNull(mailDetail);
+        System.out.println(mailNo + "번 메일 : " + mailDetail);
+    }
+
+    @DisplayName("발송 취소")
+    @ParameterizedTest
+    @CsvSource("3")
+    void cancelSendMail(int mailNo) {
+        // given
+
+        // when
+        int result = mailService.cancelSendMail(mailNo);
+
+        // then
+        Assertions.assertNotEquals(result, 0);
+    }
+
+    @DisplayName("보낸 메일 삭제")
+    @ParameterizedTest
+    @CsvSource("2, 240425003")
+    void deleteSendMail(int mailNo, int senderMem) {
+        // given
+
+        // when
+        int result = mailService.deleteSendMail(mailNo, senderMem);
+
+        // then
+        Assertions.assertNotEquals(result , 0);
+    }
+
+    @DisplayName("받은 메일 삭제")
+    @ParameterizedTest
+    @CsvSource({"3, 240425002"})
+    void deleteReceiveMail(int mailNo, int receiverMem) {
+        // given
+
+        // when
+        int result = mailService.deleteReceiveMail(mailNo, receiverMem);
+
+        // then
+        Assertions.assertNotEquals(result, 0);
+    }
+
+    @DisplayName("답장")
+    @Test
+    void replyMail() {
+        // given
+
+        // when
+
+        // then
     }
 }

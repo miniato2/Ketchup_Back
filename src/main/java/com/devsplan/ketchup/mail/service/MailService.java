@@ -7,12 +7,10 @@ import com.devsplan.ketchup.mail.entity.Receiver;
 import com.devsplan.ketchup.mail.repository.MailRepository;
 import com.devsplan.ketchup.mail.repository.ReceiverRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MailService {
@@ -48,12 +46,6 @@ public class MailService {
         receiverRepository.save(receiver);
     }
 
-//    @Transactional
-//    public void insertReceiver(ReceiverDTO receiverInfo) {
-//
-//    }
-
-    @Transactional
     public List<MailDTO> selectSendMailList(int senderMem) {
         List<Mail> mailList = mailRepository.findBySenderMem(senderMem);
 
@@ -67,6 +59,22 @@ public class MailService {
                         , mail.getSendDelStatus()
                 ))
                 .toList();
+
+
+//        for(int i = 0; i < mailList.size(); i++) {
+//            if(mailList.get(i).getSendDelStatus() != 'Y') {
+//                return mailList.stream()
+//                        .map(mail -> new MailDTO(
+//                                mail.getMailNo()
+//                                , mail.getSenderMem()
+//                                , mail.getMailTitle()
+//                                , mail.getMailContent()
+//                                , mail.getSendCancelStatus()
+//                                , mail.getSendDelStatus()
+//                        ))
+//                        .toList();
+//            }
+//        }
     }
 
     public List<MailDTO> selectReceiveMailList(int receiverTest) {
@@ -86,7 +94,6 @@ public class MailService {
         List<MailDTO> mailList = new ArrayList<>();
 
         for(int i = 0; i < result.size(); i++) {
-            System.out.println("음하하하하하하하하하");
             int mailNo = result.get(i).getMailNo();
             Mail receiveMail = mailRepository.findByMailNo(mailNo);
             MailDTO mail = new MailDTO(
@@ -102,5 +109,53 @@ public class MailService {
         }
 
         return mailList;
+    }
+
+    public MailDTO selectMailDetail(int mailNo) {
+        Mail mailDetail = mailRepository.findByMailNo(mailNo);
+
+        return new MailDTO(
+                mailDetail.getMailNo()
+                , mailDetail.getSenderMem()
+                , mailDetail.getMailTitle()
+                , mailDetail.getMailContent()
+                , mailDetail.getSendCancelStatus()
+                , mailDetail.getSendDelStatus()
+        );
+    }
+
+    @Transactional
+    public int cancelSendMail(int mailNo) {
+        List<Receiver> mailRead = receiverRepository.findReadTime(mailNo);
+
+        int result = 0;
+        for(int i = 0; i < mailRead.size(); i++) {
+            System.out.println("읽은 메일 확인 : " + mailRead.get(i).getReadTime());
+            if(mailRead.get(i).getReadTime() != null) {
+                // 수신자 중 한명이라도 메일을 읽었을 경우
+                result = 0;
+            }else {
+                // 수신자 모두 메일을 읽지 않았을 경우 - 발송 취소 여부 'Y' / 수신자 삭제 여부 'Y' 변경
+                result = mailRepository.cancelSendMail(mailNo);
+            }
+        }
+
+        return result;
+    }
+
+    @Transactional
+    public int deleteSendMail(int mailNo, int senderMem) {
+        int result = mailRepository.updateBySendDelStatus(mailNo, senderMem);
+        System.out.println("발신 삭제 : " + result);
+
+        return result;
+    }
+
+    @Transactional
+    public int deleteReceiveMail(int mailNo, int receiverMem) {
+        int result = receiverRepository.updateByReceiverDelStatus(mailNo, receiverMem);
+        System.out.println("수신 삭제 : " + result);
+
+        return result;
     }
 }
