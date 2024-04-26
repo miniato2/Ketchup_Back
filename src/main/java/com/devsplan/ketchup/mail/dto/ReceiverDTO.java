@@ -17,8 +17,8 @@ public class ReceiverDTO {
     public ReceiverDTO() {
     }
 
-    public ReceiverDTO(Timestamp readTime) {
-        this.readTime = readTime;
+    public ReceiverDTO(int mailNo) {
+        this.mailNo = mailNo;
     }
 
     public ReceiverDTO(int receiverNo, int mailNo, int receiverMem, Timestamp readTime, char receiverDelStatus) {
