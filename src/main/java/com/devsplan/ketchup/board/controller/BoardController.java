@@ -23,11 +23,19 @@ import java.util.Map;
 @RestController
 @RequestMapping("/")
 public class BoardController {
+
+    private final BoardService boardService;
+
+    public BoardController(BoardService boardService) {
+        this.boardService = boardService;
+    }
+
+    /* 게시글 등록 */
+//    @PostMapping(value = "/board", consumes = {"multipart/form-data"})
+//    public ResponseEntity<ResponseDTO> insertBoard(@RequestPart(value = "files", required = false) List<MultipartFile> files, @RequestPart("boardDTO") String boardDTOJson) {
 //
-//    private final BoardService boardService;
-//
-//    public BoardController(BoardService boardService) {
-//        this.boardService = boardService;
+//        BoardDTO boardDTO =
+//        return null;
 //    }
 
 }

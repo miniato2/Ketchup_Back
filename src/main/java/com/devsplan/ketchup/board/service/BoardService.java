@@ -1,7 +1,6 @@
 package com.devsplan.ketchup.board.service;
 
 import com.devsplan.ketchup.board.dto.BoardDTO;
-import com.devsplan.ketchup.board.dto.BoardFileDTO;
 import com.devsplan.ketchup.board.entity.Board;
 import com.devsplan.ketchup.board.entity.BoardFile;
 import com.devsplan.ketchup.board.repository.BoardRepository;
@@ -17,9 +16,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -42,6 +44,7 @@ public class BoardService {
         this.fileUtils = fileUtils;
     }
 
+    /* 부서별 자료실 게시물 등록 */
     @Transactional
     public String insertBoard(BoardDTO boardDTO) {
         log.info("[BoardService] insertBoard Start ===================");
@@ -71,7 +74,6 @@ public class BoardService {
                 board.boardFiles(boardFiles);
             }*/
 
-
             // 게시글 저장
             boardRepository.save(board);
             log.info("[BoardService] insertBoard End ===================");
@@ -84,21 +86,115 @@ public class BoardService {
 
     }
 
+    /* 부서별 자료실 게시물 목록조회 & 페이징 & 목록 제목검색 조회 */
+    public Page<BoardDTO> selectBoardList(int departmentNo, Pageable pageable, String title) {
 
-    /* 부서별 자료실 게시물 목록조회 & 페이징 */
-    public Page<BoardDTO> selectBoardList(int departmentNo, int page, int size) {
+        pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() - 1,
+                pageable.getPageSize(),
+                Sort.by("boardNo").descending());
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("boardNo").descending());
+        Page<Board> boardList;
 
-        Page<Board> boardList = boardRepository.findByDepartmentNo(departmentNo, pageable);
+        if (title != null && !title.isEmpty()) {
+            boardList = boardRepository.findByDepartmentNoAndBoardTitleContaining(departmentNo,  pageable, title);
+
+        } else {
+            boardList = boardRepository.findByDepartmentNo(departmentNo, pageable);
+        }
 
 //        return boardList.stream().map(board -> modelMapper.map(board, BoardDTO.class)).collect(Collectors.toList());
         return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
     }
 
-    /* 부서별 자료실 게시물 목록 검색조회 & 페이징 */
-    public Page<BoardDTO> selectBoardSearchList(int departmentNo, int page, int size, String title) {
 
-        return null;
+    /* 부서별 자료실 게시물 상세조회 */
+    public BoardDTO selectBoardDetail(int boardNo) {
+
+        Board foundBoard = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
+
+        return modelMapper.map(foundBoard, BoardDTO.class);
+    }
+
+    /* 부서별 자료실 게시물 삭제 */
+    @Transactional
+    public void deleteBoard(int boardNo, int memberNo) {
+        Board board = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
+
+        if(board.getMemberNo() == memberNo) {
+            boardRepository.delete(board);
+        } else {
+            System.out.println("삭제 에러,,,");
+        }
+
+    }
+
+
+    public Map<String, Object> insertBoardWithFile(BoardDTO boardInfo, List<MultipartFile> files) throws IOException {
+
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            // 게시물 저장
+            Board board = modelMapper.map(boardInfo, Board.class);
+            Board savedBoard = boardRepository.save(board);
+
+            // 저장된 게시물의 boardNo 가져오기
+            int boardNo = savedBoard.getBoardNo();
+
+
+            // 파일이 있으면 각 파일을 저장하고, BoardFile 엔티티를 생성하여 연결
+            List<BoardFile> boardFiles = new ArrayList<>();
+            if (files != null) {
+
+                for (MultipartFile file : files) {
+
+                    String fileName = file.getOriginalFilename();
+                    String savedFilePath = fileUtils.saveFile(IMAGE_DIR, fileName, file);
+
+
+                    BoardFile boardFile = BoardFile.builder()
+                            .board(savedBoard)
+                            .boardFileName(fileName)
+                            .boardFilePath(savedFilePath)
+                            .build();
+
+                    boardFiles.add(boardFile);
+                }
+            }
+
+            // Board 엔티티에 BoardFile 엔티티 목록 설정
+            savedBoard.boardFiles(boardFiles);
+//
+            // 저장된 게시글 엔티티 갱신
+            boardRepository.save(savedBoard);
+
+
+            result.put("result", true);
+        } catch (Exception e) {
+            log.error("Error while inserting Announce with Files: " + e.getMessage());
+            result.put("result", false);
+        }
+
+        return result;
+
+    }
+
+    /* 부서별 자료실 게시물 수정 */
+    public String updateBoard(int boardNo, BoardDTO boardInfo, int memberNo) {
+
+        Board foundBoard = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
+
+        if(foundBoard.getMemberNo() == memberNo) {
+
+            foundBoard.boardTitle(boardInfo.getBoardTitle());
+            foundBoard.boardContent(boardInfo.getBoardContent());
+            foundBoard.boardUpdateDttm(new Timestamp(System.currentTimeMillis()));
+
+            boardRepository.save(foundBoard);
+            return "성공";
+
+        } else {
+            return "실패";
+        }
     }
 }

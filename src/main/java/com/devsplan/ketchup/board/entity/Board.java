@@ -5,6 +5,7 @@ import lombok.Builder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,8 +25,8 @@ public class Board {
     @Column(name = "board_content", nullable = false)
     private String boardContent;
 
-    @Column(name = "board_file_no")
-    private int boardFileNo;
+//    @Column(name = "board_file_no")
+//    private int boardFileNo;
 
     @Column(name = "member_no")
     private int memberNo;
@@ -35,19 +36,15 @@ public class Board {
 
     @Column(name = "board_create_dttm", nullable = false)
     @CreatedDate
-    private LocalDateTime boardCreateDttm;
+    private Timestamp boardCreateDttm;
 
     @Column(name = "board_update_dttm")
     @LastModifiedDate
-    protected LocalDateTime boardUpdateDttm;
+    protected Timestamp boardUpdateDttm;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST)
     private List<BoardFile> boardFiles;
 
-    public Board boardFiles(List<BoardFile> val) {
-        this.boardFiles = val;
-        return this;
-    }
 
     public Board boardTitle(String val) {
         this.boardTitle = val;
@@ -58,37 +55,37 @@ public class Board {
         return this;
     }
 
-    public Board boardFileNo(int val) {
-        this.boardFileNo = val;
-        return this;
-    }
+//    public Board boardFileNo(int val) {
+//        this.boardFileNo = val;
+//        return this;
+//    }
 
-    public Board boardCreateDttm(LocalDateTime val) {
+    public Board boardCreateDttm(Timestamp val) {
         this.boardCreateDttm = val;
         return this;
     }
 
-    public Board boardUpdateDttm(LocalDateTime val) {
+    public Board boardUpdateDttm(Timestamp val) {
         this.boardUpdateDttm = val;
         return this;
     }
+    public Board boardFiles(List<BoardFile> val) {
+        this.boardFiles = val;
+        return this;
+    }
+
+    public Board(int boardNo, String boardTitle, String boardContent, int memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm, List<BoardFile> boardFiles) {
+        this.boardNo = boardNo;
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+        this.memberNo = memberNo;
+        this.departmentNo = departmentNo;
+        this.boardCreateDttm = boardCreateDttm;
+        this.boardUpdateDttm = boardUpdateDttm;
+        this.boardFiles = boardFiles;
+    }
 
     protected Board() {}
-
-    public Board(int boardNo, String boardTitle, String boardContent, LocalDateTime boardCreateDttm) {
-        this.boardNo = boardNo;
-        this.boardTitle = boardTitle;
-        this.boardContent = boardContent;
-        this.boardCreateDttm = boardCreateDttm;
-    }
-
-    public Board(int boardNo, String boardTitle, int boardFileNo, String boardContent, LocalDateTime boardCreateDttm) {
-        this.boardNo = boardNo;
-        this.boardTitle = boardTitle;
-        this.boardFileNo = boardFileNo;
-        this.boardContent = boardContent;
-        this.boardCreateDttm = boardCreateDttm;
-    }
 
     public int getBoardNo() {
         return boardNo;
@@ -98,43 +95,46 @@ public class Board {
         return boardTitle;
     }
 
-    public int getBoardFileNo() {
-        return boardFileNo;
-    }
+//    public int getBoardFileNo() {
+//        return boardFileNo;
+//    }
 
     public String getBoardContent() {
         return boardContent;
     }
 
-    public LocalDateTime getBoardCreateDttm() {
+    public Timestamp getBoardCreateDttm() {
         return boardCreateDttm;
     }
 
-    public LocalDateTime getBoardUpdateDttm() {
+    public int getMemberNo() {
+        return memberNo;
+    }
+
+    public int getDepartmentNo() {
+        return departmentNo;
+    }
+
+    public List<BoardFile> getBoardFiles() {
+        return boardFiles;
+    }
+
+    public Timestamp getBoardUpdateDttm() {
         return boardUpdateDttm;
     }
 
-    public Board(int boardNo, String boardTitle, String boardContent, int boardFileNo, int memberNo, int departmentNo, LocalDateTime boardCreateDttm, LocalDateTime boardUpdateDttm) {
-        this.boardNo = boardNo;
-        this.boardTitle = boardTitle;
-        this.boardContent = boardContent;
-        this.boardFileNo = boardFileNo;
-        this.memberNo = memberNo;
-        this.departmentNo = departmentNo;
-        this.boardCreateDttm = boardCreateDttm;
-        this.boardUpdateDttm = boardUpdateDttm;
-    }
-
-
-    public Board(int boardNo, String boardTitle, String boardContent, int boardFileNo, int memberNo, int departmentNo, LocalDateTime boardCreateDttm, LocalDateTime boardUpdateDttm, List<BoardFile> boardFiles) {
-        this.boardNo = boardNo;
-        this.boardTitle = boardTitle;
-        this.boardContent = boardContent;
-        this.boardFileNo = boardFileNo;
-        this.memberNo = memberNo;
-        this.departmentNo = departmentNo;
-        this.boardCreateDttm = boardCreateDttm;
-        this.boardUpdateDttm = boardUpdateDttm;
-        this.boardFiles = boardFiles;
+    @Override
+    public String toString() {
+        return "Board{" +
+                "boardNo=" + boardNo +
+                ", boardTitle='" + boardTitle + '\'' +
+                ", boardContent='" + boardContent + '\'' +
+//                ", boardFileNo=" + boardFileNo +
+                ", memberNo=" + memberNo +
+                ", departmentNo=" + departmentNo +
+                ", boardCreateDttm=" + boardCreateDttm +
+                ", boardUpdateDttm=" + boardUpdateDttm +
+                ", boardFiles=" + boardFiles +
+                '}';
     }
 }
