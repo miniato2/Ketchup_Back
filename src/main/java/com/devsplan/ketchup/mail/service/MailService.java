@@ -136,6 +136,9 @@ public class MailService {
             }else {
                 // 수신자 모두 메일을 읽지 않았을 경우 - 발송 취소 여부 'Y' / 수신자 삭제 여부 'Y' 변경
                 result = mailRepository.cancelSendMail(mailNo);
+//                System.out.println("으아아아아아아아아아악");
+//                System.out.println(mailRead.get(i).getMailNo());
+//                deleteReceiveMail(mailNo);
             }
         }
 

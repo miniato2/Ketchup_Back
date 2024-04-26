@@ -10,7 +10,6 @@ import java.util.List;
 
 @Repository
 public interface MailRepository extends JpaRepository<Mail, Integer> {
-
     List<Mail> findBySenderMem(int senderMem);
 
     Mail findByMailNo(int i);
@@ -22,5 +21,4 @@ public interface MailRepository extends JpaRepository<Mail, Integer> {
     @Modifying
     @Query("UPDATE Mail m SET m.sendDelStatus = 'Y' WHERE m.mailNo = :mailNo and m.senderMem = :senderMem")
     int updateBySendDelStatus(int mailNo, int senderMem);
-
 }
