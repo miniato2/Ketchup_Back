@@ -31,17 +31,8 @@ public class BoardFile {
     private String fileType;            // 파일 타입
 
 //    @OnDelete(action = OnDeleteAction.CASCADE)
-    @Column(name = "board_no", insertable = false, updatable = false) // 여기에 추가
+    @Column(name = "board_no", nullable = false) // 여기에 추가
     private int boardNo;
-
-    @ManyToOne(cascade = CascadeType.PERSIST)      // @ManyToOne 어노테이션을 달고 @JoinColumn 어노테이션으로 어떤 테이블의 컬럼으로 연결시켜 연관관계를 만들어 줄지 설정
-    @JoinColumn(name = "board_no")
-    private Board board;
-
-    public BoardFile board(Board val) {
-        this.board = val;
-        return this;
-    }
 
     public BoardFile boardFileNo(int val) {
         this.boardFileNo = val;
@@ -80,7 +71,7 @@ public class BoardFile {
 
     protected BoardFile() {}
 
-    public BoardFile(int boardFileNo, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize, String fileType, int boardNo, Board board) {
+    public BoardFile(int boardFileNo, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize, String fileType, int boardNo/*, Board board*/) {
         this.boardFileNo = boardFileNo;
         this.boardFileName = boardFileName;
         this.boardFilePath = boardFilePath;
@@ -88,10 +79,21 @@ public class BoardFile {
         this.boardFileSize = boardFileSize;
         this.fileType = fileType;
         this.boardNo = boardNo;
-        this.board = board;
+//        this.board = board;
     }
 
 
+    public Long getBoardFileSize() {
+        return boardFileSize;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public int getBoardNo() {
+        return boardNo;
+    }
 
     public int getBoardFileNo() {
         return boardFileNo;
@@ -109,5 +111,16 @@ public class BoardFile {
         return boardOriginName;
     }
 
-
+    @Override
+    public String toString() {
+        return "BoardFile{" +
+                "boardFileNo=" + boardFileNo +
+                ", boardFileName='" + boardFileName + '\'' +
+                ", boardFilePath='" + boardFilePath + '\'' +
+                ", boardOriginName='" + boardOriginName + '\'' +
+                ", boardFileSize=" + boardFileSize +
+                ", fileType='" + fileType + '\'' +
+                ", boardNo=" + boardNo +
+                '}';
+    }
 }

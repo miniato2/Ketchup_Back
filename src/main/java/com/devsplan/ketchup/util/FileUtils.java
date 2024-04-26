@@ -3,6 +3,7 @@ package com.devsplan.ketchup.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,9 +18,18 @@ import java.nio.file.StandardCopyOption;
 @Component
 public class FileUtils {
 
+//    private final String IMAGE_DIR;
+//
+//    public FileUtils(@Value("${image.image-dir}") String imageDir) {
+//        this.IMAGE_DIR = imageDir;
+//    }
+
     public static String saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
 
-        Path uploadPath = Paths.get(uploadDir);
+        Path uploadPath = Paths.get(uploadDir); // 상대경로- src외부에도 파일이 함께 저장됨
+//        Path uploadPath = Paths.get(IMAGE_DIR).toAbsolutePath().normalize();  // 절대경로(에러발생 수정필요)
+
+
 
         if(!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);

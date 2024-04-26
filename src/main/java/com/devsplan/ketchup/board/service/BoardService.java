@@ -1,8 +1,10 @@
 package com.devsplan.ketchup.board.service;
 
 import com.devsplan.ketchup.board.dto.BoardDTO;
+import com.devsplan.ketchup.board.dto.BoardFileDTO;
 import com.devsplan.ketchup.board.entity.Board;
 import com.devsplan.ketchup.board.entity.BoardFile;
+import com.devsplan.ketchup.board.repository.BoardFileRepository;
 import com.devsplan.ketchup.board.repository.BoardRepository;
 import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ import java.util.Map;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final BoardFileRepository boardFileRepository;
     private final ModelMapper modelMapper;
     private final FileUtils fileUtils;
 
@@ -38,8 +42,9 @@ public class BoardService {
     @Value("${image.image-url}")
     private String IMAGE_URL;
 
-    public BoardService(BoardRepository boardRepository, ModelMapper modelMapper, FileUtils fileUtils) {
+    public BoardService(BoardRepository boardRepository, ModelMapper modelMapper, FileUtils fileUtils, BoardFileRepository boardFileRepository) {
         this.boardRepository = boardRepository;
+        this.boardFileRepository = boardFileRepository;
         this.modelMapper = modelMapper;
         this.fileUtils = fileUtils;
     }
@@ -129,45 +134,45 @@ public class BoardService {
     }
 
 
-    public Map<String, Object> insertBoardWithFile(BoardDTO boardInfo, List<MultipartFile> files) throws IOException {
+    public Map<String, Object> insertBoardWithFile(BoardDTO boardDTO, List<MultipartFile> files) throws IOException {
+
+        log.info("boardDTO : " + boardDTO);
 
         Map<String, Object> result = new HashMap<>();
 
         try {
             // 게시물 저장
-            Board board = modelMapper.map(boardInfo, Board.class);
+            Board board = modelMapper.map(boardDTO, Board.class);
             Board savedBoard = boardRepository.save(board);
 
-            // 저장된 게시물의 boardNo 가져오기
-            int boardNo = savedBoard.getBoardNo();
-
-
             // 파일이 있으면 각 파일을 저장하고, BoardFile 엔티티를 생성하여 연결
-            List<BoardFile> boardFiles = new ArrayList<>();
             if (files != null) {
-
                 for (MultipartFile file : files) {
-
                     String fileName = file.getOriginalFilename();
+                    String fileType = file.getContentType();
                     String savedFilePath = fileUtils.saveFile(IMAGE_DIR, fileName, file);
 
+                    // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
+                    File uploadDir = new File(IMAGE_DIR);
+                    if (!uploadDir.exists()) {
+                        uploadDir.mkdirs();
+                    }
 
-                    BoardFile boardFile = BoardFile.builder()
-                            .board(savedBoard)
-                            .boardFileName(fileName)
-                            .boardFilePath(savedFilePath)
-                            .build();
+                    File newFile = new File(savedFilePath);
+                    file.transferTo(newFile);
 
-                    boardFiles.add(boardFile);
+                    BoardFileDTO boardFileDTO = new BoardFileDTO();
+                    boardFileDTO.setBoardNo(savedBoard.getBoardNo());
+                    boardFileDTO.setBoardFileName(fileName);
+                    boardFileDTO.setBoardFilePath(savedFilePath);
+                    boardFileDTO.setBoardOriginName(fileName);
+                    boardFileDTO.setBoardFileSize(file.getSize());
+                    boardFileDTO.setFileType(fileType);
+
+                    BoardFile boardFile = modelMapper.map(boardFileDTO, BoardFile.class);
+                    boardFileRepository.save(boardFile);
                 }
             }
-
-            // Board 엔티티에 BoardFile 엔티티 목록 설정
-            savedBoard.boardFiles(boardFiles);
-//
-            // 저장된 게시글 엔티티 갱신
-            boardRepository.save(savedBoard);
-
 
             result.put("result", true);
         } catch (Exception e) {
