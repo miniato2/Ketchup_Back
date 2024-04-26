@@ -105,4 +105,65 @@ public class MailRestTests {
             System.out.println(receiverTest +  "받은 메일 목록 : " + mail);
         }
     }
+
+    @DisplayName("메일 상세 조회")
+    @Test
+    void selectMailDetail() {
+        // given
+        int mailNo = 1;
+
+        // when
+        MailDTO mailDetail = mailService.selectMailDetail(mailNo);
+
+        // then
+        Assertions.assertNotNull(mailDetail);
+        System.out.println(mailNo + "번 메일 : " + mailDetail);
+    }
+
+    @DisplayName("발송 취소")
+    @ParameterizedTest
+    @CsvSource("3")
+    void cancelSendMail(int mailNo) {
+        // given
+
+        // when
+        int result = mailService.cancelSendMail(mailNo);
+
+        // then
+        Assertions.assertNotEquals(result, 0);
+    }
+
+    @DisplayName("보낸 메일 삭제")
+    @ParameterizedTest
+    @CsvSource("2, 240425003")
+    void deleteSendMail(int mailNo, int senderMem) {
+        // given
+
+        // when
+        int result = mailService.deleteSendMail(mailNo, senderMem);
+
+        // then
+        Assertions.assertNotEquals(result , 0);
+    }
+
+    @DisplayName("받은 메일 삭제")
+    @ParameterizedTest
+    @CsvSource({"3, 240425002"})
+    void deleteReceiveMail(int mailNo, int receiverMem) {
+        // given
+
+        // when
+        int result = mailService.deleteReceiveMail(mailNo, receiverMem);
+
+        // then
+        Assertions.assertNotEquals(result, 0);
+    }
+
+    @DisplayName("답장")
+    @Test
+    void replyMail() {
+        // given
+        // when
+        // then
+    }
 }
