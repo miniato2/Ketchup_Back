@@ -109,8 +109,9 @@ public class BoardServiceTests {
         }
 
         // then
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(result.get("result"), true);
+//        Assertions.assertNotNull(result);
+        Assertions.assertTrue((Boolean) result.get("result"));
+//        Assertions.assertEquals(result.get("result"), true);
     }
 
 
