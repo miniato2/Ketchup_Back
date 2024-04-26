@@ -25,9 +25,6 @@ public class Board {
     @Column(name = "board_content", nullable = false)
     private String boardContent;
 
-//    @Column(name = "board_file_no")
-//    private int boardFileNo;
-
     @Column(name = "member_no")
     private int memberNo;
 
@@ -41,10 +38,6 @@ public class Board {
     @Column(name = "board_update_dttm")
     @LastModifiedDate
     protected Timestamp boardUpdateDttm;
-
-    @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST)
-    private List<BoardFile> boardFiles;
-
 
     public Board boardTitle(String val) {
         this.boardTitle = val;
@@ -69,12 +62,12 @@ public class Board {
         this.boardUpdateDttm = val;
         return this;
     }
-    public Board boardFiles(List<BoardFile> val) {
-        this.boardFiles = val;
-        return this;
-    }
+//    public Board boardFiles(List<BoardFile> val) {
+//        this.boardFiles = val;
+//        return this;
+//    }
 
-    public Board(int boardNo, String boardTitle, String boardContent, int memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm, List<BoardFile> boardFiles) {
+    public Board(int boardNo, String boardTitle, String boardContent, int memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm/*, List<BoardFile> boardFiles*/) {
         this.boardNo = boardNo;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
@@ -82,7 +75,7 @@ public class Board {
         this.departmentNo = departmentNo;
         this.boardCreateDttm = boardCreateDttm;
         this.boardUpdateDttm = boardUpdateDttm;
-        this.boardFiles = boardFiles;
+//        this.boardFiles = boardFiles;
     }
 
     protected Board() {}
@@ -115,9 +108,9 @@ public class Board {
         return departmentNo;
     }
 
-    public List<BoardFile> getBoardFiles() {
-        return boardFiles;
-    }
+//    public List<BoardFile> getBoardFiles() {
+//        return boardFiles;
+//    }
 
     public Timestamp getBoardUpdateDttm() {
         return boardUpdateDttm;
@@ -134,7 +127,10 @@ public class Board {
                 ", departmentNo=" + departmentNo +
                 ", boardCreateDttm=" + boardCreateDttm +
                 ", boardUpdateDttm=" + boardUpdateDttm +
-                ", boardFiles=" + boardFiles +
+//                ", boardFiles=" + boardFiles +
                 '}';
     }
+
+
+
 }

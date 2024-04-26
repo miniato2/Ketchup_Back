@@ -54,7 +54,6 @@ public class BoardServiceTests {
         // given
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-
         BoardDTO boardInfo = new BoardDTO();
         boardInfo.setMemberNo(2);
         boardInfo.setDepartmentNo(1);
@@ -73,28 +72,21 @@ public class BoardServiceTests {
     @Test
     void insertBoardWithFile() throws IOException {
         // given
-        // 테스트할 파일 생성
-        // given
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-//        File imageFile = new File(getClass().getClassLoader().getResource("jjang-gu.png").getFile());
-//        FileInputStream input = new FileInputStream(imageFile);
-//        MultipartFile multipartFile = new MockMultipartFile("test.png", imageFile.getName(), "image/png", IOUtils.toByteArray(input));
-
         // 이미지 파일 가져오기
-        InputStream inputStream = getClass().getResourceAsStream("/jjang-gu.png");
-//        File imageFile = new File("src/test/resources/jjang-gu.png");
-//        FileInputStream input = new FileInputStream(inputStream);
+        InputStream inputStream = getClass().getResourceAsStream("/test-img.png");
 
-        MultipartFile multipartFile = new MockMultipartFile("test.png", "jjang-gu.png", "image/png", inputStream);
-
+        MultipartFile multipartFile = new MockMultipartFile("test.png", "test-img.png", "image/png", inputStream);
 
         BoardDTO boardInfo = new BoardDTO();
-        boardInfo.setMemberNo(2);
-        boardInfo.setDepartmentNo(1);
-        boardInfo.setBoardTitle("title4");
-        boardInfo.setBoardContent("content4");
+        boardInfo.setMemberNo(8);
+        boardInfo.setDepartmentNo(3);
+        boardInfo.setBoardTitle("title6");
+        boardInfo.setBoardContent("content6");
         boardInfo.setBoardCreateDttm(timestamp);
+
+        System.out.println("boardInfo : " + boardInfo);
 
         // when
         Map<String, Object> result = new HashMap<>();
@@ -109,8 +101,7 @@ public class BoardServiceTests {
         }
 
         // then
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(result.get("result"), true);
+        Assertions.assertTrue((Boolean) result.get("result"));
     }
 
 
