@@ -1,19 +1,23 @@
 package com.devsplan.ketchup.mail;
 
 import com.devsplan.ketchup.mail.dto.MailDTO;
+import com.devsplan.ketchup.mail.dto.MailFileDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
+import com.devsplan.ketchup.mail.entity.Mail;
+import com.devsplan.ketchup.mail.entity.MailFile;
 import com.devsplan.ketchup.mail.service.MailService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -59,6 +63,8 @@ public class MailRestTests {
 
 //        List<ReceiverDTO>receiverList = new ArrayList<>();
 //        receiverList.add(receiverInfo);
+
+
 
         // when
 

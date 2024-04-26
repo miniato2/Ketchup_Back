@@ -7,10 +7,12 @@ import com.devsplan.ketchup.mail.entity.Receiver;
 import com.devsplan.ketchup.mail.repository.MailRepository;
 import com.devsplan.ketchup.mail.repository.ReceiverRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MailService {
@@ -46,6 +48,12 @@ public class MailService {
         receiverRepository.save(receiver);
     }
 
+//    @Transactional
+//    public void insertReceiver(ReceiverDTO receiverInfo) {
+//
+//    }
+
+    @Transactional
     public List<MailDTO> selectSendMailList(int senderMem) {
         List<Mail> mailList = mailRepository.findBySenderMem(senderMem);
 
@@ -93,6 +101,7 @@ public class MailService {
         List<MailDTO> mailList = new ArrayList<>();
 
         for(int i = 0; i < result.size(); i++) {
+            System.out.println("음하하하하하하하하하");
             int mailNo = result.get(i).getMailNo();
             Mail receiveMail = mailRepository.findByMailNo(mailNo);
             MailDTO mail = new MailDTO(
