@@ -9,7 +9,7 @@ import java.util.List;
 @ToString
 public class MailDTO {
     private int mailNo;                     // 메일 번호
-    private int senderMem;               // 발신자 사원 번호
+    private int senderMem;                  // 발신자 사원 번호
     private String mailTitle;               // 메일 제목
     private String mailContent;             // 메일 내용
     private char sendCancelStatus;          // 메일 발송 취소 여부

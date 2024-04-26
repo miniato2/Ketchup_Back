@@ -67,6 +67,21 @@ public class MailService {
                         , mail.getSendDelStatus()
                 ))
                 .toList();
+
+//        for(int i = 0; i < mailList.size(); i++) {
+//            if(mailList.get(i).getSendDelStatus() != 'Y') {
+//                return mailList.stream()
+//                        .map(mail -> new MailDTO(
+//                                mail.getMailNo()
+//                                , mail.getSenderMem()
+//                                , mail.getMailTitle()
+//                                , mail.getMailContent()
+//                                , mail.getSendCancelStatus()
+//                                , mail.getSendDelStatus()
+//                        ))
+//                        .toList();
+//            }
+//        }
     }
 
     public List<MailDTO> selectReceiveMailList(int receiverTest) {
