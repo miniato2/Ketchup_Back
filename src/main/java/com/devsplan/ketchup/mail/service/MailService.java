@@ -118,4 +118,55 @@ public class MailService {
 
         return mailList;
     }
+
+    public MailDTO selectMailDetail(int mailNo) {
+        Mail mailDetail = mailRepository.findByMailNo(mailNo);
+
+        return new MailDTO(
+                mailDetail.getMailNo()
+                , mailDetail.getSenderMem()
+                , mailDetail.getMailTitle()
+                , mailDetail.getMailContent()
+                , mailDetail.getSendCancelStatus()
+                , mailDetail.getSendDelStatus()
+        );
+    }
+
+    @Transactional
+    public int cancelSendMail(int mailNo) {
+        List<Receiver> mailRead = receiverRepository.findReadTime(mailNo);
+
+        int result = 0;
+        for(int i = 0; i < mailRead.size(); i++) {
+            System.out.println("읽은 메일 확인 : " + mailRead.get(i).getReadTime());
+            if(mailRead.get(i).getReadTime() != null) {
+                // 수신자 중 한명이라도 메일을 읽었을 경우
+                result = 0;
+            }else {
+                // 수신자 모두 메일을 읽지 않았을 경우 - 발송 취소 여부 'Y' / 수신자 삭제 여부 'Y' 변경
+                result = mailRepository.cancelSendMail(mailNo);
+//                System.out.println("으아아아아아아아아아악");
+//                System.out.println(mailRead.get(i).getMailNo());
+//                deleteReceiveMail(mailNo);
+            }
+        }
+
+        return result;
+    }
+
+    @Transactional
+    public int deleteSendMail(int mailNo, int senderMem) {
+        int result = mailRepository.updateBySendDelStatus(mailNo, senderMem);
+        System.out.println("발신 삭제 : " + result);
+
+        return result;
+    }
+
+    @Transactional
+    public int deleteReceiveMail(int mailNo, int receiverMem) {
+        int result = receiverRepository.updateByReceiverDelStatus(mailNo, receiverMem);
+        System.out.println("수신 삭제 : " + result);
+
+        return result;
+    }
 }
