@@ -1,7 +1,12 @@
 //package com.devsplan.ketchup.auth.config;
 //
-
-
+//
+//
+//import com.devsplan.ketchup.auth.filter.CustomAuthenticationFilter;
+//import com.devsplan.ketchup.auth.filter.JwtAuthorizationFilter;
+//import com.devsplan.ketchup.auth.handler.CustomAuthFailureHandler;
+//import com.devsplan.ketchup.auth.handler.CustomAuthSuccessHandler;
+//import com.devsplan.ketchup.auth.handler.CustomAuthenticationProvider;
 //import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;
@@ -47,6 +52,12 @@
 //                .formLogin(form -> form.disable())  //기본로그인창 x // 우리가 만든 로그인창 써!
 //                .addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class) //로그인 성공과 실패후 핸들러 등록
 //                .httpBasic(basic -> basic.disable()); // 기본인증에대한 인증철자 x //우리가 지정해주는걸로 진행해
+//
+//        http.authorizeHttpRequests(auth ->{
+////            auth.requestMatchers("auth/login").permitAll();
+//
+//            auth.anyRequest().permitAll();
+//        });
 //
 //
 //        return http.build();

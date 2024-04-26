@@ -9,8 +9,10 @@ public class Member {
 
     @Id
     @Column(name="MEMBER_NO")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int memberNo;
+    @Column(name="MEMBER_NAME")
+    private String memberName;
     @Column(name="MEMBER_PW")
     private String memberPW;
     @Column(name="MEMBER_PHONE")
@@ -34,13 +36,120 @@ public class Member {
     @Column(name="MEMBER_ACCOUNT")
     private String account;
     @Column(name="MEMBER_STATUS")
-    private char status;
+    private String state;
     @Column(name="MEMBER_IMGURL")
     private String imgUrl;
 
-    protected Member() {
 
+    public int getMemberNo() {
+        return memberNo;
     }
 
+    public void setMemberNo(int memberNo) {
+        this.memberNo = memberNo;
+    }
 
+    public String getMemberName() {
+        return memberName;
+    }
+
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+
+    public String getMemberPW() {
+        return memberPW;
+    }
+
+    public void setMemberPW(String memberPW) {
+        this.memberPW = memberPW;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public void setGender(char gender) {
+        this.gender = gender;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPrivateEmail() {
+        return privateEmail;
+    }
+
+    public void setPrivateEmail(String privateEmail) {
+        this.privateEmail = privateEmail;
+    }
+
+    public String getCompanyEmail() {
+        return companyEmail;
+    }
+
+    public void setCompanyEmail(String companyEmail) {
+        this.companyEmail = companyEmail;
+    }
+
+    public Dep getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Dep department) {
+        this.department = department;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 }
