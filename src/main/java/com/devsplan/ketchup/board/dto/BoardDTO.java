@@ -21,11 +21,11 @@ public class BoardDTO {
     private int memberNo;                       // 사번
     private int departmentNo;                   // 부서번호
     private String boardTitle;                  // 게시물 제목
-    private BoardFileDTO boardFile;       // 게시물 파일
     private List<BoardFileDTO> boardFiles;       // 게시물 파일들
     private String boardContent;                // 게시물 내용
     private Timestamp boardCreateDttm;      // 게시글 등록일시
     private Timestamp boardUpdateDttm;      // 게시글 수정일시
+    private String boardFilePath;
 
     public BoardDTO(int boardNo, String boardTitle, String boardContent, Timestamp boardCreateDttm) {
         this.boardNo = boardNo;
@@ -42,13 +42,14 @@ public class BoardDTO {
     }
 
 
-    public BoardDTO(int boardNo, int memberNo, int departmentNo, String boardTitle, String boardContent, Timestamp boardCreateDttm) {
+    public BoardDTO(int boardNo, int memberNo, int departmentNo, String boardTitle, String boardContent, Timestamp boardCreateDttm, String boardFilePath) {
         this.boardNo = boardNo;
         this.memberNo = memberNo;
         this.departmentNo = departmentNo;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
         this.boardCreateDttm = boardCreateDttm;
+        this.boardFilePath = boardFilePath;
     }
     public BoardDTO(int boardNo, int memberNo, int departmentNo, String boardTitle, List<BoardFileDTO> boardFiles, String boardContent, Timestamp boardCreateDttm) {
         this.boardNo = boardNo;
