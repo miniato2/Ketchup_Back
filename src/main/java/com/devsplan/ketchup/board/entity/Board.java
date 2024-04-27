@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "tbl_board")
@@ -37,21 +34,25 @@ public class Board {
 
     @Column(name = "board_update_dttm")
     @LastModifiedDate
-    protected Timestamp boardUpdateDttm;
+    private Timestamp boardUpdateDttm;
+
+    @Column(name = "board_file_path")
+    private String boardFilePath;
 
     public Board boardTitle(String val) {
         this.boardTitle = val;
         return this;
     }
+
     public Board boardContent(String val) {
         this.boardContent = val;
         return this;
     }
 
-//    public Board boardFileNo(int val) {
-//        this.boardFileNo = val;
-//        return this;
-//    }
+    public Board boardFilePath(String val) {
+        this.boardFilePath = val;
+        return this;
+    }
 
     public Board boardCreateDttm(Timestamp val) {
         this.boardCreateDttm = val;
@@ -62,12 +63,8 @@ public class Board {
         this.boardUpdateDttm = val;
         return this;
     }
-//    public Board boardFiles(List<BoardFile> val) {
-//        this.boardFiles = val;
-//        return this;
-//    }
 
-    public Board(int boardNo, String boardTitle, String boardContent, int memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm/*, List<BoardFile> boardFiles*/) {
+    public Board(int boardNo, String boardTitle, String boardContent, int memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm, String boardFilePath) {
         this.boardNo = boardNo;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
@@ -75,7 +72,7 @@ public class Board {
         this.departmentNo = departmentNo;
         this.boardCreateDttm = boardCreateDttm;
         this.boardUpdateDttm = boardUpdateDttm;
-//        this.boardFiles = boardFiles;
+        this.boardFilePath = boardFilePath;
     }
 
     protected Board() {}
@@ -88,9 +85,9 @@ public class Board {
         return boardTitle;
     }
 
-//    public int getBoardFileNo() {
-//        return boardFileNo;
-//    }
+    public String getBoardFilePath() {
+        return boardFilePath;
+    }
 
     public String getBoardContent() {
         return boardContent;
@@ -108,10 +105,6 @@ public class Board {
         return departmentNo;
     }
 
-//    public List<BoardFile> getBoardFiles() {
-//        return boardFiles;
-//    }
-
     public Timestamp getBoardUpdateDttm() {
         return boardUpdateDttm;
     }
@@ -122,12 +115,10 @@ public class Board {
                 "boardNo=" + boardNo +
                 ", boardTitle='" + boardTitle + '\'' +
                 ", boardContent='" + boardContent + '\'' +
-//                ", boardFileNo=" + boardFileNo +
                 ", memberNo=" + memberNo +
                 ", departmentNo=" + departmentNo +
                 ", boardCreateDttm=" + boardCreateDttm +
                 ", boardUpdateDttm=" + boardUpdateDttm +
-//                ", boardFiles=" + boardFiles +
                 '}';
     }
 

@@ -1,11 +1,8 @@
 package com.devsplan.ketchup.board.service;
 
 import com.devsplan.ketchup.board.dto.BoardDTO;
-import com.devsplan.ketchup.board.entity.Board;
 import com.devsplan.ketchup.board.repository.BoardRepository;
-import com.devsplan.ketchup.member.entity.Member;
 import com.devsplan.ketchup.util.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,22 +15,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -75,8 +62,7 @@ public class BoardServiceTests {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         // 이미지 파일 가져오기
-        InputStream inputStream = getClass().getResourceAsStream("/test-img.png");
-
+        InputStream inputStream = getClass().getResourceAsStream("/test.png");
         MultipartFile multipartFile = new MockMultipartFile("test.png", "test-img.png", "image/png", inputStream);
 
         BoardDTO boardInfo = new BoardDTO();
@@ -85,6 +71,7 @@ public class BoardServiceTests {
         boardInfo.setBoardTitle("title6");
         boardInfo.setBoardContent("content6");
         boardInfo.setBoardCreateDttm(timestamp);
+//        boardInfo.setBoardFilePath(filePath);
 
         System.out.println("boardInfo : " + boardInfo);
 
@@ -158,17 +145,46 @@ public class BoardServiceTests {
         Assertions.assertEquals(result, "성공");
     }
 
+    @DisplayName("자료실 게시물 수정(첨부파일)")
+    @Test
+    void updateBoardWithFile() throws IOException {
+        // given
+        int boardNo = 15;
+        int memberNo = 5;
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        InputStream inputStream1 = getClass().getResourceAsStream("/test-img1.png");
+        InputStream inputStream2 = getClass().getResourceAsStream("/test-img2.png");
+
+        MultipartFile multipartFile1 = new MockMultipartFile("test1.png", "test-img1.png", "image/png", inputStream1);
+        MultipartFile multipartFile2 = new MockMultipartFile("test2.png", "test-img2.png", "image/png", inputStream2);
+
+        List<MultipartFile> files = Arrays.asList(multipartFile1, multipartFile2);
+
+        BoardDTO boardInfo = new BoardDTO();
+        boardInfo.setBoardNo(7);
+        boardInfo.setMemberNo(3);
+        boardInfo.setBoardTitle("Updated Title");
+        boardInfo.setBoardContent("Updated Content");
+        boardInfo.setBoardUpdateDttm(timestamp);
+
+        // when
+        String result = boardService.updateBoardWithFile(boardNo, boardInfo, files, memberNo);
+
+        // then
+        Assertions.assertEquals(result, "게시물 수정 성공");
+    }
+
     @DisplayName("자료실 게시물 삭제")
     @Test
     void deleteBoard() {
-        // 테스트할 게시물 번호와 작성자 회원번호
-        int boardNo = 1;
-        int memberNo = 1;
+        // given
+        int boardNo = 7;
+        int memberNo = 3;
 
-        // 테스트: 게시물 삭제
+        // when
         boardService.deleteBoard(boardNo, memberNo);
 
-        // 삭제 후 해당 게시물이 존재하지 않는지 확인
+        // then
         assertFalse(boardRepository.existsById(boardNo));
     }
 }

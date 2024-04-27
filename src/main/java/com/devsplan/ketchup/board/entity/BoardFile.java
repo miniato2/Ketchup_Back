@@ -2,8 +2,6 @@ package com.devsplan.ketchup.board.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "tbl_board_file")
@@ -33,6 +31,11 @@ public class BoardFile {
 //    @OnDelete(action = OnDeleteAction.CASCADE)
     @Column(name = "board_no", nullable = false) // 여기에 추가
     private int boardNo;
+
+//    @OneToMany(mappedBy = "board",cascade = CascadeType.ALL, orphanRemoval = true)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private List<BoardFile> boardFiles;
+
 
     public BoardFile boardFileNo(int val) {
         this.boardFileNo = val;
@@ -71,7 +74,7 @@ public class BoardFile {
 
     protected BoardFile() {}
 
-    public BoardFile(int boardFileNo, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize, String fileType, int boardNo/*, Board board*/) {
+    public BoardFile(int boardFileNo, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize, String fileType, int boardNo) {
         this.boardFileNo = boardFileNo;
         this.boardFileName = boardFileName;
         this.boardFilePath = boardFilePath;
@@ -79,36 +82,10 @@ public class BoardFile {
         this.boardFileSize = boardFileSize;
         this.fileType = fileType;
         this.boardNo = boardNo;
-//        this.board = board;
-    }
-
-
-    public Long getBoardFileSize() {
-        return boardFileSize;
-    }
-
-    public String getFileType() {
-        return fileType;
-    }
-
-    public int getBoardNo() {
-        return boardNo;
-    }
-
-    public int getBoardFileNo() {
-        return boardFileNo;
-    }
-
-    public String getBoardFileName() {
-        return boardFileName;
     }
 
     public String getBoardFilePath() {
         return boardFilePath;
-    }
-
-    public String getBoardOriginName() {
-        return boardOriginName;
     }
 
     @Override

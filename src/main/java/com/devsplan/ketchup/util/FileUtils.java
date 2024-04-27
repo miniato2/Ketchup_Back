@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -50,6 +51,16 @@ public class FileUtils {
     // 파일 경로 반환
     public static Path downloadFilePath(String uploadDir, String fileName) {
         return Paths.get(uploadDir).resolve(fileName);
+    }
+
+    /* 파일 삭제 메서드 */
+    public boolean deleteFile(String filePath) {
+        File fileToDelete = new File(filePath);
+        if (fileToDelete.exists()) {
+            return fileToDelete.delete();
+        } else {
+            return false;
+        }
     }
 
     public static boolean deleteFile(String uploadDir, String fileName) {
