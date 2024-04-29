@@ -1,22 +1,16 @@
 package com.devsplan.ketchup.approval.service;
 
-import com.devsplan.ketchup.approval.dto.AppFileDTO;
-import com.devsplan.ketchup.approval.dto.AppLineDTO;
-import com.devsplan.ketchup.approval.dto.ApprovalDTO;
-import com.devsplan.ketchup.approval.dto.RefLineDTO;
-import com.devsplan.ketchup.approval.entity.AppFile;
-import com.devsplan.ketchup.approval.entity.AppLine;
-import com.devsplan.ketchup.approval.entity.Approval;
-import com.devsplan.ketchup.approval.entity.RefLine;
-import com.devsplan.ketchup.approval.repository.AppFileRepository;
-import com.devsplan.ketchup.approval.repository.AppLineRepository;
-import com.devsplan.ketchup.approval.repository.ApprovalRepository;
-import com.devsplan.ketchup.approval.repository.RefLineRepository;
+import com.devsplan.ketchup.approval.dto.*;
+import com.devsplan.ketchup.approval.entity.*;
+import com.devsplan.ketchup.approval.repository.*;
 import com.devsplan.ketchup.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -35,6 +30,7 @@ public class ApprovalService {
     private final AppLineRepository appLineRepository;
     private final RefLineRepository refLineRepository;
     private final AppFileRepository appFileRepository;
+    private final ApprovalSelectRepository approvalSelectRepository;
     private final ModelMapper modelMapper;
 
     @Value("${image.image-dir}")
@@ -47,12 +43,14 @@ public class ApprovalService {
                            AppLineRepository appLineRepository,
                            RefLineRepository refLineRepository,
                            AppFileRepository appFileRepository,
+                           ApprovalSelectRepository approvalSelectRepository,
                            ModelMapper modelMapper) {
 
         this.approvalRepository = approvalRepository;
         this.appLineRepository = appLineRepository;
         this.refLineRepository = refLineRepository;
         this.appFileRepository = appFileRepository;
+        this.approvalSelectRepository = approvalSelectRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -133,8 +131,65 @@ public class ApprovalService {
     }
 
 
-    public List<ApprovalDTO> selectMyApproval(int memberNo, int category, String status, String searchValue) {
+    //내가 작성한 기안 조회
+    @Transactional
+    public List<ApprovalSelectDTO> selectMyApproval(int memberNo, List<String> status, String searchValue) {
+//        Pageable paging = PageRequest.of(index, count, Sort.by("productCode").descending());
+        List<ApprovalSelect> approvalSelectList = null;
 
-        return null;
+        if(searchValue == null){
+            approvalSelectList = approvalSelectRepository.findMyApproval(memberNo, status);
+        }else{
+            approvalSelectList = approvalSelectRepository.findMyApprovalWithSearch(memberNo, status, searchValue);
+        }
+
+        List<ApprovalSelectDTO> approvalSelectDTOList = null;
+
+        approvalSelectDTOList = approvalSelectList.stream().map(approvalAnd ->
+                        modelMapper.map(approvalAnd, ApprovalSelectDTO.class))
+                        .collect(Collectors.toList());
+
+        log.info("List ===========================================");
+
+        return approvalSelectDTOList;
     }
+
+    //받은 기안 조회
+    @Transactional
+    public List<ApprovalSelectDTO> selectReceiveApp(int memberNo, List<String> status, String searchValue){
+
+        List<Integer> appNo = appLineRepository.findAppNoByMemberNo(memberNo);
+        List<ApprovalSelect> approvalSelectList = null;
+
+        if(searchValue == null){
+            approvalSelectList = approvalSelectRepository.findReceiveApp(status, appNo);
+        }else{
+            approvalSelectList = approvalSelectRepository.findReceiveAppWithSearch(status, appNo, searchValue);
+        }
+        List<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.stream().map(approvalAnd ->
+                        modelMapper.map(approvalAnd, ApprovalSelectDTO.class))
+                .collect(Collectors.toList());
+
+        return approvalSelectDTOList;
+    }
+
+    //참조선으로 등록된 기안 조회
+    public List<ApprovalSelectDTO> selectRefApp(int memberNo, String status, String searchValue) {
+        List<ApprovalSelect> approvalSelectList = null;
+        List<Integer> appNo = refLineRepository.findAppNoByMemberNo(memberNo); //사원번호로 참조선에 등록된 기안번호를 조회
+
+        if(searchValue == null){
+            approvalSelectList = approvalSelectRepository.findRefApp(status, appNo);
+        }else{
+            approvalSelectList = approvalSelectRepository.findRefAppWithSearch(status, searchValue, appNo);
+        }
+
+        List<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.stream().map(approvalAnd ->
+                        modelMapper.map(approvalAnd, ApprovalSelectDTO.class))
+                .collect(Collectors.toList());
+
+        return approvalSelectDTOList;
+    }
+
+
 }

@@ -12,7 +12,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @Entity
-@Table(name = "FORM")
+@Table(name = "TBL_FORM")
 public class Form {
     @Id
     @Column(name = "FORM_NO", nullable = false)
