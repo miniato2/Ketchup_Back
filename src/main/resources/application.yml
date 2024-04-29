@@ -31,3 +31,9 @@ image:
 
   image-dir: src/main/resources/static/uploadfiles
   image-url: http://mysql.coffit.today:3306/uploadfile
+
+
+
+jwt:
+  key: asdkfjlkawdsjfw390r82309rjlkasdfja213498dlk
+  time: 86400000

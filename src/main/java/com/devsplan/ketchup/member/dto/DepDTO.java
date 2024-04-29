@@ -10,6 +10,10 @@ public class DepDTO {
     public DepDTO() {
     }
 
+    public DepDTO(int depNo) {
+        this.depNo = depNo;
+    }
+
     public DepDTO(int depNo, String depName, String leader, int number, char status) {
         this.depNo = depNo;
         this.depName = depName;

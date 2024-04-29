@@ -2,8 +2,6 @@ package com.devsplan.ketchup.approval.dto;
 
 import lombok.*;
 
-import java.util.List;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -17,11 +15,7 @@ public class ApprovalDTO {
     private String appContents; //내용
     private String appDate; //기안날짜
     private String appFinalDate; //완료날짜
-    private String appStatus;  //상태
-
-    private List<String> fileUrl; //첨부파일
-    private List<AppLineDTO> appLine; //결재선
-    private List<String> fileURL; //파일 경로
+    private String appStatus;  //상태 (대기, 진행, 완료, 반려, 회수)
     private String refusal; //반려 사유
 
     public ApprovalDTO(int appMemberNo, int formNo, String appTitle, String appContents) {

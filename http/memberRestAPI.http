@@ -1,7 +1,79 @@
-POST http://localhost:8080/memberBoard
+### 부서등록
+POST http://localhost:8080/signupDep
 Content-Type: application/json
+Accept: */*
 
 {
-  "memberNo": "2401001",
+  "depNo":  1,
+  "depName": "개발팀",
+  "leader":  "이후영",
+  "number": 15,
+  "status": "Y"
+
+
+}
+
+### 직급등록
+POST http://localhost:8080/signupPosition
+Content-Type: application/json
+Accept: */*
+
+{
+  "positionNo":  1,
+  "positionName": "개발팀",
+  "positionLevel":  1,
+  "authority": "LV1",
+  "positionStatus": "Y"
+
+}
+
+### 회원가입
+POST http://localhost:8080/signup
+Content-Type: application/json
+Accept: */*
+
+{
+  "memberNo": "1",
+  "memberName": "이후영",
+  "memberPW" : "3158",
+  "phone": "010-3228-3158",
+  "birthDate": "1994-05-17",
+  "gender": "M",
+  "address" : "서울시 강동구 암사동",
+  "privateEmail" : "gndud3158@naver.com",
+  "companyEmail" : "gndud3158@ketchup.com",
+  "department" : 1,
+  "position" : 1,
+  "account" : "국민307002",
+  "status" : "재직중",
+  "imgUrl" : "imgUrl"
+}
+
+
+### 로그인
+POST http://localhost:8080/login
+Content-Type: application/json
+Accept: */*
+
+{
+  "memberNo": "1",
   "memberPW": "3158"
 }
+
+### GET 요청
+GET http://localhost:8080/test
+Content-Type: application/json
+Authorization: Bearer eyJkYXRlIjoxNzE0Mzc1OTY4MjkwLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLqsJzrsJztjIAiLCJtZW1iZXJObyI6IjEiLCJwb3NpdGlvbkxldmVsIjoxLCJzdWIiOiJrZXRjaHVwIHRva2VuIDogMSIsInJvbGUiOiJMVjEiLCJwb3NpdGlvblN0YXR1cyI6IlkiLCJwb3NpdGlvbk5vIjoxLCJleHAiOjE3MTQ0NjIzNjh9.KGqyi9M-7Rs4X0oCBZpAF9rGstz7RPxY_QB6gd_hpuY
+
+
+
+
+
+
+### POST 요청
+POST http://localhost:8080/test2
+Content-Type: application/json
+Authorization: BEARER eyJkYXRlIjoxNzE0MzY5MDUxNTk4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLqsJzrsJztjIAiLCJtZW1iZXJObyI6IjEiLCJwb3NpdGlvbkxldmVsIjoxLCJzdWIiOiJrZXRjaHVwIHRva2VuIDogMSIsInJvbGUiOiJMVjEiLCJwb3NpdGlvblN0YXR1cyI6IlkiLCJwb3NpdGlvbk5vIjoxLCJleHAiOjE3MTQ0NTU0NTF9.VPmNDXXCYrnB0j8H9Y4sygAuDXLnts81W7D3-BtuAcM
+
+
+

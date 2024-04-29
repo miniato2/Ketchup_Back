@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @Entity
-@Table(name = "TBL_REF_LINE")
+@Table(name = "TBL_REFLINE")
 public class RefLine {
     @Id
     @Column(name = "REF_LINE_NO" )
@@ -17,7 +17,7 @@ public class RefLine {
     private int refLineNo;
     @Column(name = "APPROVAL_NO", nullable = false)
     private int approvalNo;
-    @Column(name = "REF_MEMBER_NO", nullable = false)
+    @Column(name = "MEMBER_NO", nullable = false)
     private int refMemberNo;
 
     protected RefLine(){}
