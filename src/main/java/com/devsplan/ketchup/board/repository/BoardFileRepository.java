@@ -9,4 +9,5 @@ import java.util.List;
 @Service
 public interface BoardFileRepository extends JpaRepository<BoardFile, Integer> {
     List<BoardFile> findByBoardNo(int boardNo);
+
 }
