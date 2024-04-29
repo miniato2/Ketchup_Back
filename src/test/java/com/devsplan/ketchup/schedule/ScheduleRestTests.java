@@ -2,6 +2,7 @@ package com.devsplan.ketchup.schedule;
 
 import com.devsplan.ketchup.schedule.dto.DepartmentDTO;
 import com.devsplan.ketchup.schedule.dto.ScheduleDTO;
+import com.devsplan.ketchup.schedule.entity.Schedule;
 import com.devsplan.ketchup.schedule.service.ScheduleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +55,7 @@ public class ScheduleRestTests {
 
     private static Stream<Arguments> getScheduleInfo() {
         return Stream.of(
-                Arguments.of(3, 1, "신규 등록한 일정1", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
+                Arguments.of(2, 1, "신규 등록한 일정2", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
         );
     }
 
@@ -83,15 +84,24 @@ public class ScheduleRestTests {
     }
 
     @DisplayName("부서별 일정 수정")
-    @Test
-    void updateSchedule() {
-        // /schedules/{scheduleno}
-
+    @ParameterizedTest
+    @MethodSource("getScheduleInfo")
+    void updateSchedule(int skdNo, int dptNo, String skdName, LocalDateTime skdStartDttm, LocalDateTime skdEndDttm, String skdLocation, String skdMemo) {
         // given
+        ScheduleDTO updateSchedule = new ScheduleDTO(
+                2,
+                new DepartmentDTO(dptNo),
+                "수정된 일정4",
+                LocalDateTime.of(2025, 6, 23, 10, 0),
+                skdEndDttm,
+                "수정된 위치4",
+                "수정된 메모4"
+        );
 
         // when
+        Assertions.assertDoesNotThrow(() -> scheduleService.updateSchedule(updateSchedule));
 
-        // then
+        // then: no exception is thrown
     }
 
     @DisplayName("부서별 일정 삭제")
