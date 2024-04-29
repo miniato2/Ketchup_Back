@@ -10,7 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ReceiverRepository  extends JpaRepository<Receiver, Integer> {
-
     List<Receiver> findByReceiverMem(int receiverTest);
 
     @Query("SELECT r FROM Receiver r WHERE r.mailNo = :mailNo")
@@ -18,5 +17,9 @@ public interface ReceiverRepository  extends JpaRepository<Receiver, Integer> {
 
     @Modifying
     @Query("UPDATE Receiver r SET r.receiverDelStatus = 'Y' WHERE r.mailNo = :mailNo and r.receiverMem = :receiverMem")
-    int updateByReceiverDelStatus(int mailNo, int receiverMem);
+    int updateDelByMailNoReceiver(int mailNo, int receiverMem);
+
+    @Modifying
+    @Query("UPDATE Receiver r SET r.receiverDelStatus = 'Y' WHERE r.mailNo = :mailNo")
+    void updateReceiverDelByMailNo(int mailNo);
 }

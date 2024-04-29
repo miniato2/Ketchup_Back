@@ -2,10 +2,10 @@ package com.devsplan.ketchup.mail.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.util.List;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "tbl_mail")
@@ -26,6 +26,10 @@ public class Mail {
     @Column(name = "MAIL_CONTENT", length = 3000, nullable = false)
     private String mailContent;
 
+    @CreationTimestamp
+    @Column(name = "SEND_MAIL_TIME", nullable = false)
+    private Timestamp sendMailTime;
+
     @Column(name = "SEND_CANCEL_STATUS", nullable = false)
     private char sendCancelStatus;
 
@@ -35,14 +39,13 @@ public class Mail {
 //    @OneToMany(mappedBy = "mailNo")
 //    private List<MailFile> mailFiles;
 
-    @Setter
-    @OneToMany(mappedBy = "mailNo", cascade = CascadeType.PERSIST)
-    private List<Receiver> Receivers;
+//    @Setter
+//    @OneToMany(mappedBy = "mailNo", cascade = CascadeType.PERSIST)
+//    private List<Receiver> Receivers;
 
     protected Mail() {}
 
-    public Mail(int mailNo, int senderMem, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
-        this.mailNo = mailNo;
+    public Mail(int senderMem, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
         this.senderMem = senderMem;
         this.mailTitle = mailTitle;
         this.mailContent = mailContent;
@@ -50,4 +53,13 @@ public class Mail {
         this.sendDelStatus = sendDelStatus;
     }
 
+    public Mail(int mailNo, int senderMem, String mailTitle, String mailContent, Timestamp sendMailTime, char sendCancelStatus, char sendDelStatus) {
+        this.mailNo = mailNo;
+        this.senderMem = senderMem;
+        this.mailTitle = mailTitle;
+        this.mailContent = mailContent;
+        this.sendMailTime = sendMailTime;
+        this.sendCancelStatus = sendCancelStatus;
+        this.sendDelStatus = sendDelStatus;
+    }
 }

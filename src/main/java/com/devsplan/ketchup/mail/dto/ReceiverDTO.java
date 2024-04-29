@@ -17,6 +17,13 @@ public class ReceiverDTO {
     public ReceiverDTO() {
     }
 
+    public ReceiverDTO(int mailNo, int receiverMem, Timestamp readTime, char receiverDelStatus) {
+        this.mailNo = mailNo;
+        this.receiverMem = receiverMem;
+        this.readTime = readTime;
+        this.receiverDelStatus = receiverDelStatus;
+    }
+
     public ReceiverDTO(int receiverNo, int mailNo, int receiverMem, Timestamp readTime, char receiverDelStatus) {
         this.receiverNo = receiverNo;
         this.mailNo = mailNo;
@@ -25,4 +32,3 @@ public class ReceiverDTO {
         this.receiverDelStatus = receiverDelStatus;
     }
 }
-
