@@ -1,13 +1,21 @@
 ### 메일 목록 조회
-GET http://localhost:8080/mails/list
+#GET http://localhost:8080/mails/list
+#Content-Type: application/json
+#
+#{
+#  "sender": "1111111",
+#  "mailTitle": "프로젝트 제안서",
+#  "mailContent": "안녕하세요 기획팀 홍길동입니다.",
+#  "sendCancelStatus": "N",
+#  "sendDelStatus": "N"
+#}
+
+### 메일 작성
+POST http://localhost:8080/mails
 Content-Type: application/json
 
 {
-  "mailNo": "1",
-  "sender": "홍길동",
+  "sender": "1111111",
   "mailTitle": "프로젝트 제안서",
-  "mailContent": "안녕하세요 기획팀 홍길동입니다.",
-  "sendCancelStatus": "N",
-  "sendDelStatus": "N"
+  "mailContent": "안녕하세요 기획팀 홍길동입니다."
 }
-
