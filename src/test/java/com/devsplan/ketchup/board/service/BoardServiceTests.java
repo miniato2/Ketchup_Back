@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -46,8 +47,7 @@ public class BoardServiceTests {
         boardInfo.setDepartmentNo(1);
         boardInfo.setBoardTitle("title1");
         boardInfo.setBoardContent("content1");
-        boardInfo.setBoardCreateDttm(timestamp);
-
+        boardInfo.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
         //when
         String result = boardService.insertBoard(boardInfo);
 
@@ -70,7 +70,8 @@ public class BoardServiceTests {
         boardInfo.setDepartmentNo(3);
         boardInfo.setBoardTitle("title6");
         boardInfo.setBoardContent("content6");
-        boardInfo.setBoardCreateDttm(timestamp);
+        boardInfo.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
+//        boardInfo.setBoardCreateDttm(timestamp);
 //        boardInfo.setBoardFilePath(filePath);
 
         System.out.println("boardInfo : " + boardInfo);
@@ -136,7 +137,7 @@ public class BoardServiceTests {
         BoardDTO boardInfo = new BoardDTO();
         boardInfo.setBoardTitle("title1");
         boardInfo.setBoardContent("content content");
-        boardInfo.setBoardUpdateDttm(timestamp);
+        boardInfo.setBoardUpdateDttm(new Timestamp(System.currentTimeMillis()));
 
         //when
         String result = boardService.updateBoard(boardNo, boardInfo, memberNo);
@@ -165,7 +166,7 @@ public class BoardServiceTests {
         boardInfo.setMemberNo(3);
         boardInfo.setBoardTitle("Updated Title");
         boardInfo.setBoardContent("Updated Content");
-        boardInfo.setBoardUpdateDttm(timestamp);
+        boardInfo.setBoardUpdateDttm(new Timestamp(System.currentTimeMillis()));
 
         // when
         String result = boardService.updateBoardWithFile(boardNo, boardInfo, files, memberNo);

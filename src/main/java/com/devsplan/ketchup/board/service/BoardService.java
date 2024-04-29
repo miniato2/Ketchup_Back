@@ -57,6 +57,7 @@ public class BoardService {
 
         try {
             // 게시글 엔티티 생성
+            boardDTO.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
             Board board = modelMapper.map(boardDTO, Board.class);
 
             // 게시글 저장
@@ -71,6 +72,7 @@ public class BoardService {
 
     }
 
+
     @Transactional
     public Map<String, Object> insertBoardWithFile(BoardDTO boardDTO, List<MultipartFile> files) throws IOException {
 
@@ -78,6 +80,7 @@ public class BoardService {
         Map<String, Object> result = new HashMap<>();
 
         try {
+            boardDTO.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
             Board savedBoard = modelMapper.map(boardDTO, Board.class);
 
             // 파일이 있으면 각 파일을 저장하고, BoardFile 엔티티를 생성하여 연결
@@ -115,7 +118,7 @@ public class BoardService {
             }
             result.put("result", true);
         } catch (Exception e) {
-            log.error("Error while inserting Announce with Files: " + e.getMessage());
+            log.error("첨부파일 등록 실패: " + e.getMessage());
             result.put("result", false);
         }
         return result;
@@ -129,15 +132,29 @@ public class BoardService {
                 Sort.by("boardNo").descending());
 
         Page<Board> boardList;
-
         if (title != null && !title.isEmpty()) {
             boardList = boardRepository.findByDepartmentNoAndBoardTitleContaining(departmentNo,  pageable, title);
-
         } else {
             boardList = boardRepository.findByDepartmentNo(departmentNo, pageable);
         }
-
         return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
+    }
+
+    public Page<BoardDTO> selectAllBoards(Pageable pageable, String title) {
+
+        try {
+            Page<Board> boardList;
+            if (title != null && !title.isEmpty()) {
+                boardList = boardRepository.findByBoardTitleContaining(pageable, title);
+            } else {
+                boardList = boardRepository.findAll(pageable);
+            }
+
+            return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
+        } catch (Exception e) {
+            log.error("목록 조회 실패: ", e);
+            throw new RuntimeException("목록 조회 실패");
+        }
     }
 
     /* 부서별 자료실 게시물 상세조회 */
@@ -246,6 +263,7 @@ public class BoardService {
         boardRepository.delete(board);
         return true;
     }
+
 
 
 }

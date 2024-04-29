@@ -27,6 +27,14 @@ public class BoardDTO {
     private Timestamp boardUpdateDttm;      // 게시글 수정일시
     private String boardFilePath;
 
+    public void setBoardCreateDttm(Timestamp timestamp) {
+        this.boardCreateDttm = timestamp;
+    }
+
+    public void setBoardUpdateDttm(Timestamp timestamp) {
+        this.boardUpdateDttm = timestamp;
+    }
+
     public BoardDTO(int boardNo, String boardTitle, String boardContent, Timestamp boardCreateDttm) {
         this.boardNo = boardNo;
         this.boardTitle = boardTitle;

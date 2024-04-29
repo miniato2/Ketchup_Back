@@ -1,32 +1,57 @@
 ### 전체 목록조회 / 제목 검색 / 권한자 부서 선택
-GET http://localhost:8080/boards?departmentNo={departmentNo}&title={title}&page={page}
+GET http://localhost:8080/board?page=1
+
+### 전체 목록조회 / 제목 검색 / 사원 부서
+GET http://localhost:8080/boards?departmentNo=1&page=1
+
 
 ### 상세 조회
-GET http://localhost:8080/boards/{boardNo}
+GET http://localhost:8080/boards/4
 
 ### 게시글 등록
 POST http://localhost:8080/boards
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="boardInfo"; filename="board.json";
 Content-Type: application/json
 
 {
-  "boardTitle": "게시물1",
-  "boardContent": "게시물 내용 1",
-  "boardCreateDttm": "2024-03-01"
+  "memberNo": "3",
+  "departmentNo": "2",
+  "boardTitle": "게시물2",
+  "boardContent": "게시물 내용 2"
 }
+--WebAppBoundary
+Content-Disposition: form-data; name="files"; filename="example.png"
+Content-Type: image/png
+### Content-Type: text/plain
 
-### Content-Type: application/json; multipart/form-data; boundary=WebAppBoundary
-### Accept: */*
-### --WebAppBoundary
-### Content-Disposition: form-data; name="BoardName"
-### 1
-### --WebAppBoundary
-### Content-Disposition: form-data; name="productImage"; filename="pikachu.png"
+This is the content of the test-file.
+--WebAppBoundary--
 
 ### 게시글 수정
-PUT http://localhost:8080/boards/{boardNo}
+PUT http://localhost:8080/boards/2?memberNo=2
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="boardInfo"; filename="board.json";
+Content-Type: application/json
+
+{
+  "boardTitle": "게시물2",
+  "boardContent": "게시물 내용 2"
+}
+--WebAppBoundary
+Content-Disposition: form-data; name="files"; filename="example1.text"
+### Content-Type: image/png
+Content-Type: text/plain
+
+This is the content of the test-file.
+--WebAppBoundary--
 
 ### 게시글 삭제
-DELETE http://localhost:8080/boards/{boardNo}
+DELETE http://localhost:8080/boards/3?memberNo=3
 
 
 
