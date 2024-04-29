@@ -116,4 +116,9 @@ public class ScheduleService {
 
         scheduleRepository.save(foundSchedule.builder());
     }
+
+    @Transactional
+    public void deleteById(int skdNo) {
+        scheduleRepository.deleteById((long) skdNo);
+    }
 }
