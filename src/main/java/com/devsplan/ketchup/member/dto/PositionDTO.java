@@ -13,6 +13,10 @@ public class PositionDTO {
     public PositionDTO() {
     }
 
+    public PositionDTO(int positionNo) {
+        this.positionNo = positionNo;
+    }
+
     public PositionDTO(int positionNo, String positionName, int positionLevel, Authority authority, char positionStatus) {
         this.positionNo = positionNo;
         this.positionName = positionName;
