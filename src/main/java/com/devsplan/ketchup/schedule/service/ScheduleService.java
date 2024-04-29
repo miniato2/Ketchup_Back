@@ -94,4 +94,26 @@ public class ScheduleService {
     }
 
 
+    @Transactional
+    public void updateSchedule(ScheduleDTO updateSchedule) {
+        Schedule foundSchedule = scheduleRepository.findById((long) updateSchedule.getSkdNo()).orElseThrow(IllegalArgumentException::new);
+
+        if (updateSchedule.getSkdName() != null) {
+            foundSchedule.skdName(updateSchedule.getSkdName());
+        }
+        if (updateSchedule.getSkdStartDttm() != null) {
+            foundSchedule.skdStartDttm(updateSchedule.getSkdStartDttm());
+        }
+        if (updateSchedule.getSkdEndDttm() != null) {
+            foundSchedule.skdEndDttm(updateSchedule.getSkdEndDttm());
+        }
+        if (updateSchedule.getSkdLocation() != null) {
+            foundSchedule.skdLocation(updateSchedule.getSkdLocation());
+        }
+        if (updateSchedule.getSkdMemo() != null) {
+            foundSchedule.skdMemo(updateSchedule.getSkdMemo());
+        }
+
+        scheduleRepository.save(foundSchedule.builder());
+    }
 }
