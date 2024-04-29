@@ -38,7 +38,7 @@ public class MemberRestTest {
                                 "31558",
                                 "01032283158",
                                 "19940517",
-                                'M',  // char로 수정
+                                'M',
                                 "서울시강동구암사동",
                                 "yihooyung@gmail.com",
                                 "yihooyung@ketchup.com",
@@ -47,17 +47,17 @@ public class MemberRestTest {
                                         "개발팀",
                                         "이후영",
                                         15,
-                                        'Y'  // char로 수정
+                                        'Y'
                                 ),
                                 new PositionDTO(
                                         1,
                                         "팀장",
                                         3,
                                         Authority.LV1,
-                                        'Y'  // char로 수정
+                                        'Y'
                                 ),
                                 "계좌번호 01023",
-                                'Y',  // char로 수정
+                                "Y",
                                 "img_url"
                         )
                 )
@@ -114,10 +114,7 @@ public class MemberRestTest {
                 "멤버 추가 중 예외가 발생했습니다."  // 예외 발생 시 메시지
         );
 
-        // then
-        // 추가적인 검증을 수행할 수 있습니다.
-        // 예를 들어, 멤버 추가 후 해당 멤버가 DB에 정상적으로 저장되었는지 확인할 수 있습니다.
-        // 예시: 멤버 번호(memberNo)를 이용하여 DB에서 멤버를 조회하여 검증하는 코드 등
+
     }
 
     @ParameterizedTest
@@ -151,10 +148,7 @@ public class MemberRestTest {
                 "멤버 추가 중 예외가 발생했습니다."  // 예외 발생 시 메시지
         );
 
-        // then
-        // 추가적인 검증을 수행할 수 있습니다.
-        // 예를 들어, 멤버 추가 후 해당 멤버가 DB에 정상적으로 저장되었는지 확인할 수 있습니다.
-        // 예시: 멤버 번호(memberNo)를 이용하여 DB에서 멤버를 조회하여 검증하는 코드 등
+
     }
 
 

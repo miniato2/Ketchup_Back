@@ -3,6 +3,7 @@ package com.devsplan.ketchup.schedule;
 import com.devsplan.ketchup.schedule.dto.DepartmentDTO;
 import com.devsplan.ketchup.schedule.dto.ScheduleDTO;
 import com.devsplan.ketchup.schedule.entity.Schedule;
+import com.devsplan.ketchup.schedule.repository.ScheduleRepository;
 import com.devsplan.ketchup.schedule.service.ScheduleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,9 @@ public class ScheduleRestTests {
 
     @Autowired
     private ScheduleService scheduleService;
+
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
     @DisplayName("부서별 일정 목록 조회")
     @Test
@@ -100,8 +104,6 @@ public class ScheduleRestTests {
 
         // when
         Assertions.assertDoesNotThrow(() -> scheduleService.updateSchedule(updateSchedule));
-
-        // then: no exception is thrown
     }
 
     @DisplayName("부서별 일정 삭제")
@@ -110,10 +112,14 @@ public class ScheduleRestTests {
         // /schedules/{scheduleno}
 
         // given
+        int skdNo = 2;
+        Long skdNoLong = (long) skdNo;
 
         // when
+        scheduleService.deleteById(skdNo);
 
         // then
+        Assertions.assertNull(scheduleRepository.findById(skdNoLong).orElse(null));
     }
 
 }
