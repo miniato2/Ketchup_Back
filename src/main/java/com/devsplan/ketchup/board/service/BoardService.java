@@ -4,6 +4,7 @@ import com.devsplan.ketchup.board.dto.BoardDTO;
 import com.devsplan.ketchup.board.dto.BoardFileDTO;
 import com.devsplan.ketchup.board.entity.Board;
 import com.devsplan.ketchup.board.entity.BoardFile;
+import com.devsplan.ketchup.board.repository.BoardFileRepository;
 import com.devsplan.ketchup.board.repository.BoardRepository;
 import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;

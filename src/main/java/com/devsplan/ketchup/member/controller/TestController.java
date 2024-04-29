@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@PreAuthorize("hasAuthority('LV2')")
+@PreAuthorize("hasAuthority('LV1')")
 public class TestController {
 
 
