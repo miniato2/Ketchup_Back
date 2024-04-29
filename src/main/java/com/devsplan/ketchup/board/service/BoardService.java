@@ -1,18 +1,14 @@
 package com.devsplan.ketchup.board.service;
 
-import com.devsplan.ketchup.approval.dto.AppFileDTO;
-import com.devsplan.ketchup.approval.entity.AppFile;
 import com.devsplan.ketchup.board.dto.BoardDTO;
 import com.devsplan.ketchup.board.dto.BoardFileDTO;
 import com.devsplan.ketchup.board.entity.Board;
 import com.devsplan.ketchup.board.entity.BoardFile;
-import com.devsplan.ketchup.board.repository.BoardFileRepository;
 import com.devsplan.ketchup.board.repository.BoardRepository;
 import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.aspectj.weaver.MemberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
