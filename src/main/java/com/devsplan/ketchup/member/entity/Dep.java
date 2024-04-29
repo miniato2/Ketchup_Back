@@ -9,7 +9,7 @@ public class Dep {
     @Id
     @Column(name="DEP_NO")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String depNo;
+    private int depNo;
     @Column(name="DEP_NAME")
     private String depName;
     @Column(name="DEP_LEADER")

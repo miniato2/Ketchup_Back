@@ -1,28 +1,28 @@
 package com.devsplan.ketchup.member.dto;
 
 public class DepDTO {
-    private String depNo;
+    private int depNo;
     private String depName;
     private String leader;
-    private int count;
+    private int number;
     private char status;
 
     public DepDTO() {
     }
 
-    public DepDTO(String depNo, String depName, String leader, int count, char status) {
+    public DepDTO(int depNo, String depName, String leader, int number, char status) {
         this.depNo = depNo;
         this.depName = depName;
         this.leader = leader;
-        this.count = count;
+        this.number = number;
         this.status = status;
     }
 
-    public String getDepNo() {
+    public int getDepNo() {
         return depNo;
     }
 
-    public void setDepNo(String depNo) {
+    public void setDepNo(int depNo) {
         this.depNo = depNo;
     }
 
@@ -42,12 +42,12 @@ public class DepDTO {
         this.leader = leader;
     }
 
-    public int getCount() {
-        return count;
+    public int getNumber() {
+        return number;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public char getStatus() {
@@ -64,7 +64,7 @@ public class DepDTO {
                 "depNo='" + depNo + '\'' +
                 ", depName='" + depName + '\'' +
                 ", leader='" + leader + '\'' +
-                ", count=" + count +
+                ", number=" + number +
                 ", status=" + status +
                 '}';
     }

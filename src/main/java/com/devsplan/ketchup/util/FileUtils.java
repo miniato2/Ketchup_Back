@@ -3,9 +3,11 @@ package com.devsplan.ketchup.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -17,9 +19,18 @@ import java.nio.file.StandardCopyOption;
 @Component
 public class FileUtils {
 
+//    private final String IMAGE_DIR;
+//
+//    public FileUtils(@Value("${image.image-dir}") String imageDir) {
+//        this.IMAGE_DIR = imageDir;
+//    }
+
     public static String saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
 
-        Path uploadPath = Paths.get(uploadDir);
+        Path uploadPath = Paths.get(uploadDir); // 상대경로- src외부에도 파일이 함께 저장됨
+//        Path uploadPath = Paths.get(IMAGE_DIR).toAbsolutePath().normalize();  // 절대경로(에러발생 수정필요)
+
+
 
         if(!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
@@ -40,6 +51,16 @@ public class FileUtils {
     // 파일 경로 반환
     public static Path downloadFilePath(String uploadDir, String fileName) {
         return Paths.get(uploadDir).resolve(fileName);
+    }
+
+    /* 파일 삭제 메서드 */
+    public boolean deleteFile(String filePath) {
+        File fileToDelete = new File(filePath);
+        if (fileToDelete.exists()) {
+            return fileToDelete.delete();
+        } else {
+            return false;
+        }
     }
 
     public static boolean deleteFile(String uploadDir, String fileName) {

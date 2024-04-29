@@ -2,8 +2,6 @@ package com.devsplan.ketchup.board.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "tbl_board_file")
@@ -14,10 +12,6 @@ public class BoardFile {
     @Column(name = "board_file_No")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int boardFileNo;
-
-    @Column(name = "board_no")
-    @OnDelete(action = OnDeleteAction.CASCADE)          // 부모 엔티티(게시글)가 삭제될 때 자식 엔티티(이미지)도 함께 삭제
-    private int boardNo;
 
     @Column(name = "board_file_name", nullable = false)
     private String boardFileName;
@@ -30,6 +24,18 @@ public class BoardFile {
 
     @Column(name = "board_file_size", nullable = false)
     private Long boardFileSize;              // 파일 사이즈
+
+    @Column(name = "file_type", nullable = false)
+    private String fileType;            // 파일 타입
+
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Column(name = "board_no", nullable = false) // 여기에 추가
+    private int boardNo;
+
+//    @OneToMany(mappedBy = "board",cascade = CascadeType.ALL, orphanRemoval = true)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private List<BoardFile> boardFiles;
+
 
     public BoardFile boardFileNo(int val) {
         this.boardFileNo = val;
@@ -61,40 +67,37 @@ public class BoardFile {
         return this;
     }
 
+    public BoardFile fileType(String val) {
+        this.fileType = val;
+        return this;
+    }
+
     protected BoardFile() {}
 
-    public BoardFile(int boardFileNo, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize) {
+    public BoardFile(int boardFileNo, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize, String fileType, int boardNo) {
         this.boardFileNo = boardFileNo;
         this.boardFileName = boardFileName;
         this.boardFilePath = boardFilePath;
         this.boardOriginName = boardOriginName;
         this.boardFileSize = boardFileSize;
-    }
-
-    public BoardFile(int boardFileNo, int boardNo, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize) {
-        this.boardFileNo = boardFileNo;
+        this.fileType = fileType;
         this.boardNo = boardNo;
-        this.boardFileName = boardFileName;
-        this.boardFilePath = boardFilePath;
-        this.boardOriginName = boardOriginName;
-        this.boardFileSize = boardFileSize;
-    }
-
-    public int getBoardFileNo() {
-        return boardFileNo;
-    }
-
-    public String getBoardFileName() {
-        return boardFileName;
     }
 
     public String getBoardFilePath() {
         return boardFilePath;
     }
 
-    public String getBoardOriginName() {
-        return boardOriginName;
+    @Override
+    public String toString() {
+        return "BoardFile{" +
+                "boardFileNo=" + boardFileNo +
+                ", boardFileName='" + boardFileName + '\'' +
+                ", boardFilePath='" + boardFilePath + '\'' +
+                ", boardOriginName='" + boardOriginName + '\'' +
+                ", boardFileSize=" + boardFileSize +
+                ", fileType='" + fileType + '\'' +
+                ", boardNo=" + boardNo +
+                '}';
     }
-
-
 }

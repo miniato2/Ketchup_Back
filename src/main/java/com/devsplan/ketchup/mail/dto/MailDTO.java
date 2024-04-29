@@ -9,7 +9,7 @@ import java.util.List;
 @ToString
 public class MailDTO {
     private int mailNo;                     // 메일 번호
-    private String sender;                  // 발신자(사원 번호)
+    private int senderMem;                  // 발신자 사원 번호
     private String mailTitle;               // 메일 제목
     private String mailContent;             // 메일 내용
     private char sendCancelStatus;          // 메일 발송 취소 여부
@@ -19,22 +19,12 @@ public class MailDTO {
     public MailDTO() {
     }
 
-    public MailDTO(int mailNo, String sender, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
+    public MailDTO(int mailNo, int senderMem, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
         this.mailNo = mailNo;
-        this.sender = sender;
+        this.senderMem = senderMem;
         this.mailTitle = mailTitle;
         this.mailContent = mailContent;
         this.sendCancelStatus = sendCancelStatus;
         this.sendDelStatus = sendDelStatus;
-    }
-
-    public MailDTO(int mailNo, String sender, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus, List<ReceiverDTO> receivers) {
-        this.mailNo = mailNo;
-        this.sender = sender;
-        this.mailTitle = mailTitle;
-        this.mailContent = mailContent;
-        this.sendCancelStatus = sendCancelStatus;
-        this.sendDelStatus = sendDelStatus;
-        this.receivers = receivers;
     }
 }

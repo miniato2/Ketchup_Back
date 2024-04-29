@@ -1,5 +1,7 @@
 //package com.devsplan.ketchup.auth.model;
 //
+//
+//
 //import com.devsplan.ketchup.member.entity.Member;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.userdetails.UserDetails;
@@ -8,40 +10,41 @@
 //import java.util.Collection;
 //import java.util.Optional;
 //
-//public class DetailsUser implements UserDetails {
+//public class DetailsMember implements UserDetails {
 //
-//    private User user;
+//    private Member member;
 //
-//    public DetailsUser() {
+//    public DetailsMember() {
 //    }
 //
-//    public DetailsUser(Optional<User> user) {
-//        this.user = user.get();
+//    public DetailsMember(Optional<Member> member) {
+//        this.member = member.get();
 //    }
 //
-//    public User getUser() {
-//        return user;
+//    public Member getMember() {
+//        return member;
 //    }
 //
-//    public void setUser(User user) {
-//        this.user = user;
+//    public void setMember(Member member) {
+//        this.member = member;
 //    }
 //
 //    @Override
 //    public Collection<? extends GrantedAuthority> getAuthorities() {
 //        Collection<GrantedAuthority> authorities = new ArrayList<>();
-//        user.getRoleList().forEach(role -> authorities.add(() -> role));
+//        member.getPosition().getRoleList().forEach(role -> authorities.add(() -> role));
 //        return authorities;
 //    }
 //
+//
 //    @Override
 //    public String getPassword() {
-//        return user.getUserPass();
+//        return member.getMemberPW();
 //    }
 //
 //    @Override
 //    public String getUsername() {
-//        return user.getUserId();
+//        return ""+member.getMemberNo();
 //    }
 //
 //    @Override

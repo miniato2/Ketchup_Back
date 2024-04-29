@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
-import java.util.List;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "tbl_board")
@@ -24,9 +22,6 @@ public class Board {
     @Column(name = "board_content", nullable = false)
     private String boardContent;
 
-    @Column(name = "board_file_no")
-    private int boardFileNo;
-
     @Column(name = "member_no")
     private int memberNo;
 
@@ -35,52 +30,52 @@ public class Board {
 
     @Column(name = "board_create_dttm", nullable = false)
     @CreatedDate
-    private LocalDateTime boardCreateDttm;
+    private Timestamp boardCreateDttm;
 
     @Column(name = "board_update_dttm")
     @LastModifiedDate
-    protected LocalDateTime boardUpdateDttm;
+    private Timestamp boardUpdateDttm;
+
+    @Column(name = "board_file_path")
+    private String boardFilePath;
 
     public Board boardTitle(String val) {
         this.boardTitle = val;
         return this;
     }
+
     public Board boardContent(String val) {
         this.boardContent = val;
         return this;
     }
 
-    public Board boardFileNo(int val) {
-        this.boardFileNo = val;
+    public Board boardFilePath(String val) {
+        this.boardFilePath = val;
         return this;
     }
 
-    public Board boardCreateDttm(LocalDateTime val) {
+    public Board boardCreateDttm(Timestamp val) {
         this.boardCreateDttm = val;
         return this;
     }
 
-    public Board boardUpdateDttm(LocalDateTime val) {
+    public Board boardUpdateDttm(Timestamp val) {
         this.boardUpdateDttm = val;
         return this;
     }
 
+    public Board(int boardNo, String boardTitle, String boardContent, int memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm, String boardFilePath) {
+        this.boardNo = boardNo;
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+        this.memberNo = memberNo;
+        this.departmentNo = departmentNo;
+        this.boardCreateDttm = boardCreateDttm;
+        this.boardUpdateDttm = boardUpdateDttm;
+        this.boardFilePath = boardFilePath;
+    }
+
     protected Board() {}
-
-    public Board(int boardNo, String boardTitle, String boardContent, LocalDateTime boardCreateDttm) {
-        this.boardNo = boardNo;
-        this.boardTitle = boardTitle;
-        this.boardContent = boardContent;
-        this.boardCreateDttm = boardCreateDttm;
-    }
-
-    public Board(int boardNo, String boardTitle, int boardFileNo, String boardContent, LocalDateTime boardCreateDttm) {
-        this.boardNo = boardNo;
-        this.boardTitle = boardTitle;
-        this.boardFileNo = boardFileNo;
-        this.boardContent = boardContent;
-        this.boardCreateDttm = boardCreateDttm;
-    }
 
     public int getBoardNo() {
         return boardNo;
@@ -90,30 +85,43 @@ public class Board {
         return boardTitle;
     }
 
-    public int getBoardFileNo() {
-        return boardFileNo;
+    public String getBoardFilePath() {
+        return boardFilePath;
     }
 
     public String getBoardContent() {
         return boardContent;
     }
 
-    public LocalDateTime getBoardCreateDttm() {
+    public Timestamp getBoardCreateDttm() {
         return boardCreateDttm;
     }
 
-    public LocalDateTime getBoardUpdateDttm() {
+    public int getMemberNo() {
+        return memberNo;
+    }
+
+    public int getDepartmentNo() {
+        return departmentNo;
+    }
+
+    public Timestamp getBoardUpdateDttm() {
         return boardUpdateDttm;
     }
 
-    public Board(int boardNo, String boardTitle, String boardContent, int boardFileNo, int memberNo, int departmentNo, LocalDateTime boardCreateDttm, LocalDateTime boardUpdateDttm) {
-        this.boardNo = boardNo;
-        this.boardTitle = boardTitle;
-        this.boardContent = boardContent;
-        this.boardFileNo = boardFileNo;
-        this.memberNo = memberNo;
-        this.departmentNo = departmentNo;
-        this.boardCreateDttm = boardCreateDttm;
-        this.boardUpdateDttm = boardUpdateDttm;
+    @Override
+    public String toString() {
+        return "Board{" +
+                "boardNo=" + boardNo +
+                ", boardTitle='" + boardTitle + '\'' +
+                ", boardContent='" + boardContent + '\'' +
+                ", memberNo=" + memberNo +
+                ", departmentNo=" + departmentNo +
+                ", boardCreateDttm=" + boardCreateDttm +
+                ", boardUpdateDttm=" + boardUpdateDttm +
+                '}';
     }
+
+
+
 }

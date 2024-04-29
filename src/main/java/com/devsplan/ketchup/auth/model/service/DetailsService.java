@@ -1,6 +1,8 @@
 //package com.devsplan.ketchup.auth.model.service;
 //
-//import com.ohgiraffers.jwtsecurity.auth.model.DetailsUser;
+//
+//
+//import com.devsplan.ketchup.auth.model.DetailsMember;
 //import com.devsplan.ketchup.member.service.MemberService;
 //import org.springframework.security.authentication.AuthenticationServiceException;
 //import org.springframework.security.core.userdetails.UserDetails;
@@ -32,8 +34,8 @@
 //            throw new AuthenticationServiceException(username + " is Empty!");
 //
 //        } else {
-//            return userService.findUser(username)
-//                            .map(data -> new DetailsUser(Optional.of(data)))  //널이아닌값을 가지는 객체를 반환한다. 그 정보로 DetailsUser 만들자
+//            return memberService.findUser(username)
+//                            .map(data -> new DetailsMember(Optional.of(data)))  //널이아닌값을 가지는 객체를 반환한다. 그 정보로 DetailsUser 만들자
 //                            .orElseThrow(() -> new AuthenticationServiceException(username)); // 그과정에서 에러 발생하면 저 예외 던지고 메세지는 username으로 설정
 //        }
 //
