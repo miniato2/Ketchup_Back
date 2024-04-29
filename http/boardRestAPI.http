@@ -1,32 +1,60 @@
-### 전체 목록조회 / 제목 검색 / 권한자 부서 선택
-GET http://localhost:8080/boards?departmentNo={departmentNo}&title={title}&page={page}
+### 전체 목록조회 / 제목 검색 / 사원 부서
+GET http://localhost:8080/boards
+
+### 전체 목록조회 / 제목 검색 / 검색조회
+GET http://localhost:8080/boards?title="게시글"
+Authorization: Bearer eyJkYXRlIjoxNzE0Mzk4MzEyNDc2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0NDg0NzEyfQ.aKblxmCCZ0RPaGYZMMdhht0130M5WQPrdvcRtWhkm3I
 
 ### 상세 조회
-GET http://localhost:8080/boards/{boardNo}
+GET http://localhost:8080/boards/8
+Authorization: Bearer eyJkYXRlIjoxNzE0Mzk4MzEyNDc2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0NDg0NzEyfQ.aKblxmCCZ0RPaGYZMMdhht0130M5WQPrdvcRtWhkm3I
 
 ### 게시글 등록
 POST http://localhost:8080/boards
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJkYXRlIjoxNzE0Mzk4MzEyNDc2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0NDg0NzEyfQ.aKblxmCCZ0RPaGYZMMdhht0130M5WQPrdvcRtWhkm3I
+
+--WebAppBoundary
+Content-Disposition: form-data; name="boardInfo"; filename="board.json";
 Content-Type: application/json
 
 {
-  "boardTitle": "게시물1",
-  "boardContent": "게시물 내용 1",
-  "boardCreateDttm": "2024-03-01"
+  "boardTitle": "게시물10",
+  "boardContent": "게시물 내용 10"
 }
+--WebAppBoundary
+Content-Disposition: form-data; name="files"; filename="test9"
+### Content-Type: image/png
+Content-Type: text/plain
 
-### Content-Type: application/json; multipart/form-data; boundary=WebAppBoundary
-### Accept: */*
-### --WebAppBoundary
-### Content-Disposition: form-data; name="BoardName"
-### 1
-### --WebAppBoundary
-### Content-Disposition: form-data; name="productImage"; filename="pikachu.png"
+This is the content of the test-file.
+--WebAppBoundary--
 
 ### 게시글 수정
-PUT http://localhost:8080/boards/{boardNo}
+PUT http://localhost:8080/boards/7
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJkYXRlIjoxNzE0Mzk4MzEyNDc2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0NDg0NzEyfQ.aKblxmCCZ0RPaGYZMMdhht0130M5WQPrdvcRtWhkm3I
+
+--WebAppBoundary
+Content-Disposition: form-data; name="boardInfo"; filename="board.json";
+Content-Type: application/json
+
+{
+  "boardTitle": "게시물 7",
+  "boardContent": "게시물 내용 7"
+}
+
+--WebAppBoundary
+Content-Disposition: form-data; name="files"; filename="example5.img"
+Content-Type: image/png
+### Content-Type: text/plain
+
+This is the content of the test-file.
+--WebAppBoundary--
 
 ### 게시글 삭제
-DELETE http://localhost:8080/boards/{boardNo}
+DELETE http://localhost:8080/boards/8
+Authorization: Bearer eyJkYXRlIjoxNzE0Mzk4MzEyNDc2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0NDg0NzEyfQ.aKblxmCCZ0RPaGYZMMdhht0130M5WQPrdvcRtWhkm3I
 
 
 

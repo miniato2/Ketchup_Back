@@ -87,6 +87,9 @@ public class BoardFile {
     public String getBoardFilePath() {
         return boardFilePath;
     }
+    public String getBoardFileName() {
+        return boardFileName;
+    }
 
     @Override
     public String toString() {

@@ -18,7 +18,7 @@ import java.util.List;
 public class BoardDTO {
 
     private int boardNo;                        // 게시물 번호
-    private int memberNo;                       // 사번
+    private String memberNo;                       // 사번
     private int departmentNo;                   // 부서번호
     private String boardTitle;                  // 게시물 제목
     private List<BoardFileDTO> boardFiles;       // 게시물 파일들
@@ -26,6 +26,14 @@ public class BoardDTO {
     private Timestamp boardCreateDttm;      // 게시글 등록일시
     private Timestamp boardUpdateDttm;      // 게시글 수정일시
     private String boardFilePath;
+
+    public void setBoardCreateDttm(Timestamp timestamp) {
+        this.boardCreateDttm = timestamp;
+    }
+
+    public void setBoardUpdateDttm(Timestamp timestamp) {
+        this.boardUpdateDttm = timestamp;
+    }
 
     public BoardDTO(int boardNo, String boardTitle, String boardContent, Timestamp boardCreateDttm) {
         this.boardNo = boardNo;
@@ -42,7 +50,7 @@ public class BoardDTO {
     }
 
 
-    public BoardDTO(int boardNo, int memberNo, int departmentNo, String boardTitle, String boardContent, Timestamp boardCreateDttm, String boardFilePath) {
+    public BoardDTO(int boardNo, String memberNo, int departmentNo, String boardTitle, String boardContent, Timestamp boardCreateDttm, String boardFilePath) {
         this.boardNo = boardNo;
         this.memberNo = memberNo;
         this.departmentNo = departmentNo;
@@ -51,7 +59,7 @@ public class BoardDTO {
         this.boardCreateDttm = boardCreateDttm;
         this.boardFilePath = boardFilePath;
     }
-    public BoardDTO(int boardNo, int memberNo, int departmentNo, String boardTitle, List<BoardFileDTO> boardFiles, String boardContent, Timestamp boardCreateDttm) {
+    public BoardDTO(int boardNo, String memberNo, int departmentNo, String boardTitle, List<BoardFileDTO> boardFiles, String boardContent, Timestamp boardCreateDttm) {
         this.boardNo = boardNo;
         this.memberNo = memberNo;
         this.departmentNo = departmentNo;
