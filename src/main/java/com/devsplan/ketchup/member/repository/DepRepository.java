@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DepRepository extends JpaRepository<Dep, Integer> {
+    Dep findDepByDepNo(int rDepNo);
 }

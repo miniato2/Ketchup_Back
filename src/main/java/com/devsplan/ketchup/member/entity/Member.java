@@ -5,12 +5,9 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "TBL_MEMBER")
 public class Member {
-
-
     @Id
     @Column(name="MEMBER_NO")
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int memberNo;
+    private String memberNo;
     @Column(name="MEMBER_NAME")
     private String memberName;
     @Column(name="MEMBER_PW")
@@ -36,16 +33,16 @@ public class Member {
     @Column(name="MEMBER_ACCOUNT")
     private String account;
     @Column(name="MEMBER_STATUS")
-    private String state;
+    private String status;
     @Column(name="MEMBER_IMGURL")
     private String imgUrl;
 
 
-    public int getMemberNo() {
+    public String getMemberNo() {
         return memberNo;
     }
 
-    public void setMemberNo(int memberNo) {
+    public void setMemberNo(String memberNo) {
         this.memberNo = memberNo;
     }
 
@@ -138,11 +135,11 @@ public class Member {
     }
 
     public String getState() {
-        return state;
+        return status;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getImgUrl() {
@@ -151,5 +148,25 @@ public class Member {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "memberNo='" + memberNo + '\'' +
+                ", memberName='" + memberName + '\'' +
+                ", memberPW='" + memberPW + '\'' +
+                ", phone='" + phone + '\'' +
+                ", birthDate='" + birthDate + '\'' +
+                ", gender=" + gender +
+                ", address='" + address + '\'' +
+                ", privateEmail='" + privateEmail + '\'' +
+                ", companyEmail='" + companyEmail + '\'' +
+                ", department=" + department +
+                ", position=" + position +
+                ", account='" + account + '\'' +
+                ", status='" + status + '\'' +
+                ", imgUrl='" + imgUrl + '\'' +
+                '}';
     }
 }

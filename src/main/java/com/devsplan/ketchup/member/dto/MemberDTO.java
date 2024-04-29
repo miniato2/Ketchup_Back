@@ -2,8 +2,7 @@ package com.devsplan.ketchup.member.dto;
 
 public class MemberDTO {
 
-    private int memberNo;
-
+    private String memberNo;
     private String memberName;
     private String memberPW;
     private String phone;
@@ -15,14 +14,14 @@ public class MemberDTO {
     private DepDTO department;
     private PositionDTO position;
     private String account;
-    private char status;
+    private String status;
     private String imgUrl;
 
 
     public MemberDTO() {
     }
 
-    public MemberDTO(int memberNo, String memberName, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, DepDTO department, PositionDTO position, String account, char status, String imgUrl) {
+    public MemberDTO(String memberNo, String memberName, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, DepDTO department, PositionDTO position, String account, String status, String imgUrl) {
         this.memberNo = memberNo;
         this.memberName = memberName;
         this.memberPW = memberPW;
@@ -39,11 +38,11 @@ public class MemberDTO {
         this.imgUrl = imgUrl;
     }
 
-    public int getMemberNo() {
+    public String getMemberNo() {
         return memberNo;
     }
 
-    public void setMemberNo(int memberNo) {
+    public void setMemberNo(String memberNo) {
         this.memberNo = memberNo;
     }
 
@@ -135,11 +134,11 @@ public class MemberDTO {
         this.account = account;
     }
 
-    public char getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(char status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
