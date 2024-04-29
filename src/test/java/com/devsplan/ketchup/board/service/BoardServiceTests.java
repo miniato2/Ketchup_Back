@@ -43,7 +43,7 @@ public class BoardServiceTests {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         BoardDTO boardInfo = new BoardDTO();
-        boardInfo.setMemberNo(2);
+        boardInfo.setMemberNo("2");
         boardInfo.setDepartmentNo(1);
         boardInfo.setBoardTitle("title1");
         boardInfo.setBoardContent("content1");
@@ -66,7 +66,7 @@ public class BoardServiceTests {
         MultipartFile multipartFile = new MockMultipartFile("test.png", "test-img.png", "image/png", inputStream);
 
         BoardDTO boardInfo = new BoardDTO();
-        boardInfo.setMemberNo(8);
+        boardInfo.setMemberNo("8");
         boardInfo.setDepartmentNo(3);
         boardInfo.setBoardTitle("title6");
         boardInfo.setBoardContent("content6");
@@ -163,7 +163,7 @@ public class BoardServiceTests {
 
         BoardDTO boardInfo = new BoardDTO();
         boardInfo.setBoardNo(7);
-        boardInfo.setMemberNo(3);
+        boardInfo.setMemberNo("3");
         boardInfo.setBoardTitle("Updated Title");
         boardInfo.setBoardContent("Updated Content");
         boardInfo.setBoardUpdateDttm(new Timestamp(System.currentTimeMillis()));

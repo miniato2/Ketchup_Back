@@ -4,6 +4,7 @@ import com.devsplan.ketchup.board.dto.BoardDTO;
 import com.devsplan.ketchup.board.dto.BoardFileDTO;
 import com.devsplan.ketchup.board.entity.Board;
 import com.devsplan.ketchup.board.entity.BoardFile;
+import com.devsplan.ketchup.board.repository.BoardFileRepository;
 import com.devsplan.ketchup.board.repository.BoardRepository;
 import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;
@@ -161,13 +162,17 @@ public class BoardService {
         return modelMapper.map(foundBoard, BoardDTO.class);
     }
 
+    public List<BoardFile> findBoardFilesByBoardNo(int boardNo) {
+        return boardFileRepository.findByBoardNo(boardNo);
+    }
+
     /* 부서별 자료실 게시물 수정 */
     @Transactional
     public String updateBoard(int boardNo, BoardDTO boardInfo, int memberNo) {
 
         Board foundBoard = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
 
-        if(foundBoard.getMemberNo() == memberNo) {
+//        if(foundBoard.getMemberNo() == memberNo) {
 
             foundBoard.boardTitle(boardInfo.getBoardTitle());
             foundBoard.boardContent(boardInfo.getBoardContent());
@@ -176,9 +181,9 @@ public class BoardService {
             boardRepository.save(foundBoard);
             return "성공";
 
-        } else {
-            return "실패";
-        }
+//        } else {
+//            return "실패";
+//        }
     }
 
     @Transactional
@@ -186,7 +191,7 @@ public class BoardService {
 
         Board foundBoard = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
 
-        if (foundBoard.getMemberNo() == memberNo) {
+//        if (foundBoard.getMemberNo() == memberNo) {
             foundBoard.boardTitle(boardDTO.getBoardTitle());
             foundBoard.boardContent(boardDTO.getBoardContent());
             foundBoard.boardUpdateDttm(new Timestamp(System.currentTimeMillis()));
@@ -226,9 +231,9 @@ public class BoardService {
                 }
             }
             return "게시물 수정 성공";
-        } else {
-            return "게시물 수정 권한이 없습니다.";
-        }
+//        } else {
+//            return "게시물 수정 권한이 없습니다.";
+//        }
     }
 
     /* 부서별 자료실 게시물 삭제 */
@@ -237,10 +242,10 @@ public class BoardService {
         Board board = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
 
         // 게시물 작성자와 삭제 요청자가 일치하는지 확인
-        if (board.getMemberNo() != memberNo) {
-            log.error("삭제 권한이 없습니다.");
-            return false;
-        }
+//        if (board.getMemberNo() != memberNo) {
+//            log.error("삭제 권한이 없습니다.");
+//            return false;
+//        }
 
         // 게시물에 첨부된 파일 삭제
         List<BoardFile> boardFiles = boardFileRepository.findByBoardNo(boardNo);

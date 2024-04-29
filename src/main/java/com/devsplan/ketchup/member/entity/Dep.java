@@ -21,4 +21,8 @@ public class Dep {
 
     public Dep() {
     }
+
+    public int getDepNo() {
+        return depNo;
+    }
 }

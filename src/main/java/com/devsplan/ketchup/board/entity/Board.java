@@ -23,7 +23,7 @@ public class Board {
     private String boardContent;
 
     @Column(name = "member_no")
-    private int memberNo;
+    private String memberNo;
 
     @Column(name = "department_no")
     private int departmentNo;
@@ -64,7 +64,7 @@ public class Board {
         return this;
     }
 
-    public Board(int boardNo, String boardTitle, String boardContent, int memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm, String boardFilePath) {
+    public Board(int boardNo, String boardTitle, String boardContent, String memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm, String boardFilePath) {
         this.boardNo = boardNo;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
@@ -97,7 +97,7 @@ public class Board {
         return boardCreateDttm;
     }
 
-    public int getMemberNo() {
+    public String getMemberNo() {
         return memberNo;
     }
 
