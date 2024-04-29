@@ -78,6 +78,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     System.out.println("----------------------토큰에담긴 사원번호------");
                     System.out.println(claims.get("memberNo").toString());
                     tMember.setMemberNo(claims.get("memberNo").toString());
+                    //토큰에 사원설정시 부서번호 추가
+
 
                     System.out.println("----------------------해당 사원의 직급 번호------");
                     System.out.println(claims.get("positionNo").toString());

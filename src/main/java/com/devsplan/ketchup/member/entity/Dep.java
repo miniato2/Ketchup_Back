@@ -21,4 +21,55 @@ public class Dep {
 
     public Dep() {
     }
+
+    public int getDepNo() {
+        return depNo;
+    }
+
+    public String getDepName() {
+        return depName;
+    }
+
+    public String getLeader() {
+        return leader;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public char getStatus() {
+        return status;
+    }
+
+    public void setDepNo(int depNo) {
+        this.depNo = depNo;
+    }
+
+    public void setDepName(String depName) {
+        this.depName = depName;
+    }
+
+    public void setLeader(String leader) {
+        this.leader = leader;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public void setStatus(char status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Dep{" +
+                "depNo=" + depNo +
+                ", depName='" + depName + '\'' +
+                ", leader='" + leader + '\'' +
+                ", number=" + number +
+                ", status=" + status +
+                '}';
+    }
 }
