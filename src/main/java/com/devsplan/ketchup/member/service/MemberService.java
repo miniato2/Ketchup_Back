@@ -10,9 +10,8 @@ import com.devsplan.ketchup.member.entity.Position;
 import com.devsplan.ketchup.member.repository.DepRepository;
 import com.devsplan.ketchup.member.repository.MemberRepository;
 import com.devsplan.ketchup.member.repository.PositionRepository;
-
-
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,16 +22,18 @@ public class MemberService {
 
 
     private final ModelMapper modelMapper;
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-    private DepRepository depRepository;
+    private final DepRepository depRepository;
 
-    private PositionRepository positionRepository;
+    private final PositionRepository positionRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
 
 
-    public MemberService(MemberRepository memberRepository, ModelMapper modelMapper, DepRepository depRepository,PositionRepository positionRepository) {
-
+    public MemberService(MemberRepository memberRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder,DepRepository depRepository,PositionRepository positionRepository) {
+        this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
         this.memberRepository = memberRepository;
         this.depRepository = depRepository;
@@ -43,16 +44,21 @@ public class MemberService {
 
     @Transactional
     public void insertMember (MemberDTO newMemberDTO){
+        System.out.println("서비스는 옴");
         Member newMember = modelMapper.map(newMemberDTO, Member.class);
-
-//       newMember.setMemberPW(passwordEncoder.encode(newMember.getMemberPW()));
-       memberRepository.save(newMember);
+        newMember.setMemberPW(passwordEncoder.encode(newMember.getMemberPW()));
+        memberRepository.save(newMember);
     }
+
 
     @Transactional
     public void insertPosition(PositionDTO newPositionDTO){
 
+        System.out.println("DTO : "+newPositionDTO);
+
         Position newPosition = modelMapper.map(newPositionDTO, Position.class);
+
+        System.out.println("ENTITY : "+ newPosition);
 
         positionRepository.save(newPosition);
 
@@ -60,11 +66,9 @@ public class MemberService {
 
     }
 
-    public Optional<Member> findUser(String memberName){
-        System.out.println("여기는 오냐? 서비스 초입");
-        Optional<Member> member = memberRepository.findByMemberName(memberName);
+    public Optional<Member> findMember(String memberNo){
 
-        System.out.println("여기는 끝난곳 서비스");
+        Optional<Member> member = memberRepository.findByMemberNo(memberNo);
 
         /*
          * 별도의 검증 로직 작성
@@ -73,6 +77,7 @@ public class MemberService {
         return member;
     }
 
+    @Transactional
     public void insertDep(DepDTO newDepDTO) {
         Dep dep = modelMapper.map(newDepDTO, Dep.class);
 
@@ -81,4 +86,16 @@ public class MemberService {
     }
 
 
+    public PositionDTO findPositionByPositionNo(int rPositionNo) {
+        Position  rPosition =  positionRepository.findPositionByPositionNo(rPositionNo);
+        PositionDTO rPositionDTO = modelMapper.map(rPosition, PositionDTO.class);
+        return rPositionDTO;
+    }
+
+    public DepDTO findDepByDepNo(int rDepNo) {
+        Dep rDep = depRepository.findDepByDepNo(rDepNo);
+        DepDTO rDepDTO = modelMapper.map(rDep,DepDTO.class);
+
+        return rDepDTO;
+    }
 }

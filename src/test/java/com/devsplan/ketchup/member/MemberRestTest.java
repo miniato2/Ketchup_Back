@@ -4,15 +4,22 @@ package com.devsplan.ketchup.member;
 import com.devsplan.ketchup.common.Authority;
 import com.devsplan.ketchup.member.dto.DepDTO;
 import com.devsplan.ketchup.member.dto.MemberDTO;
+
 import com.devsplan.ketchup.member.dto.PositionDTO;
 import com.devsplan.ketchup.member.service.MemberService;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @SpringBootTest
@@ -26,7 +33,7 @@ public class MemberRestTest {
         return Stream.of(
                 Arguments.of(
                         new MemberDTO(
-                                1,
+                                "1",
                                 "이후영",
                                 "31558",
                                 "01032283158",
@@ -60,15 +67,15 @@ public class MemberRestTest {
     private static Stream<Arguments> getDep() {
         return Stream.of(
                 Arguments.of(
-                                new DepDTO(
-                                        1,
-                                        "개발팀",
-                                        "이후영",
-                                        15,
-                                        'Y'  // char로 수정
-                                )
+                        new DepDTO(
+                                1,
+                                "개발팀",
+                                "이후영",
+                                15,
+                                'Y'  // char로 수정
                         )
-                );
+                )
+        );
 
     }
 
@@ -76,16 +83,16 @@ public class MemberRestTest {
         return Stream.of(
                 Arguments.of(
 
-                                new PositionDTO(
-                                        1,
-                                        "팀장",
-                                        3,
-                                   Authority.LV1,
-                                        'Y'  // char로 수정
-                                )
-
+                        new PositionDTO(
+                                1,
+                                "팀장",
+                                3,
+                                Authority.LV1,
+                                'Y'  // char로 수정
                         )
-                );
+
+                )
+        );
     }
 
 
@@ -95,26 +102,28 @@ public class MemberRestTest {
     @MethodSource("getMember")
     void testInsertMember(MemberDTO member) {
         // given
+        // member 객체는 이미 getMember 메소드에서 생성된 값으로 주어집니다.
 
-
-        // then
-
+        // when
+        // memberService.insertMember(member)를 호출하고 예외 발생 여부를 확인합니다.
         Assertions.assertDoesNotThrow(
                 () -> {
-
+                    // 멤버 추가 로직 실행
                     memberService.insertMember(member);
                 },
                 "멤버 추가 중 예외가 발생했습니다."  // 예외 발생 시 메시지
         );
 
-
-
+        // then
+        // 추가적인 검증을 수행할 수 있습니다.
+        // 예를 들어, 멤버 추가 후 해당 멤버가 DB에 정상적으로 저장되었는지 확인할 수 있습니다.
+        // 예시: 멤버 번호(memberNo)를 이용하여 DB에서 멤버를 조회하여 검증하는 코드 등
     }
 
     @ParameterizedTest
     @MethodSource("getDep")
     void testInsertDep(DepDTO dep) {
-
+        // member 객체는 이미 getMember 메소드에서 생성된 값으로 주어집니
         Assertions.assertDoesNotThrow(
                 () -> {
 
@@ -130,19 +139,22 @@ public class MemberRestTest {
     @MethodSource("getPosition")
     void testInsertPosition(PositionDTO positionDTO) {
         // given
+        // member 객체는 이미 getMember 메소드에서 생성된 값으로 주어집니다.
 
-
-
-       //then
+        // when
+        // memberService.insertMember(member)를 호출하고 예외 발생 여부를 확인합니다.
         Assertions.assertDoesNotThrow(
                 () -> {
-
+                    // 멤버 추가 로직 실행
                     memberService.insertPosition(positionDTO);
                 },
-                "직급 추가 중 예외가 발생했습니다."
+                "멤버 추가 중 예외가 발생했습니다."  // 예외 발생 시 메시지
         );
 
-
+        // then
+        // 추가적인 검증을 수행할 수 있습니다.
+        // 예를 들어, 멤버 추가 후 해당 멤버가 DB에 정상적으로 저장되었는지 확인할 수 있습니다.
+        // 예시: 멤버 번호(memberNo)를 이용하여 DB에서 멤버를 조회하여 검증하는 코드 등
     }
 
 
