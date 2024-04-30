@@ -8,9 +8,6 @@ import lombok.Builder;
 @Builder(toBuilder = true)
 public class NoticeFile {
 
-    //
-    //
-
     @Id
     @Column(name = "notice_file_no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

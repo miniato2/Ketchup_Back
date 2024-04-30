@@ -144,6 +144,7 @@ public class BoardService {
         return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
     }
 
+    /* 부서 전체 게시물 목록조회(권한자-대표) */
     public Page<BoardDTO> selectAllBoards(Pageable pageable, String title) {
 
         try {

@@ -17,7 +17,6 @@ public class NoticeDTO {
 
     private int noticeNo;                        // 공지 번호
     private String memberNo;                     // 사번
-    private int positionLevel;                   // 직급
     private char noticeFix;                      // 고정 공지
     private String noticeTitle;                  // 공지 제목
     private List<NoticeFileDTO> noticeFiles;     // 공지 파일들
