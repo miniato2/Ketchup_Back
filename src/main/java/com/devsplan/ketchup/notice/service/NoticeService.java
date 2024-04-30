@@ -111,7 +111,7 @@ public class NoticeService {
 
     /* 공지사항 등록 */
     @Transactional
-    @PreAuthorize("hasAnyAuthority('ALL', 'LV2')")
+    @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
     public void insertNotice(NoticeDTO noticeDTO) {
         try {
             noticeDTO.setNoticeCreateDttm(new Timestamp(System.currentTimeMillis()));
@@ -127,7 +127,7 @@ public class NoticeService {
 
     /* 공지사항 등록(첨부파일) */
     @Transactional
-    @PreAuthorize("hasAnyAuthority('ALL', 'LV2')")
+    @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
     public void insertNoticeWithFile(NoticeDTO noticeDTO, List<MultipartFile> files) {
         try {
             noticeDTO.setNoticeCreateDttm(new Timestamp(System.currentTimeMillis()));
@@ -176,7 +176,7 @@ public class NoticeService {
 
     /* 공지사항 수정 */
     @Transactional
-    @PreAuthorize("hasAnyAuthority('ALL', 'LV2')")
+    @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
     public String updateNotice(int noticeNo, NoticeDTO noticeDTO, String memberNo) {
         try {
             Notice foundNotice = noticeRepository.findById(noticeNo).orElseThrow(IllegalArgumentException::new);
@@ -207,7 +207,7 @@ public class NoticeService {
 
     /* 공지사항 수정(첨부파일) */
     @Transactional
-    @PreAuthorize("hasAnyAuthority('ALL', 'LV2')")
+    @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
     public String updateNoticeWithFile(int noticeNo, NoticeDTO noticeDTO, List<MultipartFile> files, String memberNo) {
         try {
             Notice foundNotice = noticeRepository.findById(noticeNo).orElseThrow(IllegalArgumentException::new);
@@ -268,7 +268,7 @@ public class NoticeService {
 
     /* 공지사항 삭제 */
     @Transactional
-    @PreAuthorize("hasAnyAuthority('ALL', 'LV2')")
+    @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
     public void deleteNotice(int noticeNo, String memberNo) {
         Notice notice = noticeRepository.findById(noticeNo).orElseThrow(IllegalArgumentException::new);
 
