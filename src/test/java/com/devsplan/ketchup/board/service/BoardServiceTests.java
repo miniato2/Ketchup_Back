@@ -33,15 +33,10 @@ public class BoardServiceTests {
     @Autowired
     private BoardRepository boardRepository;
 
-    @Autowired
-    private FileUtils fileUtils;
-
     @DisplayName("자료실 게시물 등록")
     @Test
     void insertBoard() throws IOException {
         // given
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
         BoardDTO boardInfo = new BoardDTO();
         boardInfo.setMemberNo("2");
         boardInfo.setDepartmentNo(1);
@@ -59,8 +54,6 @@ public class BoardServiceTests {
     @Test
     void insertBoardWithFile() throws IOException {
         // given
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
         // 이미지 파일 가져오기
         InputStream inputStream = getClass().getResourceAsStream("/test.png");
         MultipartFile multipartFile = new MockMultipartFile("test.png", "test-img.png", "image/png", inputStream);
@@ -71,8 +64,6 @@ public class BoardServiceTests {
         boardInfo.setBoardTitle("title6");
         boardInfo.setBoardContent("content6");
         boardInfo.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
-//        boardInfo.setBoardCreateDttm(timestamp);
-//        boardInfo.setBoardFilePath(filePath);
 
         System.out.println("boardInfo : " + boardInfo);
 
@@ -130,9 +121,7 @@ public class BoardServiceTests {
     void updateBoard() {
         // given
         int boardNo = 2;
-        int memberNo = 2;
-
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String memberNo = "2";
 
         BoardDTO boardInfo = new BoardDTO();
         boardInfo.setBoardTitle("title1");
@@ -151,8 +140,7 @@ public class BoardServiceTests {
     void updateBoardWithFile() throws IOException {
         // given
         int boardNo = 15;
-        int memberNo = 5;
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String memberNo = "5";
         InputStream inputStream1 = getClass().getResourceAsStream("/test-img1.png");
         InputStream inputStream2 = getClass().getResourceAsStream("/test-img2.png");
 
@@ -180,7 +168,7 @@ public class BoardServiceTests {
     void deleteBoard() {
         // given
         int boardNo = 7;
-        int memberNo = 3;
+        String memberNo = "3";
 
         // when
         boardService.deleteBoard(boardNo, memberNo);

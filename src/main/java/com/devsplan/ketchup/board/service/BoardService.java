@@ -83,7 +83,7 @@ public class BoardService {
             Board savedBoard = modelMapper.map(boardDTO, Board.class);
 
             // 파일이 있으면 각 파일을 저장하고, BoardFile 엔티티를 생성하여 연결
-            if (files != null) {
+            if (files != null && !files.isEmpty()) {
                 for (MultipartFile file : files) {
                     String fileOriginName = UUID.randomUUID().toString().replace("-", "");
                     String fileName = file.getOriginalFilename();
@@ -114,8 +114,13 @@ public class BoardService {
                     BoardFile boardFile = modelMapper.map(boardFileDTO, BoardFile.class);
                     boardFileRepository.save(boardFile);
                 }
+
+                result.put("result", true);
+            } else {
+                // 파일이 없는 경우에 대한 처리
+                log.info("첨부 파일이 없습니다.");
+                result.put("result", false);
             }
-            result.put("result", true);
         } catch (Exception e) {
             log.error("첨부파일 등록 실패: " + e.getMessage());
             result.put("result", false);

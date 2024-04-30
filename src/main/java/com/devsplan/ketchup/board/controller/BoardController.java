@@ -1,28 +1,15 @@
 package com.devsplan.ketchup.board.controller;
 
-import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
-import com.devsplan.ketchup.auth.filter.JwtAuthorizationFilter;
 import com.devsplan.ketchup.board.dto.BoardDTO;
-import com.devsplan.ketchup.board.entity.Board;
-import com.devsplan.ketchup.board.entity.BoardFile;
 import com.devsplan.ketchup.board.service.BoardService;
-import com.devsplan.ketchup.common.AuthConstants;
 import com.devsplan.ketchup.common.Pagenation;
 import com.devsplan.ketchup.common.PagingButton;
 import com.devsplan.ketchup.common.ResponseDTO;
-import com.devsplan.ketchup.member.entity.Dep;
-import com.devsplan.ketchup.member.entity.Member;
-import com.devsplan.ketchup.member.service.MemberService;
-import com.devsplan.ketchup.util.FileUtils;
-import com.devsplan.ketchup.util.TokenUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,22 +19,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -56,19 +33,17 @@ import java.util.*;
 public class BoardController {
 
     private final BoardService boardService;
-    private final MemberService memberService;
 
     @Value("${jwt.key}")
     private String jwtSecret;
 
-    public BoardController(BoardService boardService, MemberService memberService){
+    public BoardController(BoardService boardService){
         this.boardService = boardService;
-        this.memberService = memberService;
     }
 
     /* 게시물 목록 조회(부서, 페이징) */
     @GetMapping
-    public ResponseEntity<ResponseDTO> selectBoardList(@PageableDefault(page = 0, size = 10, sort = "boardCreateDttm", direction = Sort.Direction.DESC) Pageable pageable
+    public ResponseEntity<ResponseDTO> selectBoardList(@PageableDefault(sort = "boardCreateDttm", direction = Sort.Direction.DESC) Pageable pageable
                                                         , @RequestParam(required = false) String title
                                                         , @RequestHeader("Authorization") String token) {
 
@@ -109,7 +84,7 @@ public class BoardController {
 
     /* 게시물 상세 조회 */
     @GetMapping("/{boardNo}")
-    public ResponseEntity<ResponseDTO> selectBoardDetail(@PathVariable("boardNo") int boardNo, @RequestHeader("Authorization") String token) throws IOException {
+    public ResponseEntity<ResponseDTO> selectBoardDetail(@PathVariable("boardNo") int boardNo, @RequestHeader("Authorization") String token) {
 
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -150,7 +125,7 @@ public class BoardController {
     /* 게시물 등록 */
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<ResponseDTO> insertBoard(@RequestPart("boardInfo") BoardDTO boardDTO
-                                                   , @RequestPart("files") List<MultipartFile> files
+                                                   , @RequestPart(required = false) List<MultipartFile> files
                                                    , @RequestHeader("Authorization") String token) throws IOException {
 
         // "Bearer " 이후의 토큰 값만 추출
@@ -171,11 +146,7 @@ public class BoardController {
 
         // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
         if (files != null && !files.isEmpty()) {
-            List<String> fileNames = new ArrayList<>();
-            for (MultipartFile file : files) {
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-                fileNames.add(fileName);
-            }
+
             boardService.insertBoardWithFile(boardDTO, files);
         } else {
             boardService.insertBoard(boardDTO);

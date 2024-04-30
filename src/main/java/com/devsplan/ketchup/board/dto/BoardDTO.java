@@ -35,37 +35,4 @@ public class BoardDTO {
         this.boardUpdateDttm = timestamp;
     }
 
-    public BoardDTO(int boardNo, String boardTitle, String boardContent, Timestamp boardCreateDttm) {
-        this.boardNo = boardNo;
-        this.boardTitle = boardTitle;
-        this.boardContent = boardContent;
-        this.boardCreateDttm = boardCreateDttm;
-    }
-    public BoardDTO(int boardNo, String boardTitle, List<BoardFileDTO> boardFiles, String boardContent, Timestamp boardCreateDttm) {
-        this.boardNo = boardNo;
-        this.boardTitle = boardTitle;
-        this.boardFiles = boardFiles;
-        this.boardContent = boardContent;
-        this.boardCreateDttm = boardCreateDttm;
-    }
-
-
-    public BoardDTO(int boardNo, String memberNo, int departmentNo, String boardTitle, String boardContent, Timestamp boardCreateDttm, String boardFilePath) {
-        this.boardNo = boardNo;
-        this.memberNo = memberNo;
-        this.departmentNo = departmentNo;
-        this.boardTitle = boardTitle;
-        this.boardContent = boardContent;
-        this.boardCreateDttm = boardCreateDttm;
-        this.boardFilePath = boardFilePath;
-    }
-    public BoardDTO(int boardNo, String memberNo, int departmentNo, String boardTitle, List<BoardFileDTO> boardFiles, String boardContent, Timestamp boardCreateDttm) {
-        this.boardNo = boardNo;
-        this.memberNo = memberNo;
-        this.departmentNo = departmentNo;
-        this.boardTitle = boardTitle;
-        this.boardFiles = boardFiles;
-        this.boardContent = boardContent;
-        this.boardCreateDttm = boardCreateDttm;
-    }
 }
