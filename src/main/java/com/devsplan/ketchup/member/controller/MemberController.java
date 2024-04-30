@@ -9,9 +9,7 @@ import com.devsplan.ketchup.member.dto.PositionDTO;
 import com.devsplan.ketchup.member.repository.MemberRepository;
 import com.devsplan.ketchup.member.service.MemberService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class MemberController {
@@ -70,6 +68,18 @@ public class MemberController {
     public String signupPosition(@RequestBody PositionDTO positionDTO){
 
         memberService.insertPosition(positionDTO);
+
+
+        return "Position save!";
+
+
+    }
+
+    @PutMapping ("/signupPosition/{positionNo}")
+    public String updatePosition(@PathVariable int positionNo, @RequestBody PositionDTO positionDTO){
+
+        positionDTO.setPositionNo(positionNo);
+        memberService.updatePosition(positionDTO);
 
 
         return "Position save!";

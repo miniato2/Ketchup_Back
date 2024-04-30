@@ -95,6 +95,22 @@ public class MemberRestTest {
         );
     }
 
+    private static Stream<Arguments> getUpdatePosition() {
+        return Stream.of(
+                Arguments.of(
+
+                        new PositionDTO(
+                                1,
+                                "사원",
+                                3,
+                                Authority.LV1,
+                                'Y'  // char로 수정
+                        )
+
+                )
+        );
+    }
+
 
 
 
@@ -144,6 +160,28 @@ public class MemberRestTest {
                 () -> {
                     // 멤버 추가 로직 실행
                     memberService.insertPosition(positionDTO);
+                },
+                "멤버 추가 중 예외가 발생했습니다."  // 예외 발생 시 메시지
+        );
+
+
+    }
+
+
+
+
+    @ParameterizedTest
+    @MethodSource("getUpdatePosition")
+    void testUpdatePosition(PositionDTO positionDTO) {
+        // given
+        // member 객체는 이미 getMember 메소드에서 생성된 값으로 주어집니다.
+
+        // when
+        // memberService.insertMember(member)를 호출하고 예외 발생 여부를 확인합니다.
+        Assertions.assertDoesNotThrow(
+                () -> {
+                    // 멤버 추가 로직 실행
+                    memberService.updatePosition(positionDTO);
                 },
                 "멤버 추가 중 예외가 발생했습니다."  // 예외 발생 시 메시지
         );
