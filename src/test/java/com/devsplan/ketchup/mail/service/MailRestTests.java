@@ -22,25 +22,22 @@ public class MailRestTests {
     void insertMail() throws IOException {
         // given
         MailDTO newMail = new MailDTO(
-                240429002,
-                "3[자료 요청] 1분기 실적보고서 내 영업실 데이터",
-                "3지난번 공유주신 1분기 실적보고서는 잘 받았습니다. 리포터에 산입하신 영업팀의 지난분기 계약 및 실적 데이터 전달을 부탁드리겠습니다.",
-                'N',
-                'N'
+                "[자료 요청] 1분기 실적보고서 내 영업실 데이터",
+                "테스트 메일1"
         );
 
         int mailNo = mailService.insertMail(newMail);
 
         ReceiverDTO receiverInfo1 = new ReceiverDTO(
                 mailNo,
-                240429001,
+                "2",
                 null,
                 'N'
         );
 
         ReceiverDTO receiverInfo2 = new ReceiverDTO(
                 mailNo,
-                240429003,
+                "3",
                 null,
                 'N'
         );
@@ -57,7 +54,7 @@ public class MailRestTests {
     @Test
     void selectSendMailList() {
         // given
-        int senderTest = 240429002;
+        String senderTest = "1";
 
         // when
         List<MailDTO> mailList = mailService.selectSendMailList(senderTest);
@@ -73,7 +70,7 @@ public class MailRestTests {
     @Test
     void selectReceiveMailList() {
         // given
-        int receiverTest = 240429003;
+        String receiverTest = "2";
 
         // when
         List<MailDTO> mailList = mailService.selectReceiveMailList(receiverTest);

@@ -10,7 +10,7 @@ import java.util.List;
 @ToString
 public class MailDTO {
     private int mailNo;                     // 메일 번호
-    private int senderMem;                  // 발신자 사원 번호
+    private String senderMem;                  // 발신자 사원 번호
     private String mailTitle;               // 메일 제목
     private String mailContent;             // 메일 내용
     private Timestamp sendMailTime;         // 보낸 메일 시간
@@ -22,7 +22,18 @@ public class MailDTO {
     public MailDTO() {
     }
 
-    public MailDTO(int senderMem, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
+    public MailDTO(String mailTitle, String mailContent) {
+        this.mailTitle = mailTitle;
+        this.mailContent = mailContent;
+    }
+
+    public MailDTO(String mailTitle, String mailContent, List<ReceiverDTO> receivers) {
+        this.mailTitle = mailTitle;
+        this.mailContent = mailContent;
+        this.receivers = receivers;
+    }
+
+    public MailDTO(String senderMem, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
         this.senderMem = senderMem;
         this.mailTitle = mailTitle;
         this.mailContent = mailContent;
@@ -30,7 +41,7 @@ public class MailDTO {
         this.sendDelStatus = sendDelStatus;
     }
 
-    public MailDTO(int mailNo, int senderMem, String mailTitle, String mailContent, Timestamp sendMailTime, char sendCancelStatus, char sendDelStatus) {
+    public MailDTO(int mailNo, String senderMem, String mailTitle, String mailContent, Timestamp sendMailTime, char sendCancelStatus, char sendDelStatus) {
         this.mailNo = mailNo;
         this.senderMem = senderMem;
         this.mailTitle = mailTitle;
@@ -38,5 +49,16 @@ public class MailDTO {
         this.sendMailTime = sendMailTime;
         this.sendCancelStatus = sendCancelStatus;
         this.sendDelStatus = sendDelStatus;
+    }
+
+    public MailDTO(int mailNo, String senderMem, String mailTitle, String mailContent, Timestamp sendMailTime, char sendCancelStatus, char sendDelStatus, List<ReceiverDTO> receivers) {
+        this.mailNo = mailNo;
+        this.senderMem = senderMem;
+        this.mailTitle = mailTitle;
+        this.mailContent = mailContent;
+        this.sendMailTime = sendMailTime;
+        this.sendCancelStatus = sendCancelStatus;
+        this.sendDelStatus = sendDelStatus;
+        this.receivers = receivers;
     }
 }

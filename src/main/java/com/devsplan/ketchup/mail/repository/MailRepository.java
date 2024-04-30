@@ -10,8 +10,8 @@ import java.util.List;
 
 @Repository
 public interface MailRepository extends JpaRepository<Mail, Integer> {
-    @Query("SELECT m FROM Mail m WHERE m.senderMem = :senderMem and m.sendDelStatus = 'N'")
-    List<Mail> findBySenderMem(int senderMem);
+    @Query("SELECT m FROM Mail m JOIN Receiver r ON m.mailNo = r.mailNo WHERE m.senderMem = :senderMem and m.sendDelStatus = 'N'")
+    List<Mail> findBySenderMem(String senderMem);
 
     Mail findByMailNo(int i);
 
