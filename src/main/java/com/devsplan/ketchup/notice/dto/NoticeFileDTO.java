@@ -23,5 +23,4 @@ public class NoticeFileDTO {
 
     public NoticeFileDTO() {
     }
-    ////
 }

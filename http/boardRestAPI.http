@@ -1,7 +1,7 @@
-### 전체 목록조회 / 제목 검색 / 사원 부서
+### 전체 목록조회
 GET http://localhost:8080/boards
 
-### 전체 목록조회 / 제목 검색 / 검색조회
+### 전체 목록조회 / 제목 검색
 GET http://localhost:8080/boards?title="게시글"
 Authorization: Bearer eyJkYXRlIjoxNzE0Mzk4MzEyNDc2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0NDg0NzEyfQ.aKblxmCCZ0RPaGYZMMdhht0130M5WQPrdvcRtWhkm3I
 
