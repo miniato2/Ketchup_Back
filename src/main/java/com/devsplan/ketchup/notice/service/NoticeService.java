@@ -1,9 +1,7 @@
 package com.devsplan.ketchup.notice.service;
 
-import com.devsplan.ketchup.board.dto.BoardDTO;
-import com.devsplan.ketchup.board.dto.BoardFileDTO;
-import com.devsplan.ketchup.board.entity.Board;
-import com.devsplan.ketchup.board.entity.BoardFile;
+import com.devsplan.ketchup.member.entity.Member;
+import com.devsplan.ketchup.member.entity.Position;
 import com.devsplan.ketchup.notice.dto.NoticeDTO;
 import com.devsplan.ketchup.notice.dto.NoticeFileDTO;
 import com.devsplan.ketchup.notice.entity.Notice;
@@ -23,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.nio.file.NoSuchFileException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,30 +51,33 @@ public class NoticeService {
         pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() - 1,
                 pageable.getPageSize(), Sort.by("noticeNo").descending());
 
+        System.out.println("title : " + title);
+        // 상단에 고정된 공지사항 조회
         Page<Notice> fixedNoticeList = noticeRepository.findByNoticeFix(pageable, 'Y');
 
-        Page<Notice> unfixedNoticeList;
+        List<NoticeDTO> mergedList = new ArrayList<>();
 
-        if(title != null && !title.isEmpty()) {
-            unfixedNoticeList = noticeRepository.findByNoticeTitleContaining(pageable, title);
-            log.info("unfixedNoticeList : " + unfixedNoticeList);
-
-        } else {
-            unfixedNoticeList = noticeRepository.findAll(pageable);
-            log.info("unfixedNoticeList : " + unfixedNoticeList);
+        // 상단에 고정된 공지사항이 있으면 추가
+        if (!fixedNoticeList.isEmpty()) {
+            mergedList.addAll(fixedNoticeList.stream().map(notice -> modelMapper.map(notice, NoticeDTO.class)).toList());
         }
 
-        // 상단에 고정된 공지사항과 그렇지 않은 공지사항을 합쳐서 반환
-        List<NoticeDTO> mergedList = new ArrayList<>();
-        mergedList.addAll(fixedNoticeList.stream().map(notice -> modelMapper.map(notice, NoticeDTO.class)).toList());
-        mergedList.addAll(unfixedNoticeList.stream().map(notice -> modelMapper.map(notice, NoticeDTO.class)).toList());
+        // 검색어가 있으면 해당 공지사항 조회
+        if (title != null && !title.isEmpty()) {
+            String formattedTitle = "%" + title + "%"; // 검색어를 포함하는 제목을 찾기 위해 like 연산자 사용
+            Page<Notice> searchedNoticeList = noticeRepository.findByNoticeTitleContaining(formattedTitle, pageable);
+            mergedList.addAll(searchedNoticeList.stream().map(notice -> modelMapper.map(notice, NoticeDTO.class)).toList());
+            log.info("searchedNoticeList : " + searchedNoticeList);
+        } else {
+            // 검색어가 없으면 전체 공지사항 조회
+            Page<Notice> allNoticeList = noticeRepository.findAll(pageable);
+            mergedList.addAll(allNoticeList.stream().map(notice -> modelMapper.map(notice, NoticeDTO.class)).toList());
+            log.info("allNoticeList : " + allNoticeList);
+        }
 
         log.info("mergedList : " + mergedList);
 
-        if (title == null || title.isEmpty() && mergedList.isEmpty()) {
-            System.out.println("현재 공지가 없습니다.");
-        }
-
+        // 합쳐진 리스트를 페이지로 변환하여 반환
         return new PageImpl<>(mergedList, pageable, mergedList.size());
     }
 
@@ -112,9 +114,10 @@ public class NoticeService {
     /* 공지사항 등록 */
     @Transactional
     @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
-    public void insertNotice(NoticeDTO noticeDTO) {
+    public void insertNotice(NoticeDTO noticeDTO, String memberNo) {
         try {
             noticeDTO.setNoticeCreateDttm(new Timestamp(System.currentTimeMillis()));
+            noticeDTO.setMemberNo(memberNo);
             Notice notice = modelMapper.map(noticeDTO, Notice.class);
 
             noticeRepository.save(notice);
@@ -128,9 +131,10 @@ public class NoticeService {
     /* 공지사항 등록(첨부파일) */
     @Transactional
     @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
-    public void insertNoticeWithFile(NoticeDTO noticeDTO, List<MultipartFile> files) {
+    public void insertNoticeWithFile(NoticeDTO noticeDTO, List<MultipartFile> files, String memberNo) {
         try {
             noticeDTO.setNoticeCreateDttm(new Timestamp(System.currentTimeMillis()));
+            noticeDTO.setMemberNo(memberNo);
             Notice savedNotice = modelMapper.map(noticeDTO, Notice.class);
 
             if (files != null && !files.isEmpty()) {
@@ -202,7 +206,6 @@ public class NoticeService {
             log.error("공지 수정 중 오류 발생: " + e.getMessage(), e);
             return "공지 수정 중 오류가 발생했습니다.";
         }
-
     }
 
     /* 공지사항 수정(첨부파일) */
@@ -269,7 +272,7 @@ public class NoticeService {
     /* 공지사항 삭제 */
     @Transactional
     @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
-    public void deleteNotice(int noticeNo, String memberNo) {
+    public boolean deleteNotice(int noticeNo, String memberNo) throws NoSuchFileException {
         Notice notice = noticeRepository.findById(noticeNo).orElseThrow(IllegalArgumentException::new);
 
         if(!notice.getMemberNo().equals(memberNo)) {
@@ -280,22 +283,21 @@ public class NoticeService {
         for(NoticeFile noticeFile : noticeFiles) {
             String filePath = noticeFile.getNoticeFilePath();
 
+            // 파일이 이미 삭제된 경우에 대한 예외처리 추가
             boolean isFileDeleted = FileUtils.deleteFile(IMAGE_DIR, FilenameUtils.getName(filePath));
-
-            if(!isFileDeleted) {
+            if (!isFileDeleted) {
                 log.error(filePath, "파일 삭제에 실패했습니다.");
             }
             noticeFileRepository.delete(noticeFile);
         }
 
         noticeRepository.delete(notice);
+        return true;
     }
 
-    /* 삭제 여부 test 확인용 */
+    /* 수정, 삭제 여부 test 확인용 */
     public void getNoticeById(int noticeNo) throws ChangeSetPersister.NotFoundException {
         noticeRepository.findById(noticeNo).orElseThrow(ChangeSetPersister.NotFoundException::new);
     }
-
-
 
 }

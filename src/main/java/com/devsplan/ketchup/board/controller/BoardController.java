@@ -121,39 +121,51 @@ public class BoardController {
         }
     }
 
-
     /* 게시물 등록 */
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<ResponseDTO> insertBoard(@RequestPart("boardInfo") BoardDTO boardDTO
                                                    , @RequestPart(required = false) List<MultipartFile> files
                                                    , @RequestHeader("Authorization") String token) throws IOException {
+        try{
+            // "Bearer " 이후의 토큰 값만 추출
+            String jwtToken = token.substring(7);
 
-        // "Bearer " 이후의 토큰 값만 추출
-        String jwtToken = token.substring(7);
+            // 토큰 파싱하여 클레임 추출
+            Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
 
-        // 토큰 파싱하여 클레임 추출
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
+            // 클레임에서 depNo 추출
+            String memberNo = claims.get("memberNo", String.class);
+            Integer depNo = claims.get("depNo", Integer.class);
 
-        // 클레임에서 depNo 추출
-        String memberNo = claims.get("memberNo", String.class);
-        Integer depNo = claims.get("depNo", Integer.class);
+            System.out.println("memberNo : " + memberNo);
+            System.out.println("depNo : " + depNo);
 
-        System.out.println("memberNo : " + memberNo);
-        System.out.println("depNo : " + depNo);
+            boardDTO.setMemberNo(memberNo);
+            boardDTO.setDepartmentNo(depNo);
 
-        boardDTO.setMemberNo(memberNo);
-        boardDTO.setDepartmentNo(depNo);
+            // 게시물 등록 요청한 회원의 부서 번호와 게시물에 등록하려는 부서 번호가 일치하는지 확인
+            if (boardDTO.getDepartmentNo() != depNo) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ResponseDTO(HttpStatus.FORBIDDEN, "해당 부서의 게시물만 등록할 수 있습니다.", null));
+            }
 
-        // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
-        if (files != null && !files.isEmpty()) {
+            // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
+            if (files != null && !files.isEmpty()) {
 
-            boardService.insertBoardWithFile(boardDTO, files);
-        } else {
-            boardService.insertBoard(boardDTO);
+                boardService.insertBoardWithFile(boardDTO, files);
+            } else {
+                boardService.insertBoard(boardDTO);
+            }
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시물 등록 성공", null));
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
+        } catch (JwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("유효하지 않은 토큰입니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
         }
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시물 등록 성공", null));
-
 
     }
 

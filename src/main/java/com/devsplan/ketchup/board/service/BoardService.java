@@ -186,7 +186,6 @@ public class BoardService {
         boardDTO.setBoardFiles(boardFileDTOs);
 
         return boardDTO;
-
     }
 
     public List<BoardFile> findBoardFilesByBoardNo(int boardNo) {

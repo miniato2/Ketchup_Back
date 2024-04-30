@@ -25,7 +25,6 @@ public class NoticeDTO {
     private Timestamp noticeUpdateDttm;          // 공지 수정일시
     private String noticeFilePath;               // 공지 파일 경로
 
-
     public NoticeDTO(int noticeNo, String memberNo, char noticeFix, String noticeTitle, String noticeContent, Timestamp noticeCreateDttm, String noticeFilePath) {
         this.noticeNo = noticeNo;
         this.memberNo = memberNo;
@@ -46,7 +45,6 @@ public class NoticeDTO {
         this.noticeCreateDttm = noticeCreateDttm;
         this.noticeFilePath = noticeFilePath;
     }
-
 
     public NoticeDTO(int noticeNo, String memberNo, char noticeFix, String noticeTitle, List<NoticeFileDTO> noticeFiles, String noticeContent, Timestamp noticeUpdateDttm, String noticeFilePath) {
         this.noticeNo = noticeNo;

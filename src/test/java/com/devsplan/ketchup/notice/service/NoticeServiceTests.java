@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.NoSuchFileException;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -60,8 +61,8 @@ public class NoticeServiceTests {
     @WithMockUser(username="김현지", authorities={"LV2"})
     void insertNotice() {
         // given
+        String memberNo = "5";
         NoticeDTO noticeDTO = new NoticeDTO();
-        noticeDTO.setMemberNo("5");
         noticeDTO.setNoticeTitle("공지 제목5");
         noticeDTO.setNoticeContent("공지 내용5");
         noticeDTO.setNoticeFix('N');
@@ -69,7 +70,7 @@ public class NoticeServiceTests {
         // when
         // then
         Assertions.assertDoesNotThrow(
-                () -> noticeService.insertNotice(noticeDTO)
+                () -> noticeService.insertNotice(noticeDTO, memberNo)
         );
     }
 
@@ -81,8 +82,8 @@ public class NoticeServiceTests {
         InputStream inputStream = getClass().getResourceAsStream("/test3.text");
         MultipartFile multipartFile = new MockMultipartFile("test3", "test3-text.text", "text/text", inputStream);
 
+        String memberNo = "5";
         NoticeDTO noticeDTO = new NoticeDTO();
-        noticeDTO.setMemberNo("5");
         noticeDTO.setNoticeTitle("공지 제목8");
         noticeDTO.setNoticeContent("공지 내용8");
         noticeDTO.setNoticeFix('N');
@@ -93,7 +94,7 @@ public class NoticeServiceTests {
 
         // then
         Assertions.assertDoesNotThrow(
-                () -> noticeService.insertNoticeWithFile(noticeDTO, files)
+                () -> noticeService.insertNoticeWithFile(noticeDTO, files, memberNo)
         );
     }
 
@@ -148,7 +149,7 @@ public class NoticeServiceTests {
     @DisplayName("공지 삭제")
     @Test
     @WithMockUser(username="김현지", authorities={"LV2"})
-    void deleteNotice() {
+    void deleteNotice() throws NoSuchFileException {
         // given
         int noticeNo = 3;
         String memberNo = "5";
