@@ -26,17 +26,19 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UsernamePasswordAuthenticationToken loginToken = (UsernamePasswordAuthenticationToken) authentication;
 
-        String id = loginToken.getName();  //로그인 토근에서 이름을 꺼낸다
-        String pass = (String) loginToken.getCredentials(); //로그인 토큰에서 비밀번호를 꺼내는데 object 타입이라 다운캐스팅 필요.
+        String memberNo = loginToken.getName();  //로그인 토근에서 이름을 꺼낸다
+        String memberPW = (String) loginToken.getCredentials(); //로그인 토큰에서 비밀번호를 꺼내는데 object 타입이라 다운캐스팅 필요.
 
-        DetailsMember detailsMember = (DetailsMember) detailsService.loadUserByUsername(id); // 아이디로 해당 유저가있는지 찾아오고
+        System.out.println(authentication.toString());
+
+        DetailsMember detailsMember = (DetailsMember) detailsService.loadUserByUsername(memberNo); // 아이디로 해당 유저가있는지 찾아오고
         //그정보를 유저정보로 저장
 
-        if(!passwordEncoder.matches(pass, detailsMember.getPassword())) {
-            throw new BadCredentialsException(pass + "는 틀린 비밀번호입니다.");
+        if(!passwordEncoder.matches(memberPW, detailsMember.getPassword())) {
+            throw new BadCredentialsException(memberPW + "는 틀린 비밀번호입니다.");
         }
         //문제없으니 로그인 토큰 주자 ,유저정보,비밀번호 정보,권한정보를 이용해 토큰을 만들어주자.
-        return new UsernamePasswordAuthenticationToken(detailsMember, pass, detailsMember.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(detailsMember, memberPW, detailsMember.getAuthorities());
 
     }
 

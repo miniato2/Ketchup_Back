@@ -18,7 +18,26 @@ public class RefLine {
     @Column(name = "APPROVAL_NO", nullable = false)
     private int approvalNo;
     @Column(name = "MEMBER_NO", nullable = false)
-    private int refMemberNo;
+    private String memberNo;
 
     protected RefLine(){}
+
+    public RefLine refLineNo(int refLineNo){
+        this.refLineNo = refLineNo;
+        return this;
+    }
+
+    public RefLine approvalNo(int approvalNo){
+        this.approvalNo = approvalNo;
+        return this;
+    }
+
+    public RefLine memberNo(String memberNo){
+        this.memberNo = memberNo;
+        return this;
+    }
+
+    public RefLine build(){
+        return new RefLine(refLineNo, approvalNo, memberNo);
+    }
 }

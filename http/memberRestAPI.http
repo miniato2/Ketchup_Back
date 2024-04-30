@@ -1,4 +1,4 @@
-### 부서등록
+### 부서등록 개발팀
 POST http://localhost:8080/signupDep
 Content-Type: application/json
 Accept: */*
@@ -13,21 +13,109 @@ Accept: */*
 
 }
 
-### 직급등록
+### 부서등록 인사팀
+POST http://localhost:8080/signupDep
+Content-Type: application/json
+Accept: */*
+
+{
+  "depNo":  2,
+  "depName": "인사팀",
+  "leader":  "박다은",
+  "number": 15,
+  "status": "Y"
+
+
+}
+
+### 부서등록 기획팀
+POST http://localhost:8080/signupDep
+Content-Type: application/json
+Accept: */*
+
+{
+  "depNo":  3,
+  "depName": "기획팀",
+  "leader":  "이진우",
+  "number": 15,
+  "status": "Y"
+
+
+}
+
+### 부서등록 회계팀
+POST http://localhost:8080/signupDep
+Content-Type: application/json
+Accept: */*
+
+{
+  "depNo":  4,
+  "depName": "회계팀",
+  "leader":  "최승욱",
+  "number": 15,
+  "status": "Y"
+
+
+}
+
+### 부서등록 법무팀
+POST http://localhost:8080/signupDep
+Content-Type: application/json
+Accept: */*
+
+{
+  "depNo":  5,
+  "depName": "법무팀",
+  "leader":  "김현지",
+  "number": 15,
+  "status": "Y"
+
+
+}
+
+### 직급등록 사원
 POST http://localhost:8080/signupPosition
 Content-Type: application/json
 Accept: */*
 
 {
   "positionNo":  1,
-  "positionName": "개발팀",
+  "positionName": "직원",
   "positionLevel":  1,
   "authority": "LV1",
   "positionStatus": "Y"
 
 }
 
-### 회원가입
+### 직급등록 팀장
+POST http://localhost:8080/signupPosition
+Content-Type: application/json
+Accept: */*
+
+{
+  "positionNo":  2,
+  "positionName": "팀장",
+  "positionLevel":  2,
+  "authority": "LV2",
+  "positionStatus": "Y"
+
+}
+
+### 직급등록 대표
+POST http://localhost:8080/signupPosition
+Content-Type: application/json
+Accept: */*
+
+{
+  "positionNo":  3,
+  "positionName": "대표",
+  "positionLevel":  3,
+  "authority": "LV3",
+  "positionStatus": "Y"
+
+}
+
+### 사원가입 이후영
 POST http://localhost:8080/signup
 Content-Type: application/json
 Accept: */*
@@ -49,6 +137,95 @@ Accept: */*
   "imgUrl" : "imgUrl"
 }
 
+### 사원가입 박다은
+POST http://localhost:8080/signup
+Content-Type: application/json
+Accept: */*
+
+{
+  "memberNo": "2",
+  "memberName": "박다은",
+  "memberPW" : "2222",
+  "phone": "010-2222-2222",
+  "birthDate": "2222-12-22",
+  "gender": "F",
+  "address" : "지구어딘가",
+  "privateEmail" : "22222222@naver.com",
+  "companyEmail" : "22222222@ketchup.com",
+  "department" : 2,
+  "position" : 2,
+  "account" : "29345876239485",
+  "status" : "재직중",
+  "imgUrl" : "imgUrl"
+}
+
+
+### 사원가입 이진우
+POST http://localhost:8080/signup
+Content-Type: application/json
+Accept: */*
+
+{
+  "memberNo": "3",
+  "memberName": "이진우",
+  "memberPW" : "3333",
+  "phone": "010-3333-3333",
+  "birthDate": "3333-33-33",
+  "gender": "M",
+  "address" : "지구어딘가",
+  "privateEmail" : "33333333@naver.com",
+  "companyEmail" : "33333333@ketchup.com",
+  "department" : 3,
+  "position" : 3,
+  "account" : "29345876239485",
+  "status" : "재직중",
+  "imgUrl" : "imgUrl"
+}
+
+### 사원가입 최승욱
+POST http://localhost:8080/signup
+Content-Type: application/json
+Accept: */*
+
+{
+  "memberNo": "4",
+  "memberName": "최승욱",
+  "memberPW" : "4444",
+  "phone": "010-4444-4444",
+  "birthDate": "4444-44-44",
+  "gender": "M",
+  "address" : "지구어딘가",
+  "privateEmail" : "44444444@naver.com",
+  "companyEmail" : "44444444@ketchup.com",
+  "department" : 4,
+  "position" : 2,
+  "account" : "29345876239485",
+  "status" : "재직중",
+  "imgUrl" : "imgUrl"
+}
+
+### 사원가입 김현지
+POST http://localhost:8080/signup
+Content-Type: application/json
+Accept: */*
+
+{
+  "memberNo": "5",
+  "memberName": "김현지",
+  "memberPW" : "5555",
+  "phone": "010-5555-5555",
+  "birthDate": "5555-55-55",
+  "gender": "F",
+  "address" : "지구어딘가",
+  "privateEmail" : "555555555@naver.com",
+  "companyEmail" : "55555555@ketchup.com",
+  "department" : 5,
+  "position" : 2,
+  "account" : "29345876239485",
+  "status" : "재직중",
+  "imgUrl" : "imgUrl"
+}
+
 
 ### 로그인
 POST http://localhost:8080/login
@@ -56,14 +233,14 @@ Content-Type: application/json
 Accept: */*
 
 {
-  "memberNo": "1",
-  "memberPW": "3158"
+  "memberNo": "3",
+  "memberPW": "3333"
 }
 
 ### GET 요청
 GET http://localhost:8080/test
 Content-Type: application/json
-Authorization: Bearer eyJkYXRlIjoxNzE0Mzc1OTY4MjkwLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLqsJzrsJztjIAiLCJtZW1iZXJObyI6IjEiLCJwb3NpdGlvbkxldmVsIjoxLCJzdWIiOiJrZXRjaHVwIHRva2VuIDogMSIsInJvbGUiOiJMVjEiLCJwb3NpdGlvblN0YXR1cyI6IlkiLCJwb3NpdGlvbk5vIjoxLCJleHAiOjE3MTQ0NjIzNjh9.KGqyi9M-7Rs4X0oCBZpAF9rGstz7RPxY_QB6gd_hpuY
+Authorization: Bearer eyJkYXRlIjoxNzE0NDQ2NjY3Mjg0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MywiZXhwIjoxNzE0NTMzMDY3fQ.VLF7FjAx9jilQOtu_jdNlqvhDMQtnRtwedUYBO0q690
 
 
 
@@ -73,7 +250,21 @@ Authorization: Bearer eyJkYXRlIjoxNzE0Mzc1OTY4MjkwLCJ0eXBlIjoiand0IiwiYWxnIjoiSF
 ### POST 요청
 POST http://localhost:8080/test2
 Content-Type: application/json
-Authorization: BEARER eyJkYXRlIjoxNzE0MzY5MDUxNTk4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLqsJzrsJztjIAiLCJtZW1iZXJObyI6IjEiLCJwb3NpdGlvbkxldmVsIjoxLCJzdWIiOiJrZXRjaHVwIHRva2VuIDogMSIsInJvbGUiOiJMVjEiLCJwb3NpdGlvblN0YXR1cyI6IlkiLCJwb3NpdGlvbk5vIjoxLCJleHAiOjE3MTQ0NTU0NTF9.VPmNDXXCYrnB0j8H9Y4sygAuDXLnts81W7D3-BtuAcM
+Authorization: Bearer eyJkYXRlIjoxNzE0NDQ2MDU5NjUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYxLExWMixMVjMiLCJwb3NpdGlvblN0YXR1cyI6IlkiLCJwb3NpdGlvbk5vIjozLCJleHAiOjE3MTQ1MzI0NTl9.CpzSPq063B3bhrjr00qfQt58N7H8-uMQfdt76hpMDuE
 
 
 
+### 사원 권한 수정
+PUT http://localhost:8080/signupPosition/3
+Content-Type: application/json
+Accept: */*
+Authorization: Bearer eyJkYXRlIjoxNzE0NDQ2NjY3Mjg0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MywiZXhwIjoxNzE0NTMzMDY3fQ.VLF7FjAx9jilQOtu_jdNlqvhDMQtnRtwedUYBO0q690
+
+{
+
+  "positionName": "사원",
+  "positionLevel":  1,
+  "authority": "LV1",
+  "positionStatus": "Y"
+
+}

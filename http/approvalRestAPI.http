@@ -2,5 +2,38 @@
 POST http://localhost:8080/approvals
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 Accept: */*
+Authorization: BEARER eyJkYXRlIjoxNzE0MzY5MDUxNTk4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLqsJzrsJztjIAiLCJtZW1iZXJObyI6IjEiLCJwb3NpdGlvbkxldmVsIjoxLCJzdWIiOiJrZXRjaHVwIHRva2VuIDogMSIsInJvbGUiOiJMVjEiLCJwb3NpdGlvblN0YXR1cyI6IlkiLCJwb3NpdGlvbk5vIjoxLCJleHAiOjE3MTQ0NTU0NTF9.VPmNDXXCYrnB0j8H9Y4sygAuDXLnts81W7D3-BtuAcM
 
-###
+--WebAppBoundary
+Content-Disposition: form-data; name="memberNo"
+
+1
+--WebAppBoundary
+Content-Disposition: form-data; name="formNo"
+
+1
+--WebAppBoundary
+Content-Disposition: form-data; name="appTitle"
+
+제목
+--WebAppBoundary
+Content-Disposition: form-data; name="appContents"
+
+내용
+--WebAppBoundary
+Content-Disposition: form-data; name="appLineDTOList[0].almemberNo"
+
+2
+--WebAppBoundary
+Content-Disposition: form-data; name="appLineDTOList[0].alSequence"
+
+1
+--WebAppBoundary
+Content-Disposition: form-data; name="appLineDTOList[0].alType"
+
+일반
+--WebAppBoundary
+Content-Disposition: form-data; name="refLineDTOList[0].refmemberNo"
+
+3
+--WebAppBoundary--

@@ -19,12 +19,6 @@ import java.nio.file.StandardCopyOption;
 @Component
 public class FileUtils {
 
-//    private final String IMAGE_DIR;
-//
-//    public FileUtils(@Value("${image.image-dir}") String imageDir) {
-//        this.IMAGE_DIR = imageDir;
-//    }
-
     public static String saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
 
         Path uploadPath = Paths.get(uploadDir); // 상대경로- src외부에도 파일이 함께 저장됨
@@ -48,10 +42,6 @@ public class FileUtils {
         return replaceFileName;
     }
 
-    // 파일 경로 반환
-    public static Path downloadFilePath(String uploadDir, String fileName) {
-        return Paths.get(uploadDir).resolve(fileName);
-    }
 
     /* 파일 삭제 메서드 */
     public boolean deleteFile(String filePath) {

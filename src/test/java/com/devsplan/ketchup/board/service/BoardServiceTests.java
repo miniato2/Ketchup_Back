@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -32,22 +33,16 @@ public class BoardServiceTests {
     @Autowired
     private BoardRepository boardRepository;
 
-    @Autowired
-    private FileUtils fileUtils;
-
     @DisplayName("자료실 게시물 등록")
     @Test
     void insertBoard() throws IOException {
         // given
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
         BoardDTO boardInfo = new BoardDTO();
-        boardInfo.setMemberNo(2);
+        boardInfo.setMemberNo("2");
         boardInfo.setDepartmentNo(1);
         boardInfo.setBoardTitle("title1");
         boardInfo.setBoardContent("content1");
-        boardInfo.setBoardCreateDttm(timestamp);
-
+        boardInfo.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
         //when
         String result = boardService.insertBoard(boardInfo);
 
@@ -59,19 +54,16 @@ public class BoardServiceTests {
     @Test
     void insertBoardWithFile() throws IOException {
         // given
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
         // 이미지 파일 가져오기
         InputStream inputStream = getClass().getResourceAsStream("/test.png");
         MultipartFile multipartFile = new MockMultipartFile("test.png", "test-img.png", "image/png", inputStream);
 
         BoardDTO boardInfo = new BoardDTO();
-        boardInfo.setMemberNo(8);
+        boardInfo.setMemberNo("8");
         boardInfo.setDepartmentNo(3);
         boardInfo.setBoardTitle("title6");
         boardInfo.setBoardContent("content6");
-        boardInfo.setBoardCreateDttm(timestamp);
-//        boardInfo.setBoardFilePath(filePath);
+        boardInfo.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
 
         System.out.println("boardInfo : " + boardInfo);
 
@@ -129,14 +121,12 @@ public class BoardServiceTests {
     void updateBoard() {
         // given
         int boardNo = 2;
-        int memberNo = 2;
-
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String memberNo = "2";
 
         BoardDTO boardInfo = new BoardDTO();
         boardInfo.setBoardTitle("title1");
         boardInfo.setBoardContent("content content");
-        boardInfo.setBoardUpdateDttm(timestamp);
+        boardInfo.setBoardUpdateDttm(new Timestamp(System.currentTimeMillis()));
 
         //when
         String result = boardService.updateBoard(boardNo, boardInfo, memberNo);
@@ -150,8 +140,7 @@ public class BoardServiceTests {
     void updateBoardWithFile() throws IOException {
         // given
         int boardNo = 15;
-        int memberNo = 5;
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String memberNo = "5";
         InputStream inputStream1 = getClass().getResourceAsStream("/test-img1.png");
         InputStream inputStream2 = getClass().getResourceAsStream("/test-img2.png");
 
@@ -162,10 +151,10 @@ public class BoardServiceTests {
 
         BoardDTO boardInfo = new BoardDTO();
         boardInfo.setBoardNo(7);
-        boardInfo.setMemberNo(3);
+        boardInfo.setMemberNo("3");
         boardInfo.setBoardTitle("Updated Title");
         boardInfo.setBoardContent("Updated Content");
-        boardInfo.setBoardUpdateDttm(timestamp);
+        boardInfo.setBoardUpdateDttm(new Timestamp(System.currentTimeMillis()));
 
         // when
         String result = boardService.updateBoardWithFile(boardNo, boardInfo, files, memberNo);
@@ -179,7 +168,7 @@ public class BoardServiceTests {
     void deleteBoard() {
         // given
         int boardNo = 7;
-        int memberNo = 3;
+        String memberNo = "3";
 
         // when
         boardService.deleteBoard(boardNo, memberNo);

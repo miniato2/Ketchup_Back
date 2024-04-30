@@ -2,9 +2,15 @@ package com.devsplan.ketchup.approval.entity;
 
 import com.devsplan.ketchup.member.entity.Member;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
+@ToString
+@Getter
+@AllArgsConstructor
 @Entity(name = "AppSelect")
 @Table(name = "TBL_APPROVAL")
 public class ApprovalSelect {
@@ -31,11 +37,68 @@ public class ApprovalSelect {
     private String refusal;
     @OneToMany
     @JoinColumn(name = "APPROVAL_NO")
-    private List<AppFile> appFile;
+    private List<AppFile> appFileList;
     @OneToMany
     @JoinColumn(name = "APPROVAL_NO")
     private List<AppLine> appLineList;
     @OneToMany
     @JoinColumn(name = "APPROVAL_NO")
     private List<RefLine> refLineList;
+
+    protected ApprovalSelect(){}
+
+    public ApprovalSelect approvalNo(int approvalNo){
+        this.approvalNo = approvalNo;
+        return this;
+    }
+
+    public ApprovalSelect member(Member member){
+        this.member = member;
+        return this;
+    }
+
+    public ApprovalSelect form(Form form){
+        this.form = form;
+        return this;
+    }
+
+    public ApprovalSelect appTitle(String appTitle){
+        this.appTitle = appTitle;
+        return this;
+    }
+    public ApprovalSelect appContents(String appContents){
+        this.appContents = appContents;
+        return this;
+    }
+    public ApprovalSelect appDate(String appDate){
+        this.appDate = appDate;
+        return this;
+    }
+    public ApprovalSelect appFinalDate(String appFinalDate){
+        this.appFinalDate = appFinalDate;
+        return this;
+    }
+    public ApprovalSelect appStatus(String appStatus){
+        this.appStatus = appStatus;
+        return this;
+    }
+    public ApprovalSelect refusal(String refusal){
+        this.refusal = refusal;
+        return this;
+    }
+    public ApprovalSelect appFileList(List<AppFile> appFileList){
+        this.appFileList = appFileList;
+        return this;
+    }
+    public ApprovalSelect appLineList(List<AppLine> appLineList){
+        this.appLineList = appLineList;
+        return this;
+    }
+    public ApprovalSelect refLineList(List<RefLine> refLineList){
+        this.refLineList = refLineList;
+        return this;
+    }
+    public ApprovalSelect build(){
+        return new ApprovalSelect(approvalNo, member, form, appTitle, appContents, appDate, appFinalDate, appStatus, refusal, appFileList, appLineList, refLineList );
+    }
 }

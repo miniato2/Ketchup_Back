@@ -61,10 +61,20 @@ public class MemberService {
         System.out.println("ENTITY : "+ newPosition);
 
         positionRepository.save(newPosition);
-
-
-
     }
+
+    @Transactional
+    public void updatePosition(PositionDTO updatePositionDTO){
+
+        System.out.println("수정할 직급 : "+updatePositionDTO);
+
+        Position updatePosition = modelMapper.map(updatePositionDTO, Position.class);
+
+        System.out.println("ENTITY : "+ updatePosition);
+
+        positionRepository.save(updatePosition);
+    }
+
 
     public Optional<Member> findMember(String memberNo){
 
