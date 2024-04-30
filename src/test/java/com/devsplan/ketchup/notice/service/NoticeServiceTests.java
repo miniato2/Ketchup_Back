@@ -7,12 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Timestamp;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -22,15 +26,44 @@ public class NoticeServiceTests {
     @Autowired
     private NoticeService noticeService;
 
+    @DisplayName("공지 목록조회 & 페이징 & 목록 제목검색 조회")
+    @Test
+    void selectNoticeList() {
+        // given
+        int page = 0;
+        int size = 10;
+        String title = "공지제목1";
+        Pageable pageRequest = PageRequest.of(page, size, Sort.by("board_no").descending());
+
+        // when
+        Page<NoticeDTO> noticeList = noticeService.selectNoticeList(pageRequest, title);
+
+        // then
+        Assertions.assertNotNull(noticeList);
+    }
+
+    @DisplayName("공지 상세 조회(첨부파일 다운)")
+    @Test
+    void selectNoticeDetail() {
+        // given
+        int noticeNo = 1;
+
+        // when
+        NoticeDTO foundNotice = noticeService.selectNoticeDetail(noticeNo);
+
+        // then
+        Assertions.assertNotNull(foundNotice);
+    }
+
     @DisplayName("공지 등록")
     @Test
+    @WithMockUser(username="김현지", authorities={"LV2"})
     void insertNotice() {
         // given
         NoticeDTO noticeDTO = new NoticeDTO();
-        noticeDTO.setMemberNo("1");
-        noticeDTO.setPositionLevel(3);
-        noticeDTO.setNoticeTitle("공지 제목");
-        noticeDTO.setNoticeContent("공지 내용");
+        noticeDTO.setMemberNo("5");
+        noticeDTO.setNoticeTitle("공지 제목5");
+        noticeDTO.setNoticeContent("공지 내용5");
         noticeDTO.setNoticeFix('N');
 
         // when
@@ -42,16 +75,16 @@ public class NoticeServiceTests {
 
     @DisplayName("공지 등록(첨부파일)")
     @Test
+    @WithMockUser(username="김현지", authorities={"LV2"})
     void insertNoticeWithFile() throws IOException {
         // given
-        InputStream inputStream = getClass().getResourceAsStream("/test.png");
-        MultipartFile multipartFile = new MockMultipartFile("test1", "test-img.png", "image/png", inputStream);
+        InputStream inputStream = getClass().getResourceAsStream("/test3.text");
+        MultipartFile multipartFile = new MockMultipartFile("test3", "test3-text.text", "text/text", inputStream);
 
         NoticeDTO noticeDTO = new NoticeDTO();
-        noticeDTO.setMemberNo("1");
-        noticeDTO.setPositionLevel(3);
-        noticeDTO.setNoticeTitle("공지 제목");
-        noticeDTO.setNoticeContent("공지 내용");
+        noticeDTO.setMemberNo("5");
+        noticeDTO.setNoticeTitle("공지 제목8");
+        noticeDTO.setNoticeContent("공지 내용8");
         noticeDTO.setNoticeFix('N');
 
         // when
@@ -66,15 +99,16 @@ public class NoticeServiceTests {
 
     @DisplayName("공지 수정")
     @Test
+    @WithMockUser(username="김현지", authorities={"LV2"})
     void updateNotice() {
         // given
-        int noticeNo = 1;
-        String memberNo = "1";
+        int noticeNo = 3;
+        String memberNo = "5";
 
         NoticeDTO noticeDTO = new NoticeDTO();
         noticeDTO.setNoticeTitle("공지 제목 수정");
         noticeDTO.setNoticeContent("공지 내용 수정");
-        noticeDTO.setNoticeFix('Z');
+        noticeDTO.setNoticeFix('Y');
 
         // when
         String result = noticeService.updateNotice(noticeNo, noticeDTO, memberNo);
@@ -85,10 +119,11 @@ public class NoticeServiceTests {
 
     @DisplayName("공지 수정(첨부파일)")
     @Test
+    @WithMockUser(username="김현지", authorities={"LV2"})
     void updateNoticeWithFile() throws IOException {
         // given
         int noticeNo = 1;
-        String memberNo = "1";
+        String memberNo = "5";
 
         InputStream inputStream1 = getClass().getResourceAsStream("/test-img1.png");
         InputStream inputStream2 = getClass().getResourceAsStream("/test-img2.png");
@@ -99,9 +134,9 @@ public class NoticeServiceTests {
         List<MultipartFile> files = Arrays.asList(multipartFile1, multipartFile2);
 
         NoticeDTO noticeDTO = new NoticeDTO();
-        noticeDTO.setNoticeTitle("공지 제목 수정");
-        noticeDTO.setNoticeContent("공지 내용 수정");
-        noticeDTO.setNoticeFix('Z');
+        noticeDTO.setNoticeTitle("공지 제목 수정2");
+        noticeDTO.setNoticeContent("공지 내용 수정2");
+        noticeDTO.setNoticeFix('Y');
 
         // when
         String result = noticeService.updateNoticeWithFile(noticeNo, noticeDTO, files, memberNo);
@@ -112,19 +147,16 @@ public class NoticeServiceTests {
 
     @DisplayName("공지 삭제")
     @Test
+    @WithMockUser(username="김현지", authorities={"LV2"})
     void deleteNotice() {
         // given
-        int noticeNo = 1;
-        String memberNo = "1";
+        int noticeNo = 3;
+        String memberNo = "5";
 
         // when
         noticeService.deleteNotice(noticeNo, memberNo);
 
         // then
         assertThrows(ChangeSetPersister.NotFoundException.class, () -> noticeService.getNoticeById(noticeNo));
-
-
-
     }
-
 }

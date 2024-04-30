@@ -17,9 +17,6 @@ public class Notice {
     @Column(name = "member_no", nullable = false)
     private String memberNo;                     // 사번
 
-    @Column(name = "position_level", nullable = false)
-    private int positionLevel;                   // 직급
-
     @Column(name = "notice_fix")
     private char noticeFix;                      // 고정 공지
 

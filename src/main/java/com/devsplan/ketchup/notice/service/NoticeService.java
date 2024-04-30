@@ -1,5 +1,8 @@
 package com.devsplan.ketchup.notice.service;
 
+import com.devsplan.ketchup.board.dto.BoardDTO;
+import com.devsplan.ketchup.board.dto.BoardFileDTO;
+import com.devsplan.ketchup.board.entity.Board;
 import com.devsplan.ketchup.board.entity.BoardFile;
 import com.devsplan.ketchup.notice.dto.NoticeDTO;
 import com.devsplan.ketchup.notice.dto.NoticeFileDTO;
@@ -14,11 +17,14 @@ import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,8 +46,72 @@ public class NoticeService {
         this.modelMapper = modelMapper;
     }
 
+    /* 공지사항 목록조회 & 페이징 & 상단고정 */
+    public Page<NoticeDTO> selectNoticeList(Pageable pageable, String title) {
+
+        pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() - 1,
+                pageable.getPageSize(), Sort.by("noticeNo").descending());
+
+        Page<Notice> fixedNoticeList = noticeRepository.findByNoticeFix(pageable, 'Y');
+
+        Page<Notice> unfixedNoticeList;
+
+        if(title != null && !title.isEmpty()) {
+            unfixedNoticeList = noticeRepository.findByNoticeTitleContaining(pageable, title);
+            log.info("unfixedNoticeList : " + unfixedNoticeList);
+
+        } else {
+            unfixedNoticeList = noticeRepository.findAll(pageable);
+            log.info("unfixedNoticeList : " + unfixedNoticeList);
+        }
+
+        // 상단에 고정된 공지사항과 그렇지 않은 공지사항을 합쳐서 반환
+        List<NoticeDTO> mergedList = new ArrayList<>();
+        mergedList.addAll(fixedNoticeList.stream().map(notice -> modelMapper.map(notice, NoticeDTO.class)).toList());
+        mergedList.addAll(unfixedNoticeList.stream().map(notice -> modelMapper.map(notice, NoticeDTO.class)).toList());
+
+        log.info("mergedList : " + mergedList);
+
+        if (title == null || title.isEmpty() && mergedList.isEmpty()) {
+            System.out.println("현재 공지가 없습니다.");
+        }
+
+        return new PageImpl<>(mergedList, pageable, mergedList.size());
+    }
+
+    /* 공지사항 상세조회(첨부파일 다운) */
+    public NoticeDTO selectNoticeDetail(int noticeNo) {
+        Notice foundNotice= noticeRepository.findById(noticeNo).orElse(null);
+        if (foundNotice == null) {
+            return null; // 해당 게시물이 존재하지 않으면 null 반환
+        }
+
+        NoticeDTO noticeDTO = modelMapper.map(foundNotice, NoticeDTO.class);
+
+        // 게시물에 첨부된 파일 다운로드 링크 생성
+        List<NoticeFile> noticeFiles = findNoticeFileByNoticeNo(noticeNo);
+        List<NoticeFileDTO> noticeFileDTOS = new ArrayList<>();
+        for (NoticeFile noticeFile : noticeFiles) {
+            NoticeFileDTO noticeFileDTO = modelMapper.map(noticeFile, NoticeFileDTO.class);
+
+            // 파일의 다운로드 경로를 클라이언트에 전달
+            noticeFileDTO.setNoticeFilePath(noticeFile.getNoticeFilePath());
+            noticeFileDTOS.add(noticeFileDTO);
+        }
+        noticeDTO.setNoticeFiles(noticeFileDTOS);
+
+        log.info("noticeDTO : " + noticeDTO);
+
+        return noticeDTO;
+    }
+
+    public List<NoticeFile> findNoticeFileByNoticeNo(int noticeNo) {
+        return noticeFileRepository.findByNoticeNo(noticeNo);
+    }
+
     /* 공지사항 등록 */
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ALL', 'LV2')")
     public void insertNotice(NoticeDTO noticeDTO) {
         try {
             noticeDTO.setNoticeCreateDttm(new Timestamp(System.currentTimeMillis()));
@@ -49,14 +119,15 @@ public class NoticeService {
 
             noticeRepository.save(notice);
 
-            System.out.println("공지 등록 성공");
+            log.info("공지 등록 성공");
         } catch (Exception e) {
-            System.out.println("공지 등록 실패");
+            log.error("공지 등록 실패: {}", e.getMessage(), e);
         }
     }
 
     /* 공지사항 등록(첨부파일) */
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ALL', 'LV2')")
     public void insertNoticeWithFile(NoticeDTO noticeDTO, List<MultipartFile> files) {
         try {
             noticeDTO.setNoticeCreateDttm(new Timestamp(System.currentTimeMillis()));
@@ -94,25 +165,27 @@ public class NoticeService {
                     noticeFileRepository.save(noticeFile);
                 }
 
-                System.out.println("공지 등록 성공");
+                log.info("공지 등록 성공");
             } else {
-                System.out.println("첨부파일이 없음");
+                log.info("첨부파일이 없음");
             }
         } catch (Exception e) {
-            System.out.println("공지 등록 실패");
+            log.error("공지 등록 실패: {}", e.getMessage(), e);
         }
     }
 
     /* 공지사항 수정 */
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ALL', 'LV2')")
     public String updateNotice(int noticeNo, NoticeDTO noticeDTO, String memberNo) {
         try {
             Notice foundNotice = noticeRepository.findById(noticeNo).orElseThrow(IllegalArgumentException::new);
 
             // 직급 2,3인 사용자
-            if(foundNotice.getMemberNo().equals(memberNo) || noticeDTO.getPositionLevel() == 2 || noticeDTO.getPositionLevel() == 3) {
+            if(foundNotice.getMemberNo().equals(memberNo)) {
                 foundNotice.noticeTitle(noticeDTO.getNoticeTitle());
                 foundNotice.noticeContent(noticeDTO.getNoticeContent());
+                foundNotice.noticeFix(noticeDTO.getNoticeFix());
                 foundNotice.noticeUpdateDttm(new Timestamp(System.currentTimeMillis()));
 
                 Notice savedNotice = noticeRepository.save(foundNotice);
@@ -134,13 +207,15 @@ public class NoticeService {
 
     /* 공지사항 수정(첨부파일) */
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ALL', 'LV2')")
     public String updateNoticeWithFile(int noticeNo, NoticeDTO noticeDTO, List<MultipartFile> files, String memberNo) {
         try {
             Notice foundNotice = noticeRepository.findById(noticeNo).orElseThrow(IllegalArgumentException::new);
 
-            if(foundNotice.getMemberNo().equals(memberNo) || noticeDTO.getPositionLevel() == 2 || noticeDTO.getPositionLevel() == 3) {
+            if(foundNotice.getMemberNo().equals(memberNo)) {
                 foundNotice.noticeTitle(noticeDTO.getNoticeTitle());
                 foundNotice.noticeContent(noticeDTO.getNoticeContent());
+                foundNotice.noticeFix(noticeDTO.getNoticeFix());
                 foundNotice.noticeUpdateDttm(new Timestamp(System.currentTimeMillis()));
 
                 Notice savedNotice = noticeRepository.save(foundNotice);
@@ -177,7 +252,7 @@ public class NoticeService {
                         noticeFileRepository.save(noticeFile);
                     }
 
-                    return "공지 등록 성공";
+                    return "공지 수정 성공";
                 } else {
                     return "첨부파일이 없음";
                 }
@@ -193,12 +268,12 @@ public class NoticeService {
 
     /* 공지사항 삭제 */
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ALL', 'LV2')")
     public void deleteNotice(int noticeNo, String memberNo) {
         Notice notice = noticeRepository.findById(noticeNo).orElseThrow(IllegalArgumentException::new);
 
-        // 직급정보에 따라 공지사항 삭제가능하게 추가 (positionLevel 2, 3)
         if(!notice.getMemberNo().equals(memberNo)) {
-            System.out.println("삭제 권한이 없음");
+            throw new IllegalArgumentException("삭제 권한이 없음");
         }
 
         List<NoticeFile> noticeFiles = noticeFileRepository.findByNoticeNo(noticeNo);
@@ -208,7 +283,7 @@ public class NoticeService {
             boolean isFileDeleted = FileUtils.deleteFile(IMAGE_DIR, FilenameUtils.getName(filePath));
 
             if(!isFileDeleted) {
-                log.error("파일 삭제에 실패했습니다.", filePath);
+                log.error(filePath, "파일 삭제에 실패했습니다.");
             }
             noticeFileRepository.delete(noticeFile);
         }
@@ -217,13 +292,10 @@ public class NoticeService {
     }
 
     /* 삭제 여부 test 확인용 */
-    public void getNoticeById(int noticeNo) {
-        try {
-            noticeRepository.findById(noticeNo)
-                    .orElseThrow(ChangeSetPersister.NotFoundException::new);
-
-        } catch (ChangeSetPersister.NotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public void getNoticeById(int noticeNo) throws ChangeSetPersister.NotFoundException {
+        noticeRepository.findById(noticeNo).orElseThrow(ChangeSetPersister.NotFoundException::new);
     }
+
+
+
 }
