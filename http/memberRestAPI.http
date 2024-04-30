@@ -80,7 +80,7 @@ Accept: */*
 
 {
   "positionNo":  1,
-  "positionName": "사원",
+  "positionName": "직원",
   "positionLevel":  1,
   "authority": "LV1",
   "positionStatus": "Y"
@@ -110,7 +110,7 @@ Accept: */*
   "positionNo":  3,
   "positionName": "대표",
   "positionLevel":  3,
-  "authority": "ALL",
+  "authority": "LV3",
   "positionStatus": "Y"
 
 }
@@ -233,14 +233,14 @@ Content-Type: application/json
 Accept: */*
 
 {
-  "memberNo": "5",
-  "memberPW": "5555"
+  "memberNo": "3",
+  "memberPW": "3333"
 }
 
 ### GET 요청
 GET http://localhost:8080/test
 Content-Type: application/json
-Authorization: Bearer eyJkYXRlIjoxNzE0Mzg1ODY0MDA4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLsgqzsm5AiLCJkZXBObyI6MSwibWVtYmVyTm8iOiIxIiwicG9zaXRpb25MZXZlbCI6MSwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDEiLCJyb2xlIjoiTFYxIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MSwiZXhwIjoxNzE0NDcyMjY0fQ.ih-gRskG7kywZKMA3uZc0Fnsmd0DVFttG_Sm0_z5SdM
+Authorization: Bearer eyJkYXRlIjoxNzE0NDQ2NjY3Mjg0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MywiZXhwIjoxNzE0NTMzMDY3fQ.VLF7FjAx9jilQOtu_jdNlqvhDMQtnRtwedUYBO0q690
 
 
 
@@ -250,7 +250,21 @@ Authorization: Bearer eyJkYXRlIjoxNzE0Mzg1ODY0MDA4LCJ0eXBlIjoiand0IiwiYWxnIjoiSF
 ### POST 요청
 POST http://localhost:8080/test2
 Content-Type: application/json
-Authorization: BEARER eyJkYXRlIjoxNzE0MzY5MDUxNTk4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLqsJzrsJztjIAiLCJtZW1iZXJObyI6IjEiLCJwb3NpdGlvbkxldmVsIjoxLCJzdWIiOiJrZXRjaHVwIHRva2VuIDogMSIsInJvbGUiOiJMVjEiLCJwb3NpdGlvblN0YXR1cyI6IlkiLCJwb3NpdGlvbk5vIjoxLCJleHAiOjE3MTQ0NTU0NTF9.VPmNDXXCYrnB0j8H9Y4sygAuDXLnts81W7D3-BtuAcM
+Authorization: Bearer eyJkYXRlIjoxNzE0NDQ2MDU5NjUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYxLExWMixMVjMiLCJwb3NpdGlvblN0YXR1cyI6IlkiLCJwb3NpdGlvbk5vIjozLCJleHAiOjE3MTQ1MzI0NTl9.CpzSPq063B3bhrjr00qfQt58N7H8-uMQfdt76hpMDuE
 
 
 
+### 사원 권한 수정
+PUT http://localhost:8080/signupPosition/3
+Content-Type: application/json
+Accept: */*
+Authorization: Bearer eyJkYXRlIjoxNzE0NDQ2NjY3Mjg0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MywiZXhwIjoxNzE0NTMzMDY3fQ.VLF7FjAx9jilQOtu_jdNlqvhDMQtnRtwedUYBO0q690
+
+{
+
+  "positionName": "사원",
+  "positionLevel":  1,
+  "authority": "LV1",
+  "positionStatus": "Y"
+
+}
