@@ -21,4 +21,21 @@ public class AppFile {
     private String fileUrl;
 
     protected AppFile(){}
+
+    public AppFile appFileNo(int appFileNo){
+        this.appFileNo = appFileNo;
+        return this;
+    }
+    public AppFile approvalNo(int approvalNo){
+        this.approvalNo = approvalNo;
+        return this;
+    }
+    public AppFile fileUrl(String fileUrl){
+        this.fileUrl = fileUrl;
+        return this;
+    }
+
+    public AppFile build(){
+        return new AppFile(appFileNo, approvalNo, fileUrl);
+    }
 }

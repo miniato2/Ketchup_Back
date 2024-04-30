@@ -9,9 +9,9 @@ import lombok.*;
 @ToString
 public class RefLineDTO {
     private int approvalNo;     //기안번호
-    private int refMemberNo;    //참조자 사원번호
+    private String refMemberNo;    //참조자 사원번호
 
-    public RefLineDTO(int refMemberNo) {
+    public RefLineDTO(String refMemberNo) {
         this.refMemberNo = refMemberNo;
     }
 }

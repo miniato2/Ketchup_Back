@@ -31,11 +31,11 @@ public class ApprovalController {
     public ResponseEntity<ResponseDTO> insertApproval(@ModelAttribute ApprovalDTO approvalDTO,
                                                       @ModelAttribute List<AppLineDTO> appLineDTOList,
                                                       @ModelAttribute List<RefLineDTO> refLineDTOList,
-                                                      List<MultipartFile> multipartFileList){
+                                                      @RequestParam("multipartFileList") List<MultipartFile> multipartFileList){
 
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "기안상신 완료",
-                        approvalService.insertApproval(approvalDTO,appLineDTOList, refLineDTOList, multipartFileList))
+                        approvalService.insertApproval(approvalDTO, appLineDTOList, refLineDTOList, multipartFileList))
         );
     }
 

@@ -8,6 +8,13 @@ import java.util.List;
 
 public interface AppLineRepository extends JpaRepository<AppLine, Integer> {
 
-    @Query("select a.approvalNo from AppLine a where a.alMemberNo = :memberNo" )
-    List<Integer> findAppNoByMemberNo(int memberNo);
+    @Query("select a.approvalNo from AppLine a where a.memberNo = :memberNo" )
+    List<Integer> findAppNoByMemberNo(String memberNo);
+
+    void findByMemberNo(String memberNo);
+
+    AppLine findByMemberNoAndApprovalNo(String memberNo, int appNo);
+
+    @Query("select count(a.alSequence) from AppLine a where a.approvalNo = :approvalNo")
+    int countSequence(int approvalNo);
 }
