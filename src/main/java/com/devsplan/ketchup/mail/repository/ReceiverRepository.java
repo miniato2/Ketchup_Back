@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository
 public interface ReceiverRepository  extends JpaRepository<Receiver, Integer> {
-    List<Receiver> findByReceiverMem(int receiverTest);
+    @Query("SELECT m FROM Mail m JOIN Receiver r ON m.mailNo = r.mailNo WHERE r.receiverMem = :receiverMem and m.sendDelStatus = 'N'")
+    List<Receiver> findByReceiverMem(String receiverMem);
 
     @Query("SELECT r FROM Receiver r WHERE r.mailNo = :mailNo")
     List<Receiver> findReadTime(int mailNo);

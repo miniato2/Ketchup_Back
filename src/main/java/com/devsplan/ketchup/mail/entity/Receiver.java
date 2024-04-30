@@ -24,7 +24,7 @@ public class Receiver {
     private int mailNo;
 
     @Column(name = "RECEIVER_MEM", nullable = false)
-    private int receiverMem;
+    private String receiverMem;
 
     @Column(name = "READ_TIME")
     private Timestamp readTime;
@@ -33,12 +33,4 @@ public class Receiver {
     private char receiverDelStatus;
 
     public Receiver() {}
-
-    public Receiver(int receiverNo, int mailNo, int receiverMem, Timestamp readTime, char receiverDelStatus) {
-        this.receiverNo = receiverNo;
-        this.mailNo = mailNo;
-        this.receiverMem = receiverMem;
-        this.readTime = readTime;
-        this.receiverDelStatus = receiverDelStatus;
-    }
 }

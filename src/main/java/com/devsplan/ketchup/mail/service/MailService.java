@@ -47,14 +47,13 @@ public class MailService {
 
             receiver.setMailNo(list.getMailNo());
             receiver.setReceiverMem(list.getReceiverMem());
-            receiver.setReadTime(list.getReadTime());
             receiver.setReceiverDelStatus(list.getReceiverDelStatus());
 
             receiverRepository.save(receiver);
         }
     }
 
-    public List<MailDTO> selectSendMailList(int senderMem) {
+    public List<MailDTO> selectSendMailList(String senderMem) {
         List<Mail> mailList = mailRepository.findBySenderMem(senderMem);
 
         return mailList.stream()
@@ -66,11 +65,18 @@ public class MailService {
                         , mail.getSendMailTime()
                         , mail.getSendCancelStatus()
                         , mail.getSendDelStatus()
+                        , mail.getReceivers().stream()
+                        .map(receiver -> new ReceiverDTO(
+                                receiver.getMailNo(),
+                                receiver.getReceiverMem(),
+                                receiver.getReadTime(),
+                                receiver.getReceiverDelStatus()
+                        )).toList()
                 ))
                 .toList();
     }
 
-    public List<MailDTO> selectReceiveMailList(int receiverTest) {
+    public List<MailDTO> selectReceiveMailList(String receiverTest) {
         List<Receiver> receiverList = receiverRepository.findByReceiverMem(receiverTest);
         List<Mail> mailAllList = mailRepository.findAll();
 

@@ -1,21 +1,20 @@
-### 메일 목록 조회
-#GET http://localhost:8080/mails/list
-#Content-Type: application/json
-#
-#{
-#  "sender": "1111111",
-#  "mailTitle": "프로젝트 제안서",
-#  "mailContent": "안녕하세요 기획팀 홍길동입니다.",
-#  "sendCancelStatus": "N",
-#  "sendDelStatus": "N"
-#}
-
 ### 메일 작성
 POST http://localhost:8080/mails
 Content-Type: application/json
+Authorization: Bearer eyJkYXRlIjoxNzE0NDQxMTkwMDMyLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYxLExWMixMVjMiLCJwb3NpdGlvblN0YXR1cyI6IlkiLCJwb3NpdGlvbk5vIjozLCJleHAiOjE3MTQ1Mjc1OTB9.Pisz5OwlBeWC0A5owxbPaH8lUT5yjCUy-mAh1Ww9aj0
 
 {
-  "sender": "1111111",
-  "mailTitle": "프로젝트 제안서",
-  "mailContent": "안녕하세요 기획팀 홍길동입니다."
+  "mailTitle": "7 메일 테스트",
+  "mailContent": "안녕하세요 기획팀 이진우 입니다.",
+  "receivers": [
+    {"receiverMem":  "1"},{"receiverMem":  "2"}
+  ]
 }
+
+### 보낸 메일 조회
+GET http://localhost:8080/mails?part=send
+Authorization: Bearer eyJkYXRlIjoxNzE0NDM5ODI4NDc2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6MiwibWVtYmVyTm8iOiIyIiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDIiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0NTI2MjI4fQ.JMRhdXbY1ko_X1xMFVRXU5-y7U12WXL6SQgJHGYgg3U
+
+### 받은 메일 조회
+GET http://localhost:8080/mails?part=receive
+Authorization: Bearer eyJkYXRlIjoxNzE0NDM5ODI4NDc2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6MiwibWVtYmVyTm8iOiIyIiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDIiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0NTI2MjI4fQ.JMRhdXbY1ko_X1xMFVRXU5-y7U12WXL6SQgJHGYgg3U
