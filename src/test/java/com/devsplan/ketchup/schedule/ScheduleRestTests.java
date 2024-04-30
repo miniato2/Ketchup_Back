@@ -1,5 +1,6 @@
 package com.devsplan.ketchup.schedule;
 
+import com.devsplan.ketchup.schedule.controller.ResponseMessage;
 import com.devsplan.ketchup.schedule.dto.DepartmentDTO;
 import com.devsplan.ketchup.schedule.dto.ScheduleDTO;
 import com.devsplan.ketchup.schedule.entity.Schedule;
@@ -12,13 +13,25 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
+//@AutoConfigureMockMvc
 public class ScheduleRestTests {
 
     @Autowired
@@ -39,7 +52,6 @@ public class ScheduleRestTests {
         // then
         Assertions.assertNotNull(foundSchedule);
         System.out.println("부서별 일정 목록 조회 = " + foundSchedule);
-
     }
 
     @DisplayName("부서별 일정 상세 조회")
