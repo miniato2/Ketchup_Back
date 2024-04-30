@@ -9,6 +9,6 @@ import java.util.List;
 public interface RefLineRepository extends JpaRepository<RefLine, Integer> {
 
 
-    @Query("select a.approvalNo from RefLine a where a.refMemberNo = :memberNo" )
-    List<Integer> findAppNoByMemberNo(int memberNo);
+    @Query("select a.approvalNo from RefLine a where a.memberNo = :memberNo" )
+    List<Integer> findAppNoByMemberNo(String memberNo);
 }

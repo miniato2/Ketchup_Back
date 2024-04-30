@@ -1,9 +1,6 @@
 package com.devsplan.ketchup.approval;
 
-import com.devsplan.ketchup.approval.dto.AppLineDTO;
-import com.devsplan.ketchup.approval.dto.ApprovalDTO;
-import com.devsplan.ketchup.approval.dto.ApprovalSelectDTO;
-import com.devsplan.ketchup.approval.dto.RefLineDTO;
+import com.devsplan.ketchup.approval.dto.*;
 
 import com.devsplan.ketchup.approval.repository.AppLineRepository;
 import com.devsplan.ketchup.approval.service.ApprovalService;
@@ -28,10 +25,10 @@ public class ApprovalRestTests {
     @Test
     public void insertApprovalTest(){
         //given
-        ApprovalDTO approvalDTO = new ApprovalDTO(1, 1, "제목", "내용");
-        AppLineDTO appLineDTO = new AppLineDTO(2, 1, "일반");
-        AppLineDTO appLineDTO2 = new AppLineDTO(4, 2, "전결");
-        RefLineDTO refLineDTO = new RefLineDTO(3);
+        ApprovalDTO approvalDTO = new ApprovalDTO("1", 1, "제목", "내용");
+        AppLineDTO appLineDTO = new AppLineDTO("2", 1, "일반");
+        AppLineDTO appLineDTO2 = new AppLineDTO("4", 2, "전결");
+        RefLineDTO refLineDTO = new RefLineDTO("3");
 
         List<AppLineDTO> appLineDTOList = new ArrayList<>();
         appLineDTOList.add(appLineDTO);
@@ -53,7 +50,7 @@ public class ApprovalRestTests {
     @Test
     public void selectMyApprovalTest(){
         //given
-        int memberNo = 1;
+        String memberNo = "1";
         String status1 = "대기";
         String status2 = "진행";
         String searchValue = "제목";
@@ -72,7 +69,7 @@ public class ApprovalRestTests {
     @Test
     public void selectReceiveAppTest(){
         //given
-        int memberNo = 2;
+        String memberNo = "2";
         String status1 = "대기";
         String status2 = "진행";
         String searchValue = "";
@@ -92,7 +89,7 @@ public class ApprovalRestTests {
     @Test
     public void selectRefAppTest(){
         //given
-        int memberNo = 3;
+        String memberNo = "3";
         String status = "완료";
         String searchValue = "";
 
@@ -105,9 +102,59 @@ public class ApprovalRestTests {
 
     @Test
     public void testRepo(){
-        List<Integer> num = appRepository.findAppNoByMemberNo(2);
+        List<Integer> num = appRepository.findAppNoByMemberNo("2");
         Assertions.assertTrue(num.size() == 1);
     }
+    @Test
+    public void findAppline(){
+        int appNo = 1;
+        int count = appRepository.countSequence(appNo);
+
+        Assertions.assertTrue(count == 2);
+    }
+
+    @Description("기안상세 조회")
+    @Test
+    public void selectApproval(){
+        int appNo = 1;
+        ApprovalSelectDTO approvalSelectDTO = service.selectApproval(appNo);
+        Assertions.assertTrue(approvalSelectDTO.getApprovalNo() == 1);
+    }
+
+    @Description("기안 회수")
+    @Test
+    public void updateApproval() {
+        int appNo = 1;
+        String action = "회수";
+        String memberNo = "1";
+
+        AppUpdateDTO appUpdateDTO = new AppUpdateDTO();
+        appUpdateDTO.setApprovalNo(appNo);
+        appUpdateDTO.setAction(action);
+
+        String result = (String) service.updateApproval(appUpdateDTO);
+
+        Assertions.assertTrue(result == "성공");
+    }
+
+    @Description("기안 처리")
+    @Test
+    public void updateApprovaltest(){
+        int appNo = 1;
+        String action = "결재";
+        String memberNo = "4";
+        String refusal = "거절";
+
+        AppUpdateDTO appUpdateDTO = new AppUpdateDTO(appNo, action, refusal);
+
+        String result = (String) service.updateApproval2(appUpdateDTO, memberNo);
+
+        //결재 처리시 필요한 정보 appNo, 행위(회수, 결재, 전결, 반려), refusal, memberNo
+        Assertions.assertTrue(result == "성공");
+    }
+
+
+
 
 
 }

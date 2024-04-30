@@ -13,7 +13,7 @@ import java.util.List;
 public class ApprovalSelectDTO {
     private int approvalNo;
     private MemberDTO member;
-    private FormDTO formNo;
+    private FormDTO form;
     private String appTitle;
     private String appContents;
     private String appDate;
@@ -24,4 +24,10 @@ public class ApprovalSelectDTO {
     private List<AppLineDTO> appLineList;
     private List<RefLineDTO> refLineList;
 
+    public ApprovalSelectDTO(MemberDTO member, FormDTO form, String appTitle, String appContents) {
+        this.member = member;
+        this.form = form;
+        this.appTitle = appTitle;
+        this.appContents = appContents;
+    }
 }

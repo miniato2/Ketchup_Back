@@ -24,4 +24,23 @@ public class Form {
     //longtext 타입
 
     protected Form(){}
+
+    public Form formNo(int formNo){
+        this.formNo = formNo;
+        return this;
+    }
+
+    public Form formName(String formName){
+        this.formName = formName;
+        return this;
+    }
+
+    public Form formContents(String formContents){
+        this.formContents = formContents;
+        return this;
+    }
+
+    public Form build(){
+        return new Form(formNo, formName, formContents);
+    }
 }

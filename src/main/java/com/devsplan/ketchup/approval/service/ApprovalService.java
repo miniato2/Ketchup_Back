@@ -8,9 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -131,9 +128,10 @@ public class ApprovalService {
     }
 
 
+
     //내가 작성한 기안 조회
     @Transactional
-    public List<ApprovalSelectDTO> selectMyApproval(int memberNo, List<String> status, String searchValue) {
+    public List<ApprovalSelectDTO> selectMyApproval(String memberNo, List<String> status, String searchValue) {
 //        Pageable paging = PageRequest.of(index, count, Sort.by("productCode").descending());
         List<ApprovalSelect> approvalSelectList = null;
 
@@ -156,7 +154,7 @@ public class ApprovalService {
 
     //받은 기안 조회
     @Transactional
-    public List<ApprovalSelectDTO> selectReceiveApp(int memberNo, List<String> status, String searchValue){
+    public List<ApprovalSelectDTO> selectReceiveApp(String memberNo, List<String> status, String searchValue){
 
         List<Integer> appNo = appLineRepository.findAppNoByMemberNo(memberNo);
         List<ApprovalSelect> approvalSelectList = null;
@@ -174,7 +172,7 @@ public class ApprovalService {
     }
 
     //참조선으로 등록된 기안 조회
-    public List<ApprovalSelectDTO> selectRefApp(int memberNo, String status, String searchValue) {
+    public List<ApprovalSelectDTO> selectRefApp(String memberNo, String status, String searchValue) {
         List<ApprovalSelect> approvalSelectList = null;
         List<Integer> appNo = refLineRepository.findAppNoByMemberNo(memberNo); //사원번호로 참조선에 등록된 기안번호를 조회
 
@@ -190,6 +188,72 @@ public class ApprovalService {
 
         return approvalSelectDTOList;
     }
+
+
+    //기안 상세 조회
+    @Transactional
+    public ApprovalSelectDTO selectApproval(int appNo) {
+        ApprovalSelect approvalSelect = approvalSelectRepository.findById(appNo).get();
+        ApprovalSelectDTO approvalSelectDTO = modelMapper.map(approvalSelect, ApprovalSelectDTO.class);
+
+        return approvalSelectDTO;
+    }
+
+    //기안 회수
+    @Transactional
+    public String updateApproval(AppUpdateDTO appUpdateDTO) {
+        int result = 0;
+
+        Approval approval = approvalRepository.findById(appUpdateDTO.getApprovalNo()).get();
+
+        if(approval.getAppStatus().equals("대기")){
+            approval = approval.appStatus("회수").build();
+            result = 1;
+        }
+        return (result > 0) ? "성공" : "실패";
+    }
+
+    //기안 처리 (결재 반려)
+    @Transactional
+    public String updateApproval2(AppUpdateDTO appUpdateDTO, String memberNo){
+        int result = 0;
+        Approval approval = approvalRepository.findById(appUpdateDTO.getApprovalNo()).get();
+        AppLine appLine = appLineRepository.findByMemberNoAndApprovalNo(memberNo, appUpdateDTO.getApprovalNo());
+
+        java.util.Date now = new java.util.Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
+        String appDate = sdf.format(now);
+
+        switch(appUpdateDTO.getAction()){
+            case "결재" :
+                int count = appLineRepository.countSequence(appUpdateDTO.getApprovalNo());
+                if(appLine.getAlSequence() == count){
+                    approval.appStatus("완료").appFinalDate(appDate).build();
+                    appLine = appLine.alDate(appDate).build();
+                    result = 1;
+                }else{
+                    approval.appStatus("진행").appFinalDate(appDate).build();
+                    appLine = appLine.alDate(appDate).build();
+                    result = 1;
+                }
+                break;
+            case "반려" :
+                approval = approval.appStatus("반려").refusal(appUpdateDTO.getRefusal()).build();
+                appLine = appLine.alDate(appDate).build();
+                result = 1;
+                break;
+            case "전결" :
+                approval = approval.appStatus("완료").appFinalDate(appDate).build();
+                appLine = appLine.alDate(appDate).build();
+                result = 1;
+                break;
+            default :
+                break;
+        }
+
+        return (result > 0) ? "성공" : "실패";
+    }
+
 
 
 }
