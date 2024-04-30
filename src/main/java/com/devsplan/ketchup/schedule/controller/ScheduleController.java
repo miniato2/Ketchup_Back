@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/schedules")
 @Slf4j
 public class ScheduleController {
 
@@ -59,7 +59,6 @@ public class ScheduleController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(404, "페이지를 찾을 수 없습니다.", null));
         }
-
     }
 
     // 부서별 일정 상세 조회
