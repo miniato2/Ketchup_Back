@@ -40,28 +40,6 @@ public class ScheduleRestTests {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
-//    @Autowired
-//    private MockMvc mvc;
-
-//    @DisplayName("부서별 일정 목록 조회")
-//    @Test
-//    void selectScheduleList() throws Exception {
-//        int dptNo = 1;
-//
-//        List<ScheduleDTO> schedules = List.of(
-//                new ScheduleDTO(1, new DepartmentDTO(1), "해외 바이어 미팅", LocalDateTime.now(), LocalDateTime.now(), "일정의 위치 정보", "일정의 메모")
-//        );
-//
-//        when(scheduleService.selectScheduleList(dptNo)).thenReturn(schedules);
-//
-//        mvc.perform(MockMvcRequestBuilders
-//                        .get("/schedules/department/{dptNo}", dptNo)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].skdNo").exists());
-//    }
-
-
     @DisplayName("부서별 일정 목록 조회")
     @Test
     void selectScheduleList() {
