@@ -32,9 +32,11 @@ public class Mail {
     @Column(name = "SEND_MAIL_TIME", nullable = false)
     private Timestamp sendMailTime;
 
+    @Setter
     @Column(name = "SEND_CANCEL_STATUS", nullable = false)
     private char sendCancelStatus;
 
+    @Setter
     @Column(name = "SEND_DEL_STATUS", nullable = false)
     private char sendDelStatus;
 
@@ -45,6 +47,41 @@ public class Mail {
 //    @OneToMany(mappedBy = "mailNo")
 //    private List<MailFile> mailFiles;
 
+//    public Mail mailNo(int val) {
+//        this.mailNo = val;
+//        return this;
+//    }
+//
+//    public Mail senderMem(String val) {
+//        this.senderMem = val;
+//        return this;
+//    }
+//
+//    public Mail mailTitle(String val) {
+//        this.mailTitle  = val;
+//        return this;
+//    }
+//    public Mail mailContent(String val) {
+//        this.mailContent = val;
+//        return this;
+//    }
+//    public Mail sendMailTime(Timestamp val) {
+//        this.sendMailTime  = val;
+//        return this;
+//    }
+//    public Mail sendCancelStatus(char val) {
+//        this.sendCancelStatus  = val;
+//        return this;
+//    }
+//    public Mail sendDelStatus(char val) {
+//        this.sendDelStatus  = val;
+//        return this;
+//    }
+//
+//    public Mail builder() {
+//        return new Mail(mailNo, senderMem, mailTitle, mailContent, sendMailTime, sendCancelStatus, sendDelStatus);
+//    }
+
     protected Mail() {}
 
     public Mail(String senderMem, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
@@ -53,5 +90,26 @@ public class Mail {
         this.mailContent = mailContent;
         this.sendCancelStatus = sendCancelStatus;
         this.sendDelStatus = sendDelStatus;
+    }
+
+    public Mail(int mailNo, String senderMem, String mailTitle, String mailContent, Timestamp sendMailTime, char sendCancelStatus, char sendDelStatus) {
+        this.mailNo = mailNo;
+        this.senderMem = senderMem;
+        this.mailTitle = mailTitle;
+        this.mailContent = mailContent;
+        this.sendMailTime = sendMailTime;
+        this.sendCancelStatus = sendCancelStatus;
+        this.sendDelStatus = sendDelStatus;
+    }
+
+    public Mail(int mailNo, String senderMem, String mailTitle, String mailContent, Timestamp sendMailTime, char sendCancelStatus, char sendDelStatus, List<Receiver> receivers) {
+        this.mailNo = mailNo;
+        this.senderMem = senderMem;
+        this.mailTitle = mailTitle;
+        this.mailContent = mailContent;
+        this.sendMailTime = sendMailTime;
+        this.sendCancelStatus = sendCancelStatus;
+        this.sendDelStatus = sendDelStatus;
+        Receivers = receivers;
     }
 }

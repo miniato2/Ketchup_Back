@@ -2,30 +2,40 @@ package com.devsplan.ketchup.mail.controller;
 
 import com.devsplan.ketchup.mail.dto.MailDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
+import com.devsplan.ketchup.mail.service.MailService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.bytebuddy.matcher.ElementMatchers.any;
+import static org.awaitility.Awaitility.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(MailController.class)
 public class MailControllerTests {
     @Autowired
-    ObjectMapper mapper;
+    MockMvc mvc;
+
+    @MockBean
+    MailService mailService;
 
     @Autowired
-    MockMvc mvc;
+    ObjectMapper mapper;
 
     @DisplayName("메일 등록")
     @Test
@@ -48,15 +58,19 @@ public class MailControllerTests {
 
         testMail.setReceivers(testReceiver);
 
+        
+
         // when
 
         // then
-        this.mvc.perform(post("/mails")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(testMail))
+        mvc.perform(post("/mails")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsBytes(testMail))
                 )
                 .andExpect(status().isOk())
-                .andDo(System.out::println);
+                .andExpect(jsonPath("$.mailNo").exists())
+                .andExpect(jsonPath("$.sendMailTime").exists())
+                .andDo(print());
     }
 
     @DisplayName("보낸 메일 조회")
