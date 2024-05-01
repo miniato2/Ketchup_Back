@@ -10,16 +10,21 @@ import com.devsplan.ketchup.member.entity.Position;
 import com.devsplan.ketchup.member.repository.DepRepository;
 import com.devsplan.ketchup.member.repository.MemberRepository;
 import com.devsplan.ketchup.member.repository.PositionRepository;
+import com.devsplan.ketchup.util.FileUtils;
+import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class MemberService {
@@ -34,6 +39,12 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${image.image-dir}")
+    private String IMAGE_DIR;
+
+    @Value("${image.image-url}")
+    private String IMAGE_URL;
+
 
 
     public MemberService(MemberRepository memberRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder,DepRepository depRepository,PositionRepository positionRepository) {
@@ -47,10 +58,30 @@ public class MemberService {
 
 
     @Transactional
-    public void insertMember (MemberDTO newMemberDTO){
-        Member newMember = modelMapper.map(newMemberDTO, Member.class);
-        newMember.setMemberPW(passwordEncoder.encode(newMember.getMemberPW()));
-        memberRepository.save(newMember);
+    public void insertMember (MemberDTO newMemberDTO, MultipartFile memberImage){
+
+        String imageName = UUID.randomUUID().toString().replace("-", "");
+        String replaceFileName = null;
+
+        try {
+            replaceFileName = FileUtils.saveFile(IMAGE_DIR,imageName,memberImage);
+
+            newMemberDTO.setImgUrl(replaceFileName);
+            newMemberDTO.setMemberPW(passwordEncoder.encode(newMemberDTO.getMemberPW()));
+
+            Member newMember = modelMapper.map(newMemberDTO,Member.class);
+
+            memberRepository.save(newMember);
+
+
+        }catch (Exception e){
+            System.out.println("사원등록 실패");
+            FileUtils.deleteFile(IMAGE_DIR,replaceFileName);
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 
