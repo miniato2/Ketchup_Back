@@ -54,7 +54,7 @@ public class MailService {
     }
 
     public List<MailDTO> selectSendMailList(String senderMem) {
-        List<Mail> mailList = mailRepository.findBySenderMem(senderMem);
+        List<Mail> mailList = mailRepository.findBySenderMemAndSendDelStatus(senderMem, 'N');
 
         return mailList.stream()
                 .map(mail -> new MailDTO(
@@ -76,8 +76,8 @@ public class MailService {
                 .toList();
     }
 
-    public List<MailDTO> selectReceiveMailList(String receiverTest) {
-        List<Receiver> receiverList = receiverRepository.findByReceiverMem(receiverTest);
+    public List<MailDTO> selectReceiveMailList(String receiverMem) {
+        List<Receiver> receiverList = receiverRepository.findByReceiverMemAndReceiverDelStatus(receiverMem, 'N');
         List<Mail> mailAllList = mailRepository.findAll();
 
         List<MailDTO> receiverMail = new ArrayList<>();
@@ -103,7 +103,9 @@ public class MailService {
     }
 
     public MailDTO selectMailDetail(int mailNo) {
-        Mail mailDetail = mailRepository.findByMailNo(mailNo);
+        char delStatus = 'N';
+        Mail mailDetail = mailRepository.findByMailNoAndSendDelStatus(mailNo, delStatus);
+        System.out.println(mailDetail);
 
         return new MailDTO(
                 mailDetail.getMailNo()
@@ -113,41 +115,74 @@ public class MailService {
                 , mailDetail.getSendMailTime()
                 , mailDetail.getSendCancelStatus()
                 , mailDetail.getSendDelStatus()
+                , mailDetail.getReceivers().stream()
+                    .map(receiver -> new ReceiverDTO(
+                            receiver.getMailNo(),
+                            receiver.getReceiverMem(),
+                            receiver.getReadTime(),
+                            receiver.getReceiverDelStatus()
+                    )).toList()
         );
     }
 
     @Transactional
-    public String cancelSendMail(int mailNo) {
-        List<Receiver> mailRead = receiverRepository.findReadTime(mailNo);
+    public int cancelSendMail(int mailNo) {
+        List<Receiver> mailRead = receiverRepository.findByMailNo(mailNo);
 
-        String result = "";
-        for(int i = 0; i < mailRead.size(); i++) {
-            if(mailRead.get(i).getReadTime() != null) {
-                // 수신자 중 한명이라도 메일을 읽었을 경우
-                result = "발송 취소 실패";
-            }else {
-                // 수신자 모두 메일을 읽지 않았을 경우 - 발송 취소 여부 'Y' / 수신자 삭제 여부 'Y' 변경
-                mailRepository.cancelSendMail(mailNo);
-                receiverRepository.updateReceiverDelByMailNo(mailNo);
+        int result = -1;
+        for(Receiver list : mailRead) {
+            if(list.getReadTime() != null) {
+                result = 0; break;
             }
-            result = "발송 취소 성공";
+
+            result = 1;
+        }
+
+        if(result == 1) {
+            Mail oneMail = mailRepository.findByMailNo(mailNo);
+            oneMail.setSendCancelStatus('Y');
+            mailRepository.save(oneMail);
+
+            for(Receiver read : mailRead) {
+                read.setReceiverDelStatus('Y');
+            }
         }
 
         return result;
     }
 
     @Transactional
-    public int deleteSendMail(int mailNo) {
-        int result = mailRepository.updateDelByMailNoSender(mailNo);
+        public int deleteSendMail(List<Integer> mailNo) {
+
+        System.out.println("삭제할 메일 번호!!!!!!!!!!!!!!" + mailNo);
+        int result = 0;
+        for(Integer list : mailNo) {
+            Mail oneMail = mailRepository.findByMailNo(list);
+            oneMail.setSendDelStatus('Y');
+            mailRepository.save(oneMail);
+            result++;
+        }
         System.out.println("발신 삭제 : " + result);
 
         return result;
     }
 
     @Transactional
-    public int deleteReceiveMail(int mailNo) {
-        int receiverMem = 240429001;
-        int result = receiverRepository.updateDelByMailNoReceiver(mailNo, receiverMem);
+    public int deleteReceiveMail(List<Integer> mailNo) {
+        String receiverMem = "4";
+
+        int result = 0;
+        for(Integer list : mailNo) {
+            List<Receiver> Receivers = receiverRepository.findByMailNo(list);
+
+            for(Receiver receiver : Receivers) {
+                receiver.setReceiverDelStatus('Y');
+
+                receiverRepository.save(receiver);
+
+                result++;
+            }
+        }
         System.out.println("수신 삭제 : " + result);
 
         return result;

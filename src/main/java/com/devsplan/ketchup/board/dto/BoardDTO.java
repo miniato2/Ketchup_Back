@@ -17,6 +17,7 @@ import java.util.List;
 @ToString
 public class BoardDTO {
 
+
     private int boardNo;                        // 게시물 번호
     private String memberNo;                       // 사번
     private int departmentNo;                   // 부서번호
@@ -26,6 +27,8 @@ public class BoardDTO {
     private Timestamp boardCreateDttm;      // 게시글 등록일시
     private Timestamp boardUpdateDttm;      // 게시글 수정일시
     private String boardFilePath;
+
+
 
     public void setBoardCreateDttm(Timestamp timestamp) {
         this.boardCreateDttm = timestamp;

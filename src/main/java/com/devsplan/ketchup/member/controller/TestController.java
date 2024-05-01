@@ -22,9 +22,6 @@ public class TestController {
 
     @GetMapping("/test")
     public String test(@RequestHeader("Authorization") String token){
-
-
-
         // "Bearer " 이후의 토큰 값만 추출
         String jwtToken = token.substring(7);
 

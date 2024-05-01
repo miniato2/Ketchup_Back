@@ -1,5 +1,7 @@
 package com.devsplan.ketchup.member.dto;
 
+import java.time.LocalDateTime;
+
 public class MemberDTO {
 
     private String memberNo;
@@ -16,6 +18,8 @@ public class MemberDTO {
     private String account;
     private String status;
     private String imgUrl;
+
+    private LocalDateTime resignDateTime;
 
 
     public MemberDTO() {
@@ -36,6 +40,32 @@ public class MemberDTO {
         this.account = account;
         this.status = status;
         this.imgUrl = imgUrl;
+    }
+
+    public MemberDTO(String memberNo, String memberName, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, DepDTO department, PositionDTO position, String account, String status, String imgUrl, LocalDateTime resignDateTime) {
+        this.memberNo = memberNo;
+        this.memberName = memberName;
+        this.memberPW = memberPW;
+        this.phone = phone;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.address = address;
+        this.privateEmail = privateEmail;
+        this.companyEmail = companyEmail;
+        this.department = department;
+        this.position = position;
+        this.account = account;
+        this.status = status;
+        this.imgUrl = imgUrl;
+        this.resignDateTime = resignDateTime;
+    }
+
+    public LocalDateTime getResignDateTime() {
+        return resignDateTime;
+    }
+
+    public void setResignDateTime(LocalDateTime resignDateTime) {
+        this.resignDateTime = resignDateTime;
     }
 
     public String getMemberNo() {

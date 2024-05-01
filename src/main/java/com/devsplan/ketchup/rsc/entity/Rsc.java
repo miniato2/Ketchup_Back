@@ -3,7 +3,7 @@ package com.devsplan.ketchup.rsc.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "RSC")
+@Table(name = "tbl_rsc")
 public class Rsc {
     @Id
     @Column(name = "RSC_NO", nullable = false)

@@ -10,6 +10,7 @@ import com.devsplan.ketchup.member.repository.MemberRepository;
 import com.devsplan.ketchup.member.service.MemberService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class MemberController {
@@ -28,9 +29,7 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public String signup(@RequestBody MemberDTO newMemberDTO){
-        System.out.println("여기는 컨트롤러의 맴버등록 매소드야%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-        System.out.println(newMemberDTO);
+    public String signup(@RequestPart("memberInfo") MemberDTO newMemberDTO, @RequestPart("memberImage") MultipartFile memberImage){
 
         int rPositionNo = newMemberDTO.getPosition().getPositionNo();
 
@@ -47,7 +46,7 @@ public class MemberController {
         newMemberDTO.setDepartment(depDTO);
 
 
-        memberService.insertMember(newMemberDTO);
+        memberService.insertMember(newMemberDTO,memberImage);
         return "Member save!";
 
 

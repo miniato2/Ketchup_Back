@@ -32,10 +32,19 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${image.add-resource-handler}")
     private String ADD_RESOURCE_HANDLER;
 
+    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
+            "classpath:/static/", "classpath:/public/", "classpath:/", "classpath:/resources/","classpath:/profile/",
+            "classpath:/META-INF/resources/", "classpath:/META-INF/resources/webjars/"
+    };
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry){
         registry.addResourceHandler(ADD_RESOURCE_HANDLER)
                 .addResourceLocations(ADD_RESOURCE_LOCATION);
+
+        registry.addResourceHandler("**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
+
+
     }
 
     @Bean

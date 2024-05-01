@@ -31,7 +31,4 @@ public class ReceiverDTO {
         this.readTime = readTime;
         this.receiverDelStatus = receiverDelStatus;
     }
-
-    public ReceiverDTO(int mailNo, String number, char n) {
-    }
 }
