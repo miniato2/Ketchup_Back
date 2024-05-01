@@ -65,14 +65,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     Authority authority = Authority.valueOf(claims.get("role").toString());
                     System.out.println();
 
-                    System.out.println(authority.toString());
+                    System.out.println(authority);
                     Member tMember = new Member();
                     Position tPosition = new Position();
                     tPosition.setAuthority(authority);
 
                     tMember.setPosition(tPosition);
 
-                    System.out.println(tPosition.toString());
+                    System.out.println(tPosition);
 
 
                     System.out.println("----------------------토큰에담긴 사원번호------");

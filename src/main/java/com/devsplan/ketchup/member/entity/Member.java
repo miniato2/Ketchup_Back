@@ -2,6 +2,8 @@ package com.devsplan.ketchup.member.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "TBL_MEMBER")
 public class Member {
@@ -36,6 +38,11 @@ public class Member {
     private String status;
     @Column(name="MEMBER_IMGURL")
     private String imgUrl;
+
+    @Column(name = "MEMBER_RESIGNDATETIME")
+    private LocalDateTime resignDateTime;
+
+
 
 
     public String getMemberNo() {
@@ -148,6 +155,18 @@ public class Member {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getResignDateTime() {
+        return resignDateTime;
+    }
+
+    public void setResignDateTime(LocalDateTime resignDateTime) {
+        this.resignDateTime = resignDateTime;
     }
 
     @Override
