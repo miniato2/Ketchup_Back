@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -117,7 +118,7 @@ public class MemberRestTest {
 
     @ParameterizedTest
     @MethodSource("getMember")
-    void testInsertMember(MemberDTO member) {
+    void testInsertMember(MemberDTO member, MultipartFile memberImage) {
         // given
         // member 객체는 이미 getMember 메소드에서 생성된 값으로 주어집니다.
 
@@ -126,7 +127,7 @@ public class MemberRestTest {
         Assertions.assertDoesNotThrow(
                 () -> {
                     // 멤버 추가 로직 실행
-                    memberService.insertMember(member);
+                    memberService.insertMember(member,memberImage);
                 },
                 "멤버 추가 중 예외가 발생했습니다."  // 예외 발생 시 메시지
         );

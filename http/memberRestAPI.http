@@ -229,8 +229,12 @@ Accept: */*
 
 ### 사원가입 퇴사예정자
 POST http://localhost:8080/signup
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=WebAppBoundary
 Accept: */*
+
+--WebAppBoundary
+Content-Disposition: form-data; name="memberInfo"
+Content-Type: application/json
 
 {
   "memberNo": "6",
@@ -248,6 +252,12 @@ Accept: */*
   "status" : "재직중",
   "imgUrl" : "memberFilePath"
 }
+
+--WebAppBoundary
+Content-Disposition: form-data; name="memberImage"; filename="pikachu.png"
+
+< ./pikachu.png
+--WebAppBoundary--
 
 
 ### 로그인
