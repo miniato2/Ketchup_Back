@@ -29,7 +29,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String memberNo = loginToken.getName();  //로그인 토근에서 이름을 꺼낸다
         String memberPW = (String) loginToken.getCredentials(); //로그인 토큰에서 비밀번호를 꺼내는데 object 타입이라 다운캐스팅 필요.
 
-        System.out.println(authentication.toString());
+
 
         DetailsMember detailsMember = (DetailsMember) detailsService.loadUserByUsername(memberNo); // 아이디로 해당 유저가있는지 찾아오고
         //그정보를 유저정보로 저장

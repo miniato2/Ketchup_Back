@@ -58,7 +58,8 @@ public class MemberRestTest {
                                 ),
                                 "계좌번호 01023",
                                 "Y",
-                                "img_url"
+                                "memberFilePath"
+
                         )
                 )
         );

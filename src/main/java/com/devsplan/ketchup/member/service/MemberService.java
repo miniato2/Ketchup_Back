@@ -11,17 +11,21 @@ import com.devsplan.ketchup.member.repository.DepRepository;
 import com.devsplan.ketchup.member.repository.MemberRepository;
 import com.devsplan.ketchup.member.repository.PositionRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class MemberService {
 
-
     private final ModelMapper modelMapper;
+
     private final MemberRepository memberRepository;
 
     private final DepRepository depRepository;
@@ -44,11 +48,11 @@ public class MemberService {
 
     @Transactional
     public void insertMember (MemberDTO newMemberDTO){
-        System.out.println("서비스는 옴");
         Member newMember = modelMapper.map(newMemberDTO, Member.class);
         newMember.setMemberPW(passwordEncoder.encode(newMember.getMemberPW()));
         memberRepository.save(newMember);
     }
+
 
 
     @Transactional
@@ -108,4 +112,15 @@ public class MemberService {
 
         return rDepDTO;
     }
+
+    public void resignMember(String memberNo, MemberDTO memberDTO) {
+        memberDTO.setResignDateTime(LocalDateTime.now());
+        memberRepository.resignMember(memberNo,memberDTO);
+
+    }
+
+
+
+
+
 }
