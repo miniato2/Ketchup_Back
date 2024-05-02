@@ -1,9 +1,7 @@
 package com.devsplan.ketchup.schedule;
 
-import com.devsplan.ketchup.schedule.controller.ResponseMessage;
 import com.devsplan.ketchup.schedule.dto.DepartmentDTO;
 import com.devsplan.ketchup.schedule.dto.ScheduleDTO;
-import com.devsplan.ketchup.schedule.entity.Schedule;
 import com.devsplan.ketchup.schedule.repository.ScheduleRepository;
 import com.devsplan.ketchup.schedule.service.ScheduleService;
 import org.junit.jupiter.api.Assertions;
@@ -13,26 +11,16 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-//@AutoConfigureMockMvc
-public class ScheduleRestTests {
+public class ScheduleServiceTests {
 
     @Autowired
     private ScheduleService scheduleService;
@@ -71,7 +59,7 @@ public class ScheduleRestTests {
 
     private static Stream<Arguments> getScheduleInfo() {
         return Stream.of(
-                Arguments.of(2, 1, "신규 등록한 일정2", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
+                Arguments.of(3, 1, "신규 등록한 일정3", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
         );
     }
 
@@ -97,6 +85,7 @@ public class ScheduleRestTests {
         Assertions.assertDoesNotThrow(
                 () -> scheduleService.insertSchedule(newSchedule)
         );
+        System.out.println("새로 등록한 일정 = " + newSchedule);
     }
 
     @DisplayName("부서별 일정 수정")
