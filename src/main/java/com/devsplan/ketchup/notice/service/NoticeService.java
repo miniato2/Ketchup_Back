@@ -1,7 +1,6 @@
 package com.devsplan.ketchup.notice.service;
 
-import com.devsplan.ketchup.member.entity.Member;
-import com.devsplan.ketchup.member.entity.Position;
+import com.devsplan.ketchup.common.Criteria;
 import com.devsplan.ketchup.notice.dto.NoticeDTO;
 import com.devsplan.ketchup.notice.dto.NoticeFileDTO;
 import com.devsplan.ketchup.notice.entity.Notice;
@@ -20,12 +19,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -39,6 +39,9 @@ public class NoticeService {
     @Value("${image.image-dir}")
     private String IMAGE_DIR;
 
+    @Value("${image.image-url}")
+    private String IMAGE_URL;
+
     public NoticeService(NoticeRepository noticeRepository, NoticeFileRepository noticeFileRepository, ModelMapper modelMapper) {
         this.noticeRepository = noticeRepository;
         this.noticeFileRepository = noticeFileRepository;
@@ -46,14 +49,16 @@ public class NoticeService {
     }
 
     /* 공지사항 목록조회 & 페이징 & 상단고정 */
-    public Page<NoticeDTO> selectNoticeList(Pageable pageable, String title) {
+    public Page<NoticeDTO> selectNoticeList(Criteria cri, String title) {
 
-        pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() - 1,
-                pageable.getPageSize(), Sort.by("noticeNo").descending());
+        int index = cri.getPageNum() -1;
+        int count = cri.getAmount();
+
+        Pageable paging = PageRequest.of(index, count, Sort.by("noticeNo").descending());
 
         System.out.println("title : " + title);
         // 상단에 고정된 공지사항 조회
-        Page<Notice> fixedNoticeList = noticeRepository.findByNoticeFix(pageable, 'Y');
+        Page<Notice> fixedNoticeList = noticeRepository.findByNoticeFix(paging, 'Y');
 
         List<NoticeDTO> mergedList = new ArrayList<>();
 
@@ -65,12 +70,12 @@ public class NoticeService {
         // 검색어가 있으면 해당 공지사항 조회
         if (title != null && !title.isEmpty()) {
             String formattedTitle = "%" + title + "%"; // 검색어를 포함하는 제목을 찾기 위해 like 연산자 사용
-            Page<Notice> searchedNoticeList = noticeRepository.findByNoticeTitleContaining(formattedTitle, pageable);
+            Page<Notice> searchedNoticeList = noticeRepository.findByNoticeTitleContaining(formattedTitle, paging);
             mergedList.addAll(searchedNoticeList.stream().map(notice -> modelMapper.map(notice, NoticeDTO.class)).toList());
             log.info("searchedNoticeList : " + searchedNoticeList);
         } else {
             // 검색어가 없으면 전체 공지사항 조회
-            Page<Notice> allNoticeList = noticeRepository.findAll(pageable);
+            Page<Notice> allNoticeList = noticeRepository.findAll(paging);
             mergedList.addAll(allNoticeList.stream().map(notice -> modelMapper.map(notice, NoticeDTO.class)).toList());
             log.info("allNoticeList : " + allNoticeList);
         }
@@ -78,11 +83,12 @@ public class NoticeService {
         log.info("mergedList : " + mergedList);
 
         // 합쳐진 리스트를 페이지로 변환하여 반환
-        return new PageImpl<>(mergedList, pageable, mergedList.size());
+        return new PageImpl<>(mergedList, paging, mergedList.size());
     }
 
     /* 공지사항 상세조회(첨부파일 다운) */
     public NoticeDTO selectNoticeDetail(int noticeNo) {
+
         Notice foundNotice= noticeRepository.findById(noticeNo).orElse(null);
         if (foundNotice == null) {
             return null; // 해당 게시물이 존재하지 않으면 null 반환
@@ -92,15 +98,12 @@ public class NoticeService {
 
         // 게시물에 첨부된 파일 다운로드 링크 생성
         List<NoticeFile> noticeFiles = findNoticeFileByNoticeNo(noticeNo);
-        List<NoticeFileDTO> noticeFileDTOS = new ArrayList<>();
-        for (NoticeFile noticeFile : noticeFiles) {
-            NoticeFileDTO noticeFileDTO = modelMapper.map(noticeFile, NoticeFileDTO.class);
+        List<String> downloadLinks = noticeFiles.stream()
+                .map(noticeFile -> IMAGE_URL + noticeFile.getNoticeFileImgUrl())
+                .collect(Collectors.toList());
 
-            // 파일의 다운로드 경로를 클라이언트에 전달
-            noticeFileDTO.setNoticeFilePath(noticeFile.getNoticeFilePath());
-            noticeFileDTOS.add(noticeFileDTO);
-        }
-        noticeDTO.setNoticeFiles(noticeFileDTOS);
+        String noticeImgUrls = String.join(",", downloadLinks);
+        noticeDTO.setNoticeImgUrl(noticeImgUrls);
 
         log.info("noticeDTO : " + noticeDTO);
 
@@ -118,6 +121,7 @@ public class NoticeService {
         try {
             noticeDTO.setNoticeCreateDttm(new Timestamp(System.currentTimeMillis()));
             noticeDTO.setMemberNo(memberNo);
+
             Notice notice = modelMapper.map(noticeDTO, Notice.class);
 
             noticeRepository.save(notice);
@@ -137,42 +141,41 @@ public class NoticeService {
             noticeDTO.setMemberNo(memberNo);
             Notice savedNotice = modelMapper.map(noticeDTO, Notice.class);
 
+            noticeRepository.save(savedNotice);
+
+            List<NoticeFileDTO> noticeFileDTOList = new ArrayList<>();
+
             if (files != null && !files.isEmpty()) {
+                int fileCount = 0; // 등록된 파일 수를 세는 변수 추가
                 for (MultipartFile file : files) {
-                    String fileOriginName = UUID.randomUUID().toString().replace("-", "");
-                    String fileName = file.getOriginalFilename();
-                    String fileType = file.getContentType();
-                    String savedFilePath = FileUtils.saveFile(IMAGE_DIR, fileName, file);
-                    String filePath = savedFilePath + "\\" + fileName;
-
-                    // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
-                    File uploadDir = new File(IMAGE_DIR);
-                    if (!uploadDir.exists()) {
-                        uploadDir.mkdirs();
+                    if (fileCount >= 5) { // 등록된 파일이 5개 이상이면 더 이상 파일을 등록하지 않음
+                        break;
                     }
+                    String fileName = UUID.randomUUID().toString().replace("-", "");
+                    String replaceFileName = FileUtils.saveFile(IMAGE_URL, fileName, file);
 
-                    File newFile = new File(savedFilePath);
-                    file.transferTo(newFile);
-
-                    savedNotice.noticeFilePath(filePath);
-                    noticeRepository.save(savedNotice);
-
-                    NoticeFileDTO noticeFileDTO = new NoticeFileDTO();
-                    noticeFileDTO.setNoticeNo(savedNotice.getNoticeNo());
-                    noticeFileDTO.setNoticeFileName(fileName);
-                    noticeFileDTO.setNoticeFilePath(filePath);
-                    noticeFileDTO.setNoticeOriginName(fileOriginName);
-                    noticeFileDTO.setNoticeFileSize(file.getSize());
-                    noticeFileDTO.setNoticeFileType(fileType);
-
-                    NoticeFile noticeFile = modelMapper.map(noticeFileDTO, NoticeFile.class);
-                    noticeFileRepository.save(noticeFile);
+                    NoticeFileDTO noticeFileDTO = new NoticeFileDTO(savedNotice.getNoticeNo(), replaceFileName);
+                    noticeFileDTOList.add(noticeFileDTO);
+                    fileCount++;
                 }
 
+                // 파일 정보를 NoticeFile 엔티티로 변환하여 저장
+                List<NoticeFile> noticeFileList = noticeFileDTOList.stream()
+                        .map(noticeFileDTO -> modelMapper.map(noticeFileDTO, NoticeFile.class))
+                        .toList();
+
+                savedNotice.noticeImgUrl(noticeFileDTOList.get(0).getNoticeFileImgUrl());
+
+                noticeRepository.save(savedNotice);
+                noticeFileRepository.saveAll(noticeFileList);
                 log.info("공지 등록 성공");
+
             } else {
-                log.info("첨부파일이 없음");
+                log.info("첨부 파일이 없습니다.");
             }
+        } catch (IOException e) {
+            log.error("첨부파일 등록 실패: " + e.getMessage());
+            throw new RuntimeException(e);
         } catch (Exception e) {
             log.error("공지 등록 실패: {}", e.getMessage(), e);
         }
@@ -193,12 +196,12 @@ public class NoticeService {
                 foundNotice.noticeUpdateDttm(new Timestamp(System.currentTimeMillis()));
 
                 Notice savedNotice = noticeRepository.save(foundNotice);
+
                 if(savedNotice.getNoticeNo() == noticeNo) {
                     return "공지 수정 성공";
                 } else {
                     return "공지 수정 실패 : 엔티티 잘못 저장되었습니다.";
                 }
-
             } else {
                 return "공지 수정 권한이 없습니다.";
             }
@@ -215,45 +218,38 @@ public class NoticeService {
         try {
             Notice foundNotice = noticeRepository.findById(noticeNo).orElseThrow(IllegalArgumentException::new);
 
-            if(foundNotice.getMemberNo().equals(memberNo)) {
+            if (foundNotice.getMemberNo().equals(memberNo)) {
                 foundNotice.noticeTitle(noticeDTO.getNoticeTitle());
                 foundNotice.noticeContent(noticeDTO.getNoticeContent());
                 foundNotice.noticeFix(noticeDTO.getNoticeFix());
                 foundNotice.noticeUpdateDttm(new Timestamp(System.currentTimeMillis()));
 
                 Notice savedNotice = noticeRepository.save(foundNotice);
+                List<NoticeFileDTO> noticeFileDTOList = new ArrayList<>();
 
                 if (files != null && !files.isEmpty()) {
+                    int fileCount = 0; // 등록된 파일 수를 세는 변수 추가
                     for (MultipartFile file : files) {
-                        String fileOriginName = UUID.randomUUID().toString().replace("-", "");
-                        String fileName = file.getOriginalFilename();
-                        String fileType = file.getContentType();
-                        String savedFilePath = FileUtils.saveFile(IMAGE_DIR, fileName, file);
-                        String filePath = savedFilePath + "\\" + fileName;
-
-                        // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
-                        File uploadDir = new File(IMAGE_DIR);
-                        if (!uploadDir.exists()) {
-                            uploadDir.mkdirs();
+                        if (fileCount >= 5) { // 등록된 파일이 5개 이상이면 더 이상 파일을 등록하지 않음
+                            break;
                         }
+                        String fileName = UUID.randomUUID().toString().replace("-", "");
+                        String replaceFileName = FileUtils.saveFile(IMAGE_URL, fileName, file);
 
-                        File newFile = new File(savedFilePath);
-                        file.transferTo(newFile);
-
-                        savedNotice.noticeFilePath(filePath);
-                        noticeRepository.save(savedNotice);
-
-                        NoticeFileDTO noticeFileDTO = new NoticeFileDTO();
-                        noticeFileDTO.setNoticeNo(savedNotice.getNoticeNo());
-                        noticeFileDTO.setNoticeFileName(fileName);
-                        noticeFileDTO.setNoticeFilePath(filePath);
-                        noticeFileDTO.setNoticeOriginName(fileOriginName);
-                        noticeFileDTO.setNoticeFileSize(file.getSize());
-                        noticeFileDTO.setNoticeFileType(fileType);
-
-                        NoticeFile noticeFile = modelMapper.map(noticeFileDTO, NoticeFile.class);
-                        noticeFileRepository.save(noticeFile);
+                        NoticeFileDTO noticeFileDTO = new NoticeFileDTO(savedNotice.getNoticeNo(), replaceFileName);
+                        noticeFileDTOList.add(noticeFileDTO);
+                        fileCount++;
                     }
+
+                    // 파일 정보를 NoticeFile 엔티티로 변환하여 저장
+                    List<NoticeFile> noticeFileList = noticeFileDTOList.stream()
+                            .map(noticeFileDTO -> modelMapper.map(noticeFileDTO, NoticeFile.class))
+                            .toList();
+
+                    savedNotice.noticeImgUrl(noticeFileDTOList.get(0).getNoticeFileImgUrl());
+
+                    noticeRepository.save(savedNotice);
+                    noticeFileRepository.saveAll(noticeFileList);
 
                     return "공지 수정 성공";
                 } else {
@@ -281,16 +277,15 @@ public class NoticeService {
 
         List<NoticeFile> noticeFiles = noticeFileRepository.findByNoticeNo(noticeNo);
         for(NoticeFile noticeFile : noticeFiles) {
-            String filePath = noticeFile.getNoticeFilePath();
+            String imgUrl = noticeFile.getNoticeFileImgUrl();
 
             // 파일이 이미 삭제된 경우에 대한 예외처리 추가
-            boolean isFileDeleted = FileUtils.deleteFile(IMAGE_DIR, FilenameUtils.getName(filePath));
+            boolean isFileDeleted = FileUtils.deleteFile(IMAGE_DIR, FilenameUtils.getName(imgUrl));
             if (!isFileDeleted) {
-                log.error(filePath, "파일 삭제에 실패했습니다.");
+                log.error(imgUrl, "파일 삭제에 실패했습니다.");
             }
             noticeFileRepository.delete(noticeFile);
         }
-
         noticeRepository.delete(notice);
         return true;
     }

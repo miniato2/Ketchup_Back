@@ -70,7 +70,7 @@ public class BoardService {
     }
 
     @Transactional
-    public Map<String, Object> insertBoardWithFile(BoardDTO boardDTO, List<MultipartFile> files) throws IOException {
+    public Map<String, Object> insertBoardWithFile(BoardDTO boardDTO, List<MultipartFile> files) {
 
         Map<String, Object> result = new HashMap<>();
         List<BoardFileDTO> boardFileDTOList = new ArrayList<>();
@@ -110,9 +110,14 @@ public class BoardService {
                 log.info("첨부 파일이 없습니다.");
                 result.put("result", false);
             }
-        } catch (Exception e) {
+
+        } catch (IOException e) {
             log.error("첨부파일 등록 실패: " + e.getMessage());
             result.put("result", false);
+            throw new RuntimeException(e);
+
+        } catch (Exception e) {
+            log.error("공지 등록 실패: {}", e.getMessage(), e);
         }
         return result;
     }
