@@ -3,6 +3,10 @@ package com.devsplan.ketchup.member.dto;
 
 import com.devsplan.ketchup.common.Authority;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class PositionDTO {
     private int positionNo;
     private String positionName;
@@ -63,6 +67,13 @@ public class PositionDTO {
 
     public void setPositionStatus(char positionStatus) {
         this.positionStatus = positionStatus;
+    }
+
+    public List<String> getRoleList(){
+        if(this.authority.getRole().length() > 0){
+            return Arrays.asList(this.authority.getRole().split(","));
+        }
+        return new ArrayList<>();
     }
 
     @Override

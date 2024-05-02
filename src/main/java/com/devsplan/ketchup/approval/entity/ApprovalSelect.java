@@ -35,6 +35,8 @@ public class ApprovalSelect {
     private String appStatus;
     @Column(name = "APP_REFUSAL")
     private String refusal;
+    @Column(name = "APP_SEQUENCE")
+    private int sequence;
     @OneToMany
     @JoinColumn(name = "APPROVAL_NO")
     private List<AppFile> appFileList;
@@ -44,6 +46,7 @@ public class ApprovalSelect {
     @OneToMany
     @JoinColumn(name = "APPROVAL_NO")
     private List<RefLine> refLineList;
+
 
     protected ApprovalSelect(){}
 
@@ -86,6 +89,10 @@ public class ApprovalSelect {
         this.refusal = refusal;
         return this;
     }
+    public ApprovalSelect sequence(int sequence){
+        this.sequence = sequence;
+        return this;
+    }
     public ApprovalSelect appFileList(List<AppFile> appFileList){
         this.appFileList = appFileList;
         return this;
@@ -99,6 +106,6 @@ public class ApprovalSelect {
         return this;
     }
     public ApprovalSelect build(){
-        return new ApprovalSelect(approvalNo, member, form, appTitle, appContents, appDate, appFinalDate, appStatus, refusal, appFileList, appLineList, refLineList );
+        return new ApprovalSelect(approvalNo, member, form, appTitle, appContents, appDate, appFinalDate, appStatus, refusal, sequence, appFileList, appLineList, refLineList );
     }
 }

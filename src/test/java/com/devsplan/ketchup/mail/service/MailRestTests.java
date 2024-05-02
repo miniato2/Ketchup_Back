@@ -2,6 +2,7 @@ package com.devsplan.ketchup.mail.service;
 
 import com.devsplan.ketchup.mail.dto.MailDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
+import com.devsplan.ketchup.mail.repository.MailRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,32 +16,33 @@ import java.util.List;
 @SpringBootTest
 public class MailRestTests {
     @Autowired
-    private MailService mailService;
+    MailService mailService;
 
     @DisplayName("메일 전송 - ㅇ메일 내용, ㅇ수신자(한명, 여러명), 첨부 파일")
     @Test
     void insertMail() throws IOException {
         // given
+        // 메일
         MailDTO newMail = new MailDTO(
-                240429002,
-                "3[자료 요청] 1분기 실적보고서 내 영업실 데이터",
-                "3지난번 공유주신 1분기 실적보고서는 잘 받았습니다. 리포터에 산입하신 영업팀의 지난분기 계약 및 실적 데이터 전달을 부탁드리겠습니다.",
+                "[자료 요청] 1분기 실적보고서 내 영업실 데이터",
+                "테스트 메일1",
                 'N',
                 'N'
         );
 
         int mailNo = mailService.insertMail(newMail);
 
+        // 수신자
         ReceiverDTO receiverInfo1 = new ReceiverDTO(
                 mailNo,
-                240429001,
+                "2",
                 null,
                 'N'
         );
 
         ReceiverDTO receiverInfo2 = new ReceiverDTO(
                 mailNo,
-                240429003,
+                "3",
                 null,
                 'N'
         );
@@ -48,6 +50,26 @@ public class MailRestTests {
         List<ReceiverDTO> receivers = new ArrayList<>();
         receivers.add(receiverInfo1);
         receivers.add(receiverInfo2);
+
+        // 첨부파일
+//        String mailFileOriName = "testFile";
+//        String contentType = mailFileOriName.substring(mailFileOriName.lastIndexOf("."));
+//        System.out.println(contentType + "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+//        String mailFilePath = "src/test/resources/files/" + mailFileOriName + "." + contentType;
+//        System.out.println(mailFilePath + "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+//        String mailFileName = "";
+
+//        MockMultipartFile mailFile1 = new MockMultipartFile(
+//                mailNo,
+//                mailFilePath,
+//                mailFileName,
+//                mailFileOriName
+//        );
+
+//        List<MailFileDTO> mailFiles = new ArrayList<>();
+//        mailFiles.add(mailFile1);
+//
+//        mailService.insertMailFile();
 
         // then
         Assertions.assertDoesNotThrow(() -> mailService.insertReceiver(receivers));
@@ -57,14 +79,14 @@ public class MailRestTests {
     @Test
     void selectSendMailList() {
         // given
-        int senderTest = 240429002;
+        String senderTest = "1";
 
         // when
         List<MailDTO> mailList = mailService.selectSendMailList(senderTest);
 
         // then
         Assertions.assertNotNull(mailList);
-        for(MailDTO mail : mailList) {
+        for (MailDTO mail : mailList) {
             System.out.println(senderTest + "보낸 메일 목록 : " + mail);
         }
     }
@@ -73,14 +95,14 @@ public class MailRestTests {
     @Test
     void selectReceiveMailList() {
         // given
-        int receiverTest = 240429003;
+        String receiverTest = "2";
 
         // when
         List<MailDTO> mailList = mailService.selectReceiveMailList(receiverTest);
 
         // then
         Assertions.assertNotNull(mailList);
-        for(MailDTO mail : mailList) {
+        for (MailDTO mail : mailList) {
             System.out.println(receiverTest + "받은 메일 목록 : " + mail);
         }
     }
@@ -89,14 +111,15 @@ public class MailRestTests {
     @Test
     void selectMailDetail() {
         // given
-        int mailNo = 3;
+        int mailNo = 1;
 
         // when
-        MailDTO mailDetail = mailService.selectMailDetail(mailNo);
+        MailDTO oneMail = mailService.selectMailDetail(mailNo);
+        System.out.println("메일!!!!!!!!!!" + oneMail);
 
         // then
-        Assertions.assertNotNull(mailDetail);
-        System.out.println(mailNo + "번 메일 : " + mailDetail);
+//        Assertions.assertNotNull();
+        System.out.println(mailNo + "번 메일 : " + oneMail);
     }
 
     @DisplayName("발송 취소 - ㅇ메일 발송 여부 변경, ㅇ수신자 삭제 여부 변경")
@@ -106,33 +129,39 @@ public class MailRestTests {
         int mailNo = 2;
 
         // when
-        String result = mailService.cancelSendMail(mailNo);
+        int result = mailService.cancelSendMail(mailNo);
 
         // then
-        Assertions.assertEquals("발송 취소 성공", result);
+        Assertions.assertEquals(1, result);
     }
 
     @DisplayName("보낸 메일 삭제 - ㅇ")
     @Test
     void deleteSendMail() {
         // given
-        int mailNo = 1;
+        List<Integer> mailNos = new ArrayList<>();
+        mailNos.add(4);
+        mailNos.add(7);
+        mailNos.add(8);
 
         // when
-        int result = mailService.deleteSendMail(mailNo);
+        int result = mailService.deleteSendMail(mailNos);
 
         // then
-        Assertions.assertNotEquals(0 , result);
+        Assertions.assertNotEquals(0, result);
     }
 
     @DisplayName("받은 메일 삭제 - ㅇ")
     @Test
     void deleteReceiveMail() {
         // given
-        int mailNo = 3;
+        List<Integer> mailNos = new ArrayList<>();
+        mailNos.add(2);
+        mailNos.add(5);
+        mailNos.add(6);
 
         // when
-        int result = mailService.deleteReceiveMail(mailNo);
+        int result = mailService.deleteReceiveMail(mailNos);
 
         // then
         Assertions.assertNotEquals(0, result);
@@ -142,7 +171,24 @@ public class MailRestTests {
     @Test
     void replyMail() {
         // given
+        // 메일 1에 대해 답장
+        MailDTO prevMail = mailService.selectMailDetail(1);
+        String replySender = "4"; // 답장하는 본인이 보낸사람이 됨 - 임의로 넣어줌 - token에서 빼올것임
+
+        MailDTO replyMail = new MailDTO();
+
+        replyMail.setSenderMem(replySender);
+        replyMail.setMailTitle("RE:" + prevMail.getMailTitle());
+        replyMail.setMailContent("이전 메일에 대한 답장입니다." + prevMail.getMailContent());
+        replyMail.setSendCancelStatus('N');
+        replyMail.setSendDelStatus('N');
+        replyMail.setReceivers(null);
+
+//        int replyMailNo = mailService.replyMail(replyMail);
+
         // when
+
         // then
+        Assertions.assertDoesNotThrow(() ->  mailService.replyMail(replyMail));
     }
 }

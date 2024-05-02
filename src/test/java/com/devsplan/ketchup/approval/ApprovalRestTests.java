@@ -4,24 +4,35 @@ import com.devsplan.ketchup.approval.dto.*;
 
 import com.devsplan.ketchup.approval.repository.AppLineRepository;
 import com.devsplan.ketchup.approval.service.ApprovalService;
+import com.devsplan.ketchup.member.dto.MemberDTO;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Description;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+
+
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 @SpringBootTest
 public class ApprovalRestTests {
     @Autowired
     private ApprovalService service;
-    @Autowired
-    private AppLineRepository appRepository;
+    private static final Logger logger = LoggerFactory.getLogger(ApprovalRestTests.class);
 
-    @Description("기안 상신")
+    @DisplayName("기안 상신")
     @Test
     public void insertApprovalTest(){
         //given
@@ -38,15 +49,24 @@ public class ApprovalRestTests {
         refLineDTOList.add(refLineDTO);
 
         List<MultipartFile> appFileList = new ArrayList<>();
+        MockMultipartFile multipartFile = new MockMultipartFile("image", "image.png", MediaType.IMAGE_PNG_VALUE, "image".getBytes());
+        appFileList.add(multipartFile);
+
+        AppInputDTO appInputDTO = new AppInputDTO(approvalDTO, appLineDTOList, refLineDTOList);
+//        logger.info(multipartFile.toString());
+//
+//        Assertions.assertTrue(true);
 
         //when
-        String result = (String) service.insertApproval(approvalDTO, appLineDTOList, refLineDTOList, appFileList);
+        String result = (String) service.insertApproval(appInputDTO, appFileList);
 
         //then
         Assertions.assertEquals(result, "성공");
+
     }
 
-    @Description("내 기안 목록조회")
+
+    @DisplayName("내 기안 목록조회")
     @Test
     public void selectMyApprovalTest(){
         //given
@@ -59,20 +79,24 @@ public class ApprovalRestTests {
         status.add(status1);
         status.add(status2);
 
+
+//        Pageable page = null;
+
         //when
         List<ApprovalSelectDTO> approvalSelectDTOList = service.selectMyApproval(memberNo, status, searchValue);
 
         //then
-        Assertions.assertNotNull(approvalSelectDTOList);
+        Assertions.assertTrue(approvalSelectDTOList.size() == 4);
     }
-    @Description("결재대기중인 기안 목록조회")
+
+    @DisplayName("결재대기중인 기안 목록조회")
     @Test
     public void selectReceiveAppTest(){
         //given
         String memberNo = "2";
         String status1 = "대기";
         String status2 = "진행";
-        String searchValue = "";
+        String searchValue = "제";
 
         List<String> status = new ArrayList<>();
         status.add(status1);
@@ -80,12 +104,13 @@ public class ApprovalRestTests {
 
         //then
         List<ApprovalSelectDTO> approvalSelectDTOList = service.selectReceiveApp(memberNo, status, searchValue);
+        logger.info(approvalSelectDTOList.toString());
 
         //when
         Assertions.assertNotNull(approvalSelectDTOList);
     }
 
-    @Description("참조자 기안 목록조회")
+    @DisplayName("참조자 기안 목록조회")
     @Test
     public void selectRefAppTest(){
         //given
@@ -95,25 +120,13 @@ public class ApprovalRestTests {
 
         //then
         List<ApprovalSelectDTO> approvalSelectDTOList = service.selectRefApp(memberNo, status, searchValue);
+        logger.info(approvalSelectDTOList.toString());
 
         //when
         Assertions.assertNotNull(approvalSelectDTOList);
     }
 
-    @Test
-    public void testRepo(){
-        List<Integer> num = appRepository.findAppNoByMemberNo("2");
-        Assertions.assertTrue(num.size() == 1);
-    }
-    @Test
-    public void findAppline(){
-        int appNo = 1;
-        int count = appRepository.countSequence(appNo);
-
-        Assertions.assertTrue(count == 2);
-    }
-
-    @Description("기안상세 조회")
+    @DisplayName("기안상세 조회")
     @Test
     public void selectApproval(){
         int appNo = 1;
@@ -121,23 +134,21 @@ public class ApprovalRestTests {
         Assertions.assertTrue(approvalSelectDTO.getApprovalNo() == 1);
     }
 
-    @Description("기안 회수")
+    @DisplayName("기안 회수")
     @Test
     public void updateApproval() {
         int appNo = 1;
         String action = "회수";
-        String memberNo = "1";
 
         AppUpdateDTO appUpdateDTO = new AppUpdateDTO();
-        appUpdateDTO.setApprovalNo(appNo);
         appUpdateDTO.setAction(action);
 
-        String result = (String) service.updateApproval(appUpdateDTO);
+        String result = service.updateApproval(appNo);
 
         Assertions.assertTrue(result == "성공");
     }
 
-    @Description("기안 처리")
+    @DisplayName("기안 처리")
     @Test
     public void updateApprovaltest(){
         int appNo = 1;
@@ -145,12 +156,20 @@ public class ApprovalRestTests {
         String memberNo = "4";
         String refusal = "거절";
 
-        AppUpdateDTO appUpdateDTO = new AppUpdateDTO(appNo, action, refusal);
+        AppUpdateDTO appUpdateDTO = new AppUpdateDTO(action, refusal);
 
-        String result = (String) service.updateApproval2(appUpdateDTO, memberNo);
+        String result = service.updateApproval2(appUpdateDTO, memberNo, appNo);
 
         //결재 처리시 필요한 정보 appNo, 행위(회수, 결재, 전결, 반려), refusal, memberNo
         Assertions.assertTrue(result == "성공");
+    }
+
+    @DisplayName("양식 조회")
+    @Test
+    public void selectFormTest(){
+        int formNo = 1;
+
+        Assertions.assertNotNull(service.selectForm(formNo));
     }
 
 

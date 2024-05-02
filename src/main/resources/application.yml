@@ -30,7 +30,7 @@ image:
   add-resource-handler: /uploadfiles/**
 
   image-dir: src/main/resources/static/uploadfiles
-  image-url: http://mysql.coffit.today:3306/uploadfile
+  image-url: http-localhost-8080-uploadfiles
 
 jwt:
   key: asdkfjlkawdsjfw390r82309rjlkasdfja213498dlk

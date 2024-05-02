@@ -29,10 +29,6 @@ public class Position {
     public Position() {
     }
 
-    public Position(Authority authority) {
-    }
-
-
     public int getPositionNo() {
         return positionNo;
     }
@@ -53,21 +49,6 @@ public class Position {
         return positionStatus;
     }
 
-    public void setPositionNo(int positionNo) {
-        this.positionNo = positionNo;
-    }
-
-    public void setPositionName(String positionName) {
-        this.positionName = positionName;
-    }
-
-    public void setPositionLevel(int positionLevel) {
-        this.positionLevel = positionLevel;
-    }
-
-    public void setPositionStatus(char positionStatus) {
-        this.positionStatus = positionStatus;
-    }
 
     public List<String> getRoleList(){
         if(this.authority.getRole().length() > 0){
@@ -84,9 +65,7 @@ public class Position {
         this.positionStatus = positionStatus;
     }
 
-    public void setAuthority(Authority authority) {
-        this.authority = authority;
-    }
+
 
     @Override
     public String toString() {

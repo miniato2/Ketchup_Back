@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
-@Table(name = "RSC")
+@Table(name = "tbl_rsc")
 public class Rsc {
     @Id
     @Column(name = "RSC_NO", nullable = false)

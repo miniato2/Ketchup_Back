@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface NoticeFileRepository extends JpaRepository <NoticeFile, Integer> {
     List<NoticeFile> findByNoticeNo(int noticeNo);
-
 }

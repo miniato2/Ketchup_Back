@@ -8,6 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +31,7 @@ public class ApprovalService {
     private final AppLineRepository appLineRepository;
     private final RefLineRepository refLineRepository;
     private final AppFileRepository appFileRepository;
+    private final FormRepository formRepository;
     private final ApprovalSelectRepository approvalSelectRepository;
     private final ModelMapper modelMapper;
 
@@ -40,6 +45,7 @@ public class ApprovalService {
                            AppLineRepository appLineRepository,
                            RefLineRepository refLineRepository,
                            AppFileRepository appFileRepository,
+                           FormRepository formRepository,
                            ApprovalSelectRepository approvalSelectRepository,
                            ModelMapper modelMapper) {
 
@@ -47,17 +53,19 @@ public class ApprovalService {
         this.appLineRepository = appLineRepository;
         this.refLineRepository = refLineRepository;
         this.appFileRepository = appFileRepository;
+        this.formRepository = formRepository;
         this.approvalSelectRepository = approvalSelectRepository;
         this.modelMapper = modelMapper;
     }
 
-    //기안 등록
     @Transactional
-    public Object insertApproval(ApprovalDTO approvalDTO,
-                                 List<AppLineDTO> appLineDTOList,
-                                 List<RefLineDTO> refLineDTOList,
+    public Object insertApproval(AppInputDTO appInputDTO,
                                  List<MultipartFile> multipartFileList) {
         int result = 0;
+
+        ApprovalDTO approvalDTO = appInputDTO.getApproval();
+        List<AppLineDTO> appLineDTOList = appInputDTO.getAppLineDTOList();
+        List<RefLineDTO> refLineDTOList = appInputDTO.getRefLineDTOList();
 
         //기안 count + 1 => 현재 등록하려는 기안 번호 세팅
         int approvalNo = (int) approvalRepository.count() + 1;
@@ -108,8 +116,9 @@ public class ApprovalService {
             SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
             String appDate = sdf.format(now);
 
-            approvalDTO.setAppDate(appDate);
-            approvalDTO.setAppStatus("대기");
+            approvalDTO.setAppDate(appDate);    //등록일자
+            approvalDTO.setAppStatus("대기");    //상태 대기
+            approvalDTO.setSequence(1);         //순서 1로
 
             Approval approval = modelMapper.map(approvalDTO, Approval.class);
 
@@ -132,7 +141,9 @@ public class ApprovalService {
     //내가 작성한 기안 조회
     @Transactional
     public List<ApprovalSelectDTO> selectMyApproval(String memberNo, List<String> status, String searchValue) {
-//        Pageable paging = PageRequest.of(index, count, Sort.by("productCode").descending());
+
+        //결재자 참조자 멤버 엔티티가 연결되는 무언가가 있어야할듯
+
         List<ApprovalSelect> approvalSelectList = null;
 
         if(searchValue == null){
@@ -141,13 +152,10 @@ public class ApprovalService {
             approvalSelectList = approvalSelectRepository.findMyApprovalWithSearch(memberNo, status, searchValue);
         }
 
-        List<ApprovalSelectDTO> approvalSelectDTOList = null;
+//        Page<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.map(approval -> modelMapper.map(approval, ApprovalSelectDTO.class));
+        List<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.stream().map(approval -> modelMapper.map(approval, ApprovalSelectDTO.class)).collect(Collectors.toList());
 
-        approvalSelectDTOList = approvalSelectList.stream().map(approvalAnd ->
-                        modelMapper.map(approvalAnd, ApprovalSelectDTO.class))
-                        .collect(Collectors.toList());
-
-        log.info("List ===========================================");
+        log.info(approvalSelectDTOList.toString());
 
         return approvalSelectDTOList;
     }
@@ -156,13 +164,12 @@ public class ApprovalService {
     @Transactional
     public List<ApprovalSelectDTO> selectReceiveApp(String memberNo, List<String> status, String searchValue){
 
-        List<Integer> appNo = appLineRepository.findAppNoByMemberNo(memberNo);
         List<ApprovalSelect> approvalSelectList = null;
 
         if(searchValue == null){
-            approvalSelectList = approvalSelectRepository.findReceiveApp(status, appNo);
+            approvalSelectList = approvalSelectRepository.findReceiveApp(memberNo, status);
         }else{
-            approvalSelectList = approvalSelectRepository.findReceiveAppWithSearch(status, appNo, searchValue);
+            approvalSelectList = approvalSelectRepository.findReceiveAppWithSearch(memberNo, status, searchValue);
         }
         List<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.stream().map(approvalAnd ->
                         modelMapper.map(approvalAnd, ApprovalSelectDTO.class))
@@ -172,6 +179,7 @@ public class ApprovalService {
     }
 
     //참조선으로 등록된 기안 조회
+    @Transactional
     public List<ApprovalSelectDTO> selectRefApp(String memberNo, String status, String searchValue) {
         List<ApprovalSelect> approvalSelectList = null;
         List<Integer> appNo = refLineRepository.findAppNoByMemberNo(memberNo); //사원번호로 참조선에 등록된 기안번호를 조회
@@ -201,10 +209,10 @@ public class ApprovalService {
 
     //기안 회수
     @Transactional
-    public String updateApproval(AppUpdateDTO appUpdateDTO) {
+    public String updateApproval(int approvalNo) {
         int result = 0;
 
-        Approval approval = approvalRepository.findById(appUpdateDTO.getApprovalNo()).get();
+        Approval approval = approvalRepository.findById(approvalNo).get();
 
         if(approval.getAppStatus().equals("대기")){
             approval = approval.appStatus("회수").build();
@@ -215,10 +223,10 @@ public class ApprovalService {
 
     //기안 처리 (결재 반려)
     @Transactional
-    public String updateApproval2(AppUpdateDTO appUpdateDTO, String memberNo){
+    public String updateApproval2(AppUpdateDTO appUpdateDTO, String memberNo, int approvalNo){
         int result = 0;
-        Approval approval = approvalRepository.findById(appUpdateDTO.getApprovalNo()).get();
-        AppLine appLine = appLineRepository.findByMemberNoAndApprovalNo(memberNo, appUpdateDTO.getApprovalNo());
+        Approval approval = approvalRepository.findById(approvalNo).get();
+        AppLine appLine = appLineRepository.findByMemberNoAndApprovalNo(memberNo, approvalNo);
 
         java.util.Date now = new java.util.Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
@@ -226,7 +234,7 @@ public class ApprovalService {
 
         switch(appUpdateDTO.getAction()){
             case "결재" :
-                int count = appLineRepository.countSequence(appUpdateDTO.getApprovalNo());
+                int count = appLineRepository.countSequence(approvalNo);
                 if(appLine.getAlSequence() == count){
                     approval.appStatus("완료").appFinalDate(appDate).build();
                     appLine = appLine.alDate(appDate).build();
@@ -255,5 +263,11 @@ public class ApprovalService {
     }
 
 
+    //양식 선택 조회
+    public FormDTO selectForm(int formNo) {
+        Form form = formRepository.findById(formNo).get();
+        FormDTO formDTO = modelMapper.map(form, FormDTO.class);
 
+        return formDTO;
+    }
 }

@@ -3,7 +3,7 @@ package com.devsplan.ketchup.common;
 
 public enum Authority {
 
-    LV1("LV1"), LV2("LV2"), LV3("LV3"), ALL("LV1,LV2,LV3");
+    LV1("LV1"), LV2("LV2"), LV3("LV3"), ADMIN("ADMIN");
 
     private String role;
 
@@ -13,10 +13,6 @@ public enum Authority {
 
     public String getRole() {
         return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
 

@@ -10,18 +10,27 @@ import com.devsplan.ketchup.member.entity.Position;
 import com.devsplan.ketchup.member.repository.DepRepository;
 import com.devsplan.ketchup.member.repository.MemberRepository;
 import com.devsplan.ketchup.member.repository.PositionRepository;
+import com.devsplan.ketchup.util.FileUtils;
+import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class MemberService {
 
-
     private final ModelMapper modelMapper;
+
     private final MemberRepository memberRepository;
 
     private final DepRepository depRepository;
@@ -29,6 +38,12 @@ public class MemberService {
     private final PositionRepository positionRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${image.image-dir}")
+    private String IMAGE_DIR;
+
+    @Value("${image.image-url}")
+    private String IMAGE_URL;
 
 
 
@@ -43,12 +58,32 @@ public class MemberService {
 
 
     @Transactional
-    public void insertMember (MemberDTO newMemberDTO){
-        System.out.println("서비스는 옴");
-        Member newMember = modelMapper.map(newMemberDTO, Member.class);
-        newMember.setMemberPW(passwordEncoder.encode(newMember.getMemberPW()));
-        memberRepository.save(newMember);
+    public void insertMember (MemberDTO newMemberDTO, MultipartFile memberImage){
+
+        String imageName = UUID.randomUUID().toString().replace("-", "");
+        String replaceFileName = null;
+
+        try {
+            replaceFileName = FileUtils.saveFile(IMAGE_DIR,imageName,memberImage);
+
+            newMemberDTO.setImgUrl(replaceFileName);
+            newMemberDTO.setMemberPW(passwordEncoder.encode(newMemberDTO.getMemberPW()));
+
+            Member newMember = modelMapper.map(newMemberDTO,Member.class);
+
+            memberRepository.save(newMember);
+
+
+        }catch (Exception e){
+            System.out.println("사원등록 실패");
+            FileUtils.deleteFile(IMAGE_DIR,replaceFileName);
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+
     }
+
 
 
     @Transactional
@@ -76,15 +111,17 @@ public class MemberService {
     }
 
 
-    public Optional<Member> findMember(String memberNo){
+    public Optional<MemberDTO> findMember(String memberNo){
 
         Optional<Member> member = memberRepository.findByMemberNo(memberNo);
+
+        Optional<MemberDTO> memberDTO = Optional.ofNullable(modelMapper.map(member, MemberDTO.class));
 
         /*
          * 별도의 검증 로직 작성
          * */
 
-        return member;
+        return memberDTO;
     }
 
     @Transactional
@@ -108,4 +145,18 @@ public class MemberService {
 
         return rDepDTO;
     }
+
+    @Transactional
+    public void resignMember(String memberNo, MemberDTO memberDTO) {
+        memberDTO.setResignDateTime(LocalDateTime.now());
+      Member foundMember = memberRepository.findByMemberNo(memberNo).orElseThrow(IllegalAccessError::new);
+
+      foundMember = foundMember.status(memberDTO.getStatus()).build();
+
+    }
+
+
+
+
+
 }
