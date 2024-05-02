@@ -2,30 +2,21 @@ package com.devsplan.ketchup.board.controller;
 
 import com.devsplan.ketchup.board.dto.BoardDTO;
 import com.devsplan.ketchup.board.service.BoardService;
-import com.devsplan.ketchup.common.Pagenation;
-import com.devsplan.ketchup.common.PagingButton;
-import com.devsplan.ketchup.common.ResponseDTO;
-import io.jsonwebtoken.Claims;
+import com.devsplan.ketchup.common.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
 
 @Slf4j
 @RestController
@@ -34,44 +25,38 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @Value("${jwt.key}")
-    private String jwtSecret;
-
     public BoardController(BoardService boardService){
         this.boardService = boardService;
     }
 
-    /* 게시물 목록 조회(부서, 페이징) */
+    /* 게시물 목록 조회(부서, 페이징, 검색) */
     @GetMapping
-    public ResponseEntity<ResponseDTO> selectBoardList(@PageableDefault(sort = "boardCreateDttm", direction = Sort.Direction.DESC) Pageable pageable
+    public ResponseEntity<ResponseDTO> selectBoardList(@RequestParam(name = "offset", defaultValue = "1") String offset
                                                         , @RequestParam(required = false) String title
                                                         , @RequestHeader("Authorization") String token) {
-
         try {
-            Page<BoardDTO> boardList;
-            PagingButton paging;
-
-            // "Bearer " 이후의 토큰 값만 추출
-            String jwtToken = token.substring(7);
-
-            // 토큰 파싱하여 클레임 추출
-            Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
+            Criteria cri = new Criteria(Integer.valueOf(offset),10);
+            PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
 
             // 클레임에서 depNo 추출
-            Integer depNo = claims.get("depNo", Integer.class);
+            Integer depNo = decryptToken(token).get("depNo", Integer.class);
             System.out.println("depNo : " + depNo);
 
-                if (depNo == null) {
-                    // 부서 번호가 없는 경우 모든 부서의 자료실 정보를 조회합니다.
-                    boardList = boardService.selectAllBoards(pageable, title);
-                } else {
-                    // 특정 부서의 자료실 정보를 조회합니다.
-                    boardList = boardService.selectBoardList(depNo, pageable, title);
-                    System.out.println("depNo : " + depNo);
-                }
+            Page<BoardDTO> boardList;
 
-                paging = Pagenation.getPagingButtonInfo(boardList);
-                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "목록 조회 성공", paging));
+            if (depNo == null) {
+                // 부서 번호가 없는 경우 모든 부서의 자료실 정보를 조회합니다.
+                boardList = boardService.selectAllBoards(cri, title);
+                pagingResponseDTO.setData(boardList);
+            } else {
+                // 특정 부서의 자료실 정보를 조회합니다.
+                boardList = boardService.selectBoardList(depNo, cri, title);
+                pagingResponseDTO.setData(boardList);
+                System.out.println("depNo : " + depNo);
+            }
+
+            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) boardList.getTotalElements()));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "목록 조회 성공", pagingResponseDTO));
 
         } catch (ExpiredJwtException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
@@ -89,15 +74,7 @@ public class BoardController {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
-
-            // "Bearer " 이후의 토큰 값만 추출
-            String jwtToken = token.substring(7);
-
-            // 토큰 파싱하여 클레임 추출
-            Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-
-            // 클레임에서 depNo 추출
-            Integer depNo = claims.get("depNo", Integer.class);
+            Integer depNo = decryptToken(token).get("depNo", Integer.class);
 
             // 게시물 상세 정보 조회
             BoardDTO boardDTO = boardService.selectBoardDetail(boardNo);
@@ -125,17 +102,10 @@ public class BoardController {
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<ResponseDTO> insertBoard(@RequestPart("boardInfo") BoardDTO boardDTO
                                                    , @RequestPart(required = false, name="files") List<MultipartFile> files
-                                                   , @RequestHeader("Authorization") String token) throws IOException {
+                                                   , @RequestHeader("Authorization") String token) {
         try {
-            // "Bearer " 이후의 토큰 값만 추출
-            String jwtToken = token.substring(7);
-
-            // 토큰 파싱하여 클레임 추출
-            Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-
-            // 클레임에서 depNo 추출
-            String memberNo = claims.get("memberNo", String.class);
-            Integer depNo = claims.get("depNo", Integer.class);
+            String memberNo = decryptToken(token).get("memberNo", String.class);
+            Integer depNo = decryptToken(token).get("depNo", Integer.class);
 
             System.out.println("memberNo : " + memberNo);
             System.out.println("depNo : " + depNo);
@@ -150,14 +120,12 @@ public class BoardController {
                         .body(new ResponseDTO(HttpStatus.FORBIDDEN, "해당 부서의 게시물만 등록할 수 있습니다.", null));
             }
 
-//             파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
-            if (files != null && !files.isEmpty()) {
-
-            boardService.insertBoardWithFile(boardDTO, files);
+            if (!files.isEmpty()) {
+                boardService.insertBoardWithFile(boardDTO, files);
             } else {
-
                 boardService.insertBoard(boardDTO);
             }
+
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시물 등록 성공", null));
 
         } catch (ExpiredJwtException e) {
@@ -168,10 +136,7 @@ public class BoardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
         }
-
-
     }
-
 
     /* 게시물 수정 */
     @PutMapping("/{boardNo}")
@@ -180,18 +145,8 @@ public class BoardController {
                                                     , @RequestPart("files") List<MultipartFile> files
                                                     , @RequestHeader("Authorization") String token) {
 
-        // "Bearer " 이후의 토큰 값만 추출
-        String jwtToken = token.substring(7);
-
-        // 토큰 파싱하여 클레임 추출
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-
-        // 클레임에서 depNo 추출
-        String memberNo = claims.get("memberNo", String.class);
-
+        String memberNo = decryptToken(token).get("memberNo", String.class);
         System.out.println("memberNo : " + memberNo);
-
-
 
         // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
         if (files != null && !files.isEmpty()) {
@@ -209,14 +164,7 @@ public class BoardController {
     public ResponseEntity<ResponseDTO> deleteBoard(@PathVariable int boardNo, @RequestHeader("Authorization") String token) {
 
         try {
-            // "Bearer " 이후의 토큰 값만 추출
-            String jwtToken = token.substring(7);
-
-            // 토큰 파싱하여 클레임 추출
-            Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-
-            // 클레임에서 회원 번호 추출
-            String memberNo = claims.get("memberNo", String.class);
+            String memberNo = decryptToken(token).get("memberNo", String.class);
 
             // 게시물 삭제 시도
             boolean isDeleted = boardService.deleteBoard(boardNo, memberNo);

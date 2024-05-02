@@ -6,6 +6,7 @@ import com.devsplan.ketchup.board.entity.Board;
 import com.devsplan.ketchup.board.entity.BoardFile;
 import com.devsplan.ketchup.board.repository.BoardFileRepository;
 import com.devsplan.ketchup.board.repository.BoardRepository;
+import com.devsplan.ketchup.common.Criteria;
 import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -33,7 +32,6 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardFileRepository boardFileRepository;
     private final ModelMapper modelMapper;
-    private final FileUtils fileUtils;
 
     /* 이미지 저장 할 위치 및 응답 할 이미지 주소 */
     @Value("${image.image-dir}")
@@ -43,11 +41,10 @@ public class BoardService {
     private String IMAGE_URL;
 
     @Autowired
-    public BoardService(BoardRepository boardRepository, ModelMapper modelMapper, FileUtils fileUtils, BoardFileRepository boardFileRepository) {
+    public BoardService(BoardRepository boardRepository, ModelMapper modelMapper, BoardFileRepository boardFileRepository) {
         this.boardRepository = boardRepository;
         this.boardFileRepository = boardFileRepository;
         this.modelMapper = modelMapper;
-        this.fileUtils = fileUtils;
     }
 
     /* 부서별 자료실 게시물 등록 */
@@ -110,13 +107,10 @@ public class BoardService {
                 boardFileRepository.saveAll(boardFileList);
                 result.put("result", true);
             } else {
-                // 파일이 없는 경우에 대한 처리
                 log.info("첨부 파일이 없습니다.");
                 result.put("result", false);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-
             log.error("첨부파일 등록 실패: " + e.getMessage());
             result.put("result", false);
         }
@@ -124,30 +118,45 @@ public class BoardService {
     }
 
     /* 부서별 자료실 게시물 목록조회 & 페이징 & 목록 제목검색 조회 */
-    public Page<BoardDTO> selectBoardList(int departmentNo, Pageable pageable, String title) {
+    public Page<BoardDTO> selectBoardList(int departmentNo, Criteria cri, String title) {
 
-        pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() - 1,
-                pageable.getPageSize(),
-                Sort.by("boardNo").descending());
+        int index = cri.getPageNum() -1;
+        int count = cri.getAmount();
+
+        Pageable paging = PageRequest.of(index, count, Sort.by("boardNo").descending());
 
         Page<Board> boardList;
         if (title != null && !title.isEmpty()) {
-            boardList = boardRepository.findByDepartmentNoAndBoardTitleContaining(departmentNo,  pageable, title);
+            boardList = boardRepository.findByDepartmentNoAndBoardTitleContaining(departmentNo, paging, title);
         } else {
-            boardList = boardRepository.findByDepartmentNo(departmentNo, pageable);
+            boardList = boardRepository.findByDepartmentNo(departmentNo, paging);
         }
-        return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
+
+        return boardList.map(board -> {
+            BoardDTO boardDTO = new BoardDTO();
+            boardDTO.setBoardNo(board.getBoardNo());
+            boardDTO.setBoardTitle(board.getBoardTitle());
+            boardDTO.setMemberNo(board.getMemberNo());
+            boardDTO.setBoardCreateDttm(board.getBoardCreateDttm());
+            return boardDTO;
+        });
     }
 
     /* 부서 전체 게시물 목록조회(권한자-대표) */
-    public Page<BoardDTO> selectAllBoards(Pageable pageable, String title) {
+    public Page<BoardDTO> selectAllBoards(Criteria cri, String title) {
+
+        int index = cri.getPageNum() -1;
+        int count = cri.getAmount();
+
+        Pageable paging = PageRequest.of(index, count, Sort.by("boardNo").descending());
+
 
         try {
             Page<Board> boardList;
             if (title != null && !title.isEmpty()) {
-                boardList = boardRepository.findByBoardTitleContaining(pageable, title);
+                boardList = boardRepository.findByBoardTitleContaining(paging, title);
             } else {
-                boardList = boardRepository.findAll(pageable);
+                boardList = boardRepository.findAll(paging);
             }
 
             return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
@@ -168,17 +177,16 @@ public class BoardService {
         BoardDTO boardDTO = modelMapper.map(foundBoard, BoardDTO.class);
 
         // 게시물에 첨부된 파일 다운로드 링크 생성
-        /*List<BoardFile> boardFiles = findBoardFilesByBoardNo(boardNo);
-        List<BoardFileDTO> boardFileDTOs = new ArrayList<>();
-        for (BoardFile boardFile : boardFiles) {
-            BoardFileDTO boardFileDTO = modelMapper.map(boardFile, BoardFileDTO.class);
+        List<BoardFile> boardFiles = findBoardFilesByBoardNo(boardNo);
+        List<String> downloadLinks = boardFiles.stream()
+                .map(boardFile -> IMAGE_URL + boardFile.getBoardFileImgUrl())
+                .collect(Collectors.toList());
 
-            // 파일의 다운로드 경로를 클라이언트에 전달
-            boardFileDTO.setBoardFilePath(boardFile.getBoardFilePath());
+        // 리스트를 하나의 문자열로 결합
+        String boardImgUrls = String.join(",", downloadLinks);
+        boardDTO.setBoardImgUrl(boardImgUrls);
 
-            boardFileDTOs.add(boardFileDTO);
-        }
-        boardDTO.setBoardFiles(boardFileDTOs);*/
+        System.out.println("boardDTO : " + boardDTO);
 
         return boardDTO;
     }
@@ -212,7 +220,6 @@ public class BoardService {
                 return "게시물 수정 권한이 없습니다.";
             }
         } catch (Exception e) {
-            // 예외가 발생하면 로그에 기록합니다.
             log.error("게시물 수정 중 오류 발생: " + e.getMessage(), e);
             return "게시물 수정 중 오류가 발생했습니다.";
         }
@@ -222,16 +229,14 @@ public class BoardService {
     public String updateBoardWithFile(int boardNo, BoardDTO boardDTO, List<MultipartFile> files, String memberNo) {
 
         Board foundBoard = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
+        try {
+            if (foundBoard.getMemberNo().equals(memberNo)) {
+                foundBoard.boardTitle(boardDTO.getBoardTitle());
+                foundBoard.boardContent(boardDTO.getBoardContent());
+                foundBoard.boardUpdateDttm(new Timestamp(System.currentTimeMillis()));
 
-        if (foundBoard.getMemberNo().equals(memberNo)) {
-            foundBoard.boardTitle(boardDTO.getBoardTitle());
-            foundBoard.boardContent(boardDTO.getBoardContent());
-            foundBoard.boardUpdateDttm(new Timestamp(System.currentTimeMillis()));
-
-            Board updatedBoard = boardRepository.save(foundBoard);
-            List<BoardFileDTO> boardFileDTOList = new ArrayList<>();
-
-            try {
+                Board updatedBoard = boardRepository.save(foundBoard);
+                List<BoardFileDTO> boardFileDTOList = new ArrayList<>();
 
                 if (files != null && !files.isEmpty()) {
                     int fileCount = 0; // 등록된 파일 수를 세는 변수 추가
@@ -252,23 +257,24 @@ public class BoardService {
                             .map(boardFileDTO -> modelMapper.map(boardFileDTO, BoardFile.class))
                             .collect(Collectors.toList());
 
-
                     updatedBoard.boardImgUrl(boardFileDTOList.get(0).getBoardFileImgUrl());
+
                     boardRepository.save(updatedBoard);
-//                        boardFileRepository.save(boardFileList);
+
+                    boardFileRepository.saveAll(boardFileList);
                 } else {
                     // 파일이 없는 경우에 대한 처리
                     log.info("첨부 파일이 없습니다.");
                 }
-
-            } catch (IOException e) {
+            } else {
+                return "게시물 수정 권한이 없습니다.";
+            }
+        } catch (IOException e) {
             log.error("Failed to save or update board file: " + e.getMessage());
             return "파일 저장에 실패했습니다.";
-            }
-            return "게시물 수정 성공";
-        } else {
-            return "게시물 수정 권한이 없습니다.";
         }
+            return "게시물 수정 성공";
+
     }
 
     /* 부서별 자료실 게시물 삭제 */
@@ -287,7 +293,7 @@ public class BoardService {
         for (BoardFile boardFile : boardFiles) {
             String imgUrl = boardFile.getBoardFileImgUrl();
 
-            boolean isFileDeleted = fileUtils.deleteFile(IMAGE_DIR, FilenameUtils.getName(imgUrl));
+            boolean isFileDeleted = FileUtils.deleteFile(IMAGE_DIR, FilenameUtils.getName(imgUrl));
 
             if (!isFileDeleted) {
                 log.error("파일 삭제에 실패했습니다: {}", imgUrl);
