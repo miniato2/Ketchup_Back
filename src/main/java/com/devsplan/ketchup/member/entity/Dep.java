@@ -19,7 +19,47 @@ public class Dep {
     @Column(name="DEP_STATUS")
     private char status;
 
-    public Dep() {
+    protected Dep() {
+    }
+
+    public Dep(int depNo, String depName, String leader, int number, char status) {
+        this.depNo = depNo;
+        this.depName = depName;
+        this.leader = leader;
+        this.number = number;
+        this.status = status;
+    }
+
+    public Dep depNo(int depNo){
+        this.depNo = depNo;
+        return this;
+    }
+
+    public Dep depName(String depName){
+        this.depName = depName;
+        return this;
+
+    }
+
+    public Dep leader(String leader){
+        this.leader = leader;
+        return this;
+
+    }
+
+    public Dep number(int number){
+        this.number = number;
+        return this;
+    }
+
+    public Dep status(char status){
+        this.status= status;
+        return this;
+
+    }
+
+    public Dep build() {
+        return new Dep(depNo,depName,leader,number,status);
     }
 
     public int getDepNo() {
@@ -40,26 +80,6 @@ public class Dep {
 
     public char getStatus() {
         return status;
-    }
-
-    public void setDepNo(int depNo) {
-        this.depNo = depNo;
-    }
-
-    public void setDepName(String depName) {
-        this.depName = depName;
-    }
-
-    public void setLeader(String leader) {
-        this.leader = leader;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-    public void setStatus(char status) {
-        this.status = status;
     }
 
     @Override

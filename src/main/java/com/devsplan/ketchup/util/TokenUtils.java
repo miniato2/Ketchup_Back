@@ -2,6 +2,7 @@ package com.devsplan.ketchup.util;
 
 
 
+import com.devsplan.ketchup.member.dto.MemberDTO;
 import com.devsplan.ketchup.member.entity.Member;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,13 +94,13 @@ public class TokenUtils {
      * @param member
      * @return token (String)
      */
-    public static String generateJwtToken(Member member) {
+    public static String generateJwtToken(MemberDTO memberDTO) {
         Date expireTime = new Date(System.currentTimeMillis() + tokenValidateTime);
 
         JwtBuilder builder = Jwts.builder()
                 .setHeader(createHeader())
-                .setClaims(createClaims(member))
-                .setSubject("ketchup token : " + member.getMemberNo())
+                .setClaims(createClaims(memberDTO))
+                .setSubject("ketchup token : " + memberDTO.getMemberNo())
                 .signWith(SignatureAlgorithm.HS256, createSignature())
                 .setExpiration(expireTime);
 
@@ -127,7 +128,7 @@ public class TokenUtils {
      * @param member (사용자 정보)
      * @return Map<String, Object> (claims 정보)
      */
-    private static Map<String, Object> createClaims(Member member) {
+    private static Map<String, Object> createClaims(MemberDTO member) {
         Map<String, Object> claims = new HashMap<>();
 
         claims.put("memberNo", member.getMemberNo());

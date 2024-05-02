@@ -2,6 +2,7 @@ package com.devsplan.ketchup.auth.model;
 
 
 
+import com.devsplan.ketchup.member.dto.MemberDTO;
 import com.devsplan.ketchup.member.entity.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,39 +13,39 @@ import java.util.Optional;
 
 public class DetailsMember implements UserDetails {
 
-    private Member member;
+    private MemberDTO memberDTO;
 
     public DetailsMember() {
     }
 
-    public DetailsMember(Optional<Member> member) {
-        this.member = member.get();
+    public DetailsMember(Optional<MemberDTO> memberDTO) {
+        this.memberDTO = memberDTO.get();
     }
 
-    public Member getMember() {
-        return member;
+    public MemberDTO getMember() {
+        return memberDTO;
     }
 
-    public void setMember(Member member) {
-        this.member = member;
+    public void setMember(MemberDTO memberDTO) {
+        this.memberDTO = memberDTO;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        member.getPosition().getRoleList().forEach(role -> authorities.add(() -> role));
+        memberDTO.getPosition().getRoleList().forEach(role -> authorities.add(() -> role));
         return authorities;
     }
 
 
     @Override
     public String getPassword() {
-        return member.getMemberPW();
+        return memberDTO.getMemberPW();
     }
 
     @Override
     public String getUsername() {
-        return ""+member.getMemberNo();
+        return ""+memberDTO.getMemberNo();
     }
 
     @Override

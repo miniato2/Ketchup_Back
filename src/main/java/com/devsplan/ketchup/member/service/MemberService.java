@@ -111,15 +111,17 @@ public class MemberService {
     }
 
 
-    public Optional<Member> findMember(String memberNo){
+    public Optional<MemberDTO> findMember(String memberNo){
 
         Optional<Member> member = memberRepository.findByMemberNo(memberNo);
+
+        Optional<MemberDTO> memberDTO = Optional.ofNullable(modelMapper.map(member, MemberDTO.class));
 
         /*
          * 별도의 검증 로직 작성
          * */
 
-        return member;
+        return memberDTO;
     }
 
     @Transactional
@@ -144,9 +146,12 @@ public class MemberService {
         return rDepDTO;
     }
 
+    @Transactional
     public void resignMember(String memberNo, MemberDTO memberDTO) {
         memberDTO.setResignDateTime(LocalDateTime.now());
-        memberRepository.resignMember(memberNo,memberDTO);
+      Member foundMember = memberRepository.findByMemberNo(memberNo).orElseThrow(IllegalAccessError::new);
+
+      foundMember = foundMember.status(memberDTO.getStatus()).build();
 
     }
 
