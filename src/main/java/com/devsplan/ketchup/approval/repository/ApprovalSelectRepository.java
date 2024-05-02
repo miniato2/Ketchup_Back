@@ -1,8 +1,11 @@
 package com.devsplan.ketchup.approval.repository;
 
 import com.devsplan.ketchup.approval.entity.ApprovalSelect;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
 
 import java.util.List;
 
@@ -19,9 +22,12 @@ public interface ApprovalSelectRepository extends JpaRepository<ApprovalSelect, 
     @Query(value = "SELECT a FROM AppSelect a WHERE a.approvalNo IN :appNo AND a.appStatus = :status AND a.appTitle LIKE %:searchValue%")
     List<ApprovalSelect> findRefAppWithSearch(String status, String searchValue, List<Integer> appNo);
 
-    @Query(value = "SELECT a FROM AppSelect a WHERE a.approvalNo IN :appNo AND a.appStatus IN :status")
-    List<ApprovalSelect> findReceiveApp(List<String> status, List<Integer> appNo);
+    @Query("select a from AppSelect a join AppLine b on (a.approvalNo = b.approvalNo) where b.memberNo = :memberNo AND a.sequence = b.alSequence AND a.appStatus IN :status")
+    List<ApprovalSelect> findReceiveApp(String memberNo, List<String> status);
 
-    @Query(value = "SELECT a FROM AppSelect a WHERE a.approvalNo IN :appNo AND a.appStatus IN :status AND a.appTitle LIKE %:searchValue%")
-    List<ApprovalSelect> findReceiveAppWithSearch(List<String> status, List<Integer> appNo, String searchValue);
+    @Query("select a from AppSelect a join AppLine b on (a.approvalNo = b.approvalNo) where b.memberNo = :memberNo AND a.sequence = b.alSequence AND a.appStatus IN :status AND a.appTitle LIKE %:searchValue%")
+    List<ApprovalSelect> findReceiveAppWithSearch(String memberNo, List<String> status, String searchValue);
+
+
+
 }

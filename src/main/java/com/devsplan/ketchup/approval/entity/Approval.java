@@ -31,6 +31,8 @@ public class Approval {
     private String appStatus;
     @Column(name = "APP_REFUSAL")
     private String refusal;
+    @Column(name = "APP_SEQUENCE")
+    private int sequence;
 
     //대기 진행 회수 반려 완료
 
@@ -80,8 +82,13 @@ public class Approval {
         return this;
     }
 
+    public Approval sequence(int sequence){
+        this.sequence = sequence;
+        return this;
+    }
+
     public Approval build(){
-        return new Approval(approvalNo, memberNo, formNo, appTitle, appContents, appDate, appFinalDate, appStatus, refusal);
+        return new Approval(approvalNo, memberNo, formNo, appTitle, appContents, appDate, appFinalDate, appStatus, refusal, sequence);
     }
 
 

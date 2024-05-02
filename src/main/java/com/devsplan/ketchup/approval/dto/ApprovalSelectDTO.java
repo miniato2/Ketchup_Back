@@ -20,6 +20,7 @@ public class ApprovalSelectDTO {
     private String appFinalDate;
     private String appStatus;
     private String refusal;
+    private int sequence;
     private List<AppFileDTO> appFileList;
     private List<AppLineDTO> appLineList;
     private List<RefLineDTO> refLineList;

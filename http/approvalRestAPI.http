@@ -2,14 +2,14 @@
 POST http://localhost:8080/approvals
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 Accept: */*
-Authorization: BEARER eyJkYXRlIjoxNzE0MzY5MDUxNTk4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLqsJzrsJztjIAiLCJtZW1iZXJObyI6IjEiLCJwb3NpdGlvbkxldmVsIjoxLCJzdWIiOiJrZXRjaHVwIHRva2VuIDogMSIsInJvbGUiOiJMVjEiLCJwb3NpdGlvblN0YXR1cyI6IlkiLCJwb3NpdGlvbk5vIjoxLCJleHAiOjE3MTQ0NTU0NTF9.VPmNDXXCYrnB0j8H9Y4sygAuDXLnts81W7D3-BtuAcM
+Authorization: Bearer eyJkYXRlIjoxNzE0NDY1ODg3MjMzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NCwibWVtYmVyTm8iOiI0IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDQiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0NTUyMjg3fQ.FLq8j1DQsYZwA062rlBROnbuv3LfQfQIuidmmuxT8yI
 
 --WebAppBoundary
-Content-Disposition: form-data; name="memberNo"
+Content-Disposition: form-data; name="member.memberNo"
 
 1
 --WebAppBoundary
-Content-Disposition: form-data; name="formNo"
+Content-Disposition: form-data; name="form.formNo"
 
 1
 --WebAppBoundary
@@ -21,7 +21,7 @@ Content-Disposition: form-data; name="appContents"
 
 내용
 --WebAppBoundary
-Content-Disposition: form-data; name="appLineDTOList[0].almemberNo"
+Content-Disposition: form-data; name="appLineList[0].alMemberNo"
 
 2
 --WebAppBoundary
@@ -33,7 +33,7 @@ Content-Disposition: form-data; name="appLineDTOList[0].alType"
 
 일반
 --WebAppBoundary
-Content-Disposition: form-data; name="refLineDTOList[0].refmemberNo"
+Content-Disposition: form-data; name="refLineDTOList[0].refMemberNo"
 
 3
 --WebAppBoundary--
