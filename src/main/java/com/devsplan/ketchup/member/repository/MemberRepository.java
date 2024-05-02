@@ -3,6 +3,8 @@ package com.devsplan.ketchup.member.repository;
 
 import com.devsplan.ketchup.member.dto.MemberDTO;
 import com.devsplan.ketchup.member.entity.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,6 +20,8 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
 
     Optional<Member> findByMemberNo(String memberNo);
+
+    Page<Member> findByStatus(String 재직중, Pageable paging);
 
 
 //   List<Member> findAllMembers();
