@@ -1,7 +1,7 @@
 package com.devsplan.ketchup.mail.controller;
 
-import com.devsplan.ketchup.common.ResponseDTO;
 import com.devsplan.ketchup.mail.dto.MailDTO;
+import com.devsplan.ketchup.mail.dto.ReceiverDTO;
 import com.devsplan.ketchup.mail.service.MailService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -44,9 +45,6 @@ public class MailController {
             mailDto.getReceivers().get(i).setMailNo(sendMailNo);
             mailDto.getReceivers().get(i).setReceiverDelStatus('N');
         }
-
-        // 첨부 파일
-
 
         mailService.insertReceiver(mailDto.getReceivers());
 
@@ -110,5 +108,41 @@ public class MailController {
         }
 
         return result;
+    }
+
+    @PostMapping("/{mailNo}/reply")
+    public String replyMail(@RequestHeader("Authorization") String token,
+                            @PathVariable int mailNo,
+                            @RequestBody MailDTO mailDto){
+        // 사원 번호
+        String jwtToken = token.substring(7);
+        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
+        String memberNo = claims.get("memberNo", String.class);
+
+        // 이전 메일 가져오기
+        MailDTO prevMail = mailService.selectMailDetail(mailNo);
+
+        MailDTO replyMail = new MailDTO(
+                memberNo,
+                "RE:" + prevMail.getMailTitle(),
+                mailDto.getMailContent() + prevMail.getMailContent(),
+                'N',
+                'N'
+        );
+
+        int replyMailNo = mailService.replyMail(replyMail);
+
+        List<ReceiverDTO> replyReceivers = new ArrayList<>();
+        ReceiverDTO replyReceiver = new ReceiverDTO(
+                replyMailNo,
+                prevMail.getSenderMem(),
+                'N'
+        );
+
+        replyReceivers.add(replyReceiver);
+
+        mailService.insertReceiver(replyReceivers);
+
+        return "메일 답장 성공!!";
     }
 }

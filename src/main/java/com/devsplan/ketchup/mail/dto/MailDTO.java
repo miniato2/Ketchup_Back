@@ -22,15 +22,11 @@ public class MailDTO {
     public MailDTO() {
     }
 
-    public MailDTO(String mailTitle, String mailContent) {
+    public MailDTO(String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
         this.mailTitle = mailTitle;
         this.mailContent = mailContent;
-    }
-
-    public MailDTO(String mailTitle, String mailContent, List<ReceiverDTO> receivers) {
-        this.mailTitle = mailTitle;
-        this.mailContent = mailContent;
-        this.receivers = receivers;
+        this.sendCancelStatus = sendCancelStatus;
+        this.sendDelStatus = sendDelStatus;
     }
 
     public MailDTO(String senderMem, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {

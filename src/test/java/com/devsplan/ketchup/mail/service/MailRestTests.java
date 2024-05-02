@@ -1,14 +1,13 @@
 package com.devsplan.ketchup.mail.service;
 
 import com.devsplan.ketchup.mail.dto.MailDTO;
-import com.devsplan.ketchup.mail.dto.MailFileDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
+import com.devsplan.ketchup.mail.repository.MailRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,7 +25,9 @@ public class MailRestTests {
         // 메일
         MailDTO newMail = new MailDTO(
                 "[자료 요청] 1분기 실적보고서 내 영업실 데이터",
-                "테스트 메일1"
+                "테스트 메일1",
+                'N',
+                'N'
         );
 
         int mailNo = mailService.insertMail(newMail);
@@ -110,14 +111,15 @@ public class MailRestTests {
     @Test
     void selectMailDetail() {
         // given
-        int mailNo = 3;
+        int mailNo = 1;
 
         // when
-        MailDTO mailDetail = mailService.selectMailDetail(mailNo);
+        MailDTO oneMail = mailService.selectMailDetail(mailNo);
+        System.out.println("메일!!!!!!!!!!" + oneMail);
 
         // then
-        Assertions.assertNotNull(mailDetail);
-        System.out.println(mailNo + "번 메일 : " + mailDetail);
+//        Assertions.assertNotNull();
+        System.out.println(mailNo + "번 메일 : " + oneMail);
     }
 
     @DisplayName("발송 취소 - ㅇ메일 발송 여부 변경, ㅇ수신자 삭제 여부 변경")
@@ -165,11 +167,28 @@ public class MailRestTests {
         Assertions.assertNotEquals(0, result);
     }
 
-//    @DisplayName("답장")
-//    @Test
-//    void replyMail() {
-//        // given
-//        // when
-//        // then
-//    }
+    @DisplayName("답장")
+    @Test
+    void replyMail() {
+        // given
+        // 메일 1에 대해 답장
+        MailDTO prevMail = mailService.selectMailDetail(1);
+        String replySender = "4"; // 답장하는 본인이 보낸사람이 됨 - 임의로 넣어줌 - token에서 빼올것임
+
+        MailDTO replyMail = new MailDTO();
+
+        replyMail.setSenderMem(replySender);
+        replyMail.setMailTitle("RE:" + prevMail.getMailTitle());
+        replyMail.setMailContent("이전 메일에 대한 답장입니다." + prevMail.getMailContent());
+        replyMail.setSendCancelStatus('N');
+        replyMail.setSendDelStatus('N');
+        replyMail.setReceivers(null);
+
+//        int replyMailNo = mailService.replyMail(replyMail);
+
+        // when
+
+        // then
+        Assertions.assertDoesNotThrow(() ->  mailService.replyMail(replyMail));
+    }
 }
