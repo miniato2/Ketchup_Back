@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MailService {
@@ -41,7 +42,6 @@ public class MailService {
     // 수신자 등록
     @Transactional
     public void insertReceiver(List<ReceiverDTO> receivers) {
-
         for(ReceiverDTO list : receivers) {
             Receiver receiver = new Receiver();
 
@@ -55,6 +55,10 @@ public class MailService {
 
     public List<MailDTO> selectSendMailList(String senderMem) {
         List<Mail> mailList = mailRepository.findBySenderMemAndSendDelStatus(senderMem, 'N');
+        for(Mail list : mailList) {
+            List<Receiver> mailReceiver = receiverRepository.findByMailNo(list.getMailNo());
+        }
+        System.out.println(mailList);
 
         return mailList.stream()
                 .map(mail -> new MailDTO(
@@ -65,15 +69,14 @@ public class MailService {
                         , mail.getSendMailTime()
                         , mail.getSendCancelStatus()
                         , mail.getSendDelStatus()
-                        , mail.getReceivers().stream()
-                        .map(receiver -> new ReceiverDTO(
-                                receiver.getMailNo(),
-                                receiver.getReceiverMem(),
-                                receiver.getReadTime(),
-                                receiver.getReceiverDelStatus()
-                        )).toList()
-                ))
-                .toList();
+//                        , mailReceiver.stream()
+//                        .map(receiver -> new ReceiverDTO(
+//                                receiver.getMailNo(),
+//                                receiver.getReceiverMem(),
+//                                receiver.getReadTime(),
+//                                receiver.getReceiverDelStatus()
+//                        )).toList()
+                )).toList();
     }
 
     public List<MailDTO> selectReceiveMailList(String receiverMem) {
@@ -103,8 +106,8 @@ public class MailService {
     }
 
     public MailDTO selectMailDetail(int mailNo) {
-        char delStatus = 'N';
-        Mail mailDetail = mailRepository.findByMailNoAndSendDelStatus(mailNo, delStatus);
+        Mail mailDetail = mailRepository.findByMailNoAndSendDelStatus(mailNo, 'N');
+        List<Receiver> mailReceiver = receiverRepository.findByMailNo(mailNo);
         System.out.println(mailDetail);
 
         return new MailDTO(
@@ -115,7 +118,7 @@ public class MailService {
                 , mailDetail.getSendMailTime()
                 , mailDetail.getSendCancelStatus()
                 , mailDetail.getSendDelStatus()
-                , mailDetail.getReceivers().stream()
+                , mailReceiver.stream()
                     .map(receiver -> new ReceiverDTO(
                             receiver.getMailNo(),
                             receiver.getReceiverMem(),
@@ -129,7 +132,7 @@ public class MailService {
     public int cancelSendMail(int mailNo) {
         List<Receiver> mailRead = receiverRepository.findByMailNo(mailNo);
 
-        int result = -1;
+        int result = 0;
         for(Receiver list : mailRead) {
             if(list.getReadTime() != null) {
                 result = 0; break;
@@ -186,5 +189,20 @@ public class MailService {
         System.out.println("수신 삭제 : " + result);
 
         return result;
+    }
+
+    @Transactional
+    public int replyMail(MailDTO replyMail) {
+        Mail mail = new Mail(
+                replyMail.getSenderMem(),
+                replyMail.getMailTitle(),
+                replyMail.getMailContent(),
+                replyMail.getSendCancelStatus(),
+                replyMail.getSendDelStatus()
+        );
+
+        mailRepository.save(mail);
+
+        return mail.getMailNo();
     }
 }

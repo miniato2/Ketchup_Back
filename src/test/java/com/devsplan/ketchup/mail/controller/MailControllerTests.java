@@ -58,8 +58,6 @@ public class MailControllerTests {
 
         testMail.setReceivers(testReceiver);
 
-        
-
         // when
 
         // then
@@ -88,4 +86,10 @@ public class MailControllerTests {
                 .andExpect(status().isOk())
                 .andDo(System.out::println);
     }
+
+//    @DisplayName("답장")
+//    @Test
+//    void replyMail() {
+//
+//    }
 }

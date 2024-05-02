@@ -33,19 +33,4 @@ public class Receiver {
     private char receiverDelStatus;
 
     public Receiver() {}
-
-    public Receiver(int mailNo, String receiverMem, Timestamp readTime, char receiverDelStatus) {
-        this.mailNo = mailNo;
-        this.receiverMem = receiverMem;
-        this.readTime = readTime;
-        this.receiverDelStatus = receiverDelStatus;
-    }
-
-    public Receiver(int receiverNo, int mailNo, String receiverMem, Timestamp readTime, char receiverDelStatus) {
-        this.receiverNo = receiverNo;
-        this.mailNo = mailNo;
-        this.receiverMem = receiverMem;
-        this.readTime = readTime;
-        this.receiverDelStatus = receiverDelStatus;
-    }
 }

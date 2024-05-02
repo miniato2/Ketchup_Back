@@ -40,9 +40,9 @@ public class Mail {
     @Column(name = "SEND_DEL_STATUS", nullable = false)
     private char sendDelStatus;
 
-    @Setter
-    @OneToMany(mappedBy = "mailNo", cascade = CascadeType.PERSIST)
-    private List<Receiver> Receivers;
+//    @Setter
+//    @OneToMany(mappedBy = "mailNo", cascade = CascadeType.PERSIST)
+//    private List<Receiver> Receivers;
 
 //    @OneToMany(mappedBy = "mailNo")
 //    private List<MailFile> mailFiles;
@@ -90,26 +90,5 @@ public class Mail {
         this.mailContent = mailContent;
         this.sendCancelStatus = sendCancelStatus;
         this.sendDelStatus = sendDelStatus;
-    }
-
-    public Mail(int mailNo, String senderMem, String mailTitle, String mailContent, Timestamp sendMailTime, char sendCancelStatus, char sendDelStatus) {
-        this.mailNo = mailNo;
-        this.senderMem = senderMem;
-        this.mailTitle = mailTitle;
-        this.mailContent = mailContent;
-        this.sendMailTime = sendMailTime;
-        this.sendCancelStatus = sendCancelStatus;
-        this.sendDelStatus = sendDelStatus;
-    }
-
-    public Mail(int mailNo, String senderMem, String mailTitle, String mailContent, Timestamp sendMailTime, char sendCancelStatus, char sendDelStatus, List<Receiver> receivers) {
-        this.mailNo = mailNo;
-        this.senderMem = senderMem;
-        this.mailTitle = mailTitle;
-        this.mailContent = mailContent;
-        this.sendMailTime = sendMailTime;
-        this.sendCancelStatus = sendCancelStatus;
-        this.sendDelStatus = sendDelStatus;
-        Receivers = receivers;
     }
 }
