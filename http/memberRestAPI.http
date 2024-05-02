@@ -253,7 +253,6 @@ Content-Disposition: form-data; name="memberImage"; filename="pikachu.png"
 ### 사원가입 김현지
 POST http://localhost:8080/signup
 Content-Type: multipart/form-data; boundary=WebAppBoundary
-Accept: */*
 
 --WebAppBoundary
 Content-Disposition: form-data; name="memberInfo"
@@ -321,8 +320,8 @@ Content-Type: application/json
 Accept: */*
 
 {
-  "memberNo": "1",
-  "memberPW": "3158"
+  "memberNo": "5",
+  "memberPW": "5555"
 }
 
 ### GET 요청

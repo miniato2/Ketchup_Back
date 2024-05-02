@@ -17,18 +17,14 @@ import java.util.List;
 @ToString
 public class BoardDTO {
 
-
     private int boardNo;                        // 게시물 번호
     private String memberNo;                       // 사번
     private int departmentNo;                   // 부서번호
     private String boardTitle;                  // 게시물 제목
-    private List<BoardFileDTO> boardFiles;       // 게시물 파일들
     private String boardContent;                // 게시물 내용
     private Timestamp boardCreateDttm;      // 게시글 등록일시
     private Timestamp boardUpdateDttm;      // 게시글 수정일시
-    private String boardFilePath;
-
-
+    private String boardImgUrl;
 
     public void setBoardCreateDttm(Timestamp timestamp) {
         this.boardCreateDttm = timestamp;
@@ -37,5 +33,6 @@ public class BoardDTO {
     public void setBoardUpdateDttm(Timestamp timestamp) {
         this.boardUpdateDttm = timestamp;
     }
+
 
 }

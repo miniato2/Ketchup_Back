@@ -36,8 +36,8 @@ public class Board {
     @LastModifiedDate
     private Timestamp boardUpdateDttm;
 
-    @Column(name = "board_file_path")
-    private String boardFilePath;
+    @Column(name = "board_imgurl")
+    private String boardImgUrl;
 
     public Board boardTitle(String val) {
         this.boardTitle = val;
@@ -46,11 +46,6 @@ public class Board {
 
     public Board boardContent(String val) {
         this.boardContent = val;
-        return this;
-    }
-
-    public Board boardFilePath(String val) {
-        this.boardFilePath = val;
         return this;
     }
 
@@ -64,7 +59,12 @@ public class Board {
         return this;
     }
 
-    public Board(int boardNo, String boardTitle, String boardContent, String memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm, String boardFilePath) {
+    public Board boardImgUrl(String val) {
+        this.boardImgUrl = val;
+        return this;
+    }
+
+    public Board(int boardNo, String boardTitle, String boardContent, String memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm, String boardImgUrl) {
         this.boardNo = boardNo;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
@@ -72,7 +72,7 @@ public class Board {
         this.departmentNo = departmentNo;
         this.boardCreateDttm = boardCreateDttm;
         this.boardUpdateDttm = boardUpdateDttm;
-        this.boardFilePath = boardFilePath;
+        this.boardImgUrl = boardImgUrl;
     }
 
     protected Board() {}
@@ -83,10 +83,6 @@ public class Board {
 
     public String getBoardTitle() {
         return boardTitle;
-    }
-
-    public String getBoardFilePath() {
-        return boardFilePath;
     }
 
     public String getBoardContent() {
@@ -121,7 +117,4 @@ public class Board {
                 ", boardUpdateDttm=" + boardUpdateDttm +
                 '}';
     }
-
-
-
 }
