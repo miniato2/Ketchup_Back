@@ -17,6 +17,7 @@ public class ApprovalDTO {
     private String appFinalDate; //완료날짜
     private String appStatus;  //상태 (대기, 진행, 완료, 반려, 회수)
     private String refusal; //반려 사유
+    private int sequence; //결재순서
 
     public ApprovalDTO(String appMemberNo, int formNo, String appTitle, String appContents) {
         this.appMemberNo = appMemberNo;
