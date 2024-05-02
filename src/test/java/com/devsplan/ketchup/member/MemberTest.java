@@ -7,24 +7,18 @@ import com.devsplan.ketchup.member.dto.MemberDTO;
 
 import com.devsplan.ketchup.member.dto.PositionDTO;
 import com.devsplan.ketchup.member.service.MemberService;
-import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @SpringBootTest
-public class MemberRestTest {
+public class MemberTest {
 
     @Autowired
     private MemberService memberService;
@@ -190,7 +184,6 @@ public class MemberRestTest {
 
 
     }
-
 
 
 

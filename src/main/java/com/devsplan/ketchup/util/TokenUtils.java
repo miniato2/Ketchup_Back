@@ -91,7 +91,7 @@ public class TokenUtils {
     /**
      * description. 토큰을 생성하는 메소드
      *
-     * @param member
+     * @param memberDTO
      * @return token (String)
      */
     public static String generateJwtToken(MemberDTO memberDTO) {
@@ -151,4 +151,19 @@ public class TokenUtils {
         byte[] secretBytes = DatatypeConverter.parseBase64Binary(jwtSecretKey);
         return new SecretKeySpec(secretBytes, SignatureAlgorithm.HS256.getJcaName());
     }
+
+    public static Claims decryptToken(String token){
+
+
+        String jwtToken = token.substring(7);
+
+        Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(jwtToken).getBody();
+
+
+        return claims;
+
+    }
+
+
+
 }
