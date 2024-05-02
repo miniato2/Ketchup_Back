@@ -11,25 +11,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
+import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
+
 
 @RestController
 @PreAuthorize("hasAuthority('LV1')")
 public class TestController {
 
-    @Value("${jwt.key}")
-    private String jwtSecret;
+
 
 
     @GetMapping("/test")
     public String test(@RequestHeader("Authorization") String token){
-        // "Bearer " 이후의 토큰 값만 추출
-        String jwtToken = token.substring(7);
 
-        // 토큰 파싱하여 클레임 추출
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
+        decryptToken(token);
 
-        // 클레임에서 depNo 추출
-        int depNo = claims.get("depNo", Integer.class);
+
+        int depNo = decryptToken(token).get("depNo", Integer.class);
 
         return "test GET: " + depNo;
     }

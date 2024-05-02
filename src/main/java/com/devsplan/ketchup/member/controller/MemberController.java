@@ -28,8 +28,13 @@ public class MemberController {
 
     }
 
+
+
     @PostMapping("/signup")
     public String signup(@RequestPart("memberInfo") MemberDTO newMemberDTO, @RequestPart("memberImage") MultipartFile memberImage){
+
+
+        System.out.println("memberImage:   " + memberImage);
 
         int rPositionNo = newMemberDTO.getPosition().getPositionNo();
 
@@ -81,7 +86,7 @@ public class MemberController {
         memberService.updatePosition(positionDTO);
 
 
-        return "Position save!";
+        return "Position update finish!";
 
 
     }
