@@ -5,6 +5,7 @@ import com.devsplan.ketchup.auth.model.DetailsMember;
 import com.devsplan.ketchup.common.AuthConstants;
 import com.devsplan.ketchup.common.utils.ConvertUtil;
 
+import com.devsplan.ketchup.member.dto.MemberDTO;
 import com.devsplan.ketchup.member.entity.Member;
 import com.devsplan.ketchup.util.TokenUtils;
 import jakarta.servlet.ServletException;
@@ -22,16 +23,16 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-        Member member = ((DetailsMember) authentication.getPrincipal()).getMember();
-        JSONObject jsonValue = (JSONObject) ConvertUtil.converObjectToJsonObject(member);
+        MemberDTO memberDTO = ((DetailsMember) authentication.getPrincipal()).getMember();
+        JSONObject jsonValue = (JSONObject) ConvertUtil.converObjectToJsonObject(memberDTO);
         HashMap<String, Object> responseMap = new HashMap<>();
 
         JSONObject jsonObject;
-        if(member.getState().equals("N")) {
+        if(memberDTO.getStatus().equals("N")) {
             responseMap.put("userInfo", jsonValue);
             responseMap.put("message", "휴면 상태의 계정입니다.");
         } else {
-            String token = TokenUtils.generateJwtToken(member);
+            String token = TokenUtils.generateJwtToken(memberDTO);
             responseMap.put("userInfo", jsonValue);
             responseMap.put("message", "로그인 성공입니다.");
 

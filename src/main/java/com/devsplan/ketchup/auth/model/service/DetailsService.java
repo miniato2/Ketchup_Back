@@ -24,7 +24,7 @@ public class DetailsService implements UserDetailsService {
     /**
      * description. 로그인 요청 시 사용자의 id를 받아 DB에서 사용자 정보를 가져오는 메소드
      *
-     * @param username the username identifying the user whose data is required.
+     * @param memberNo the username identifying the user whose data is required.
      * @return UserDetails
      * @throws UsernameNotFoundException
      */
@@ -41,4 +41,6 @@ public class DetailsService implements UserDetailsService {
 
 
     }
+
+
 }

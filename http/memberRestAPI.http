@@ -117,8 +117,12 @@ Accept: */*
 
 ### 사원가입 이후영
 POST http://localhost:8080/signup
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=WebAppBoundary
 Accept: */*
+
+--WebAppBoundary
+Content-Disposition: form-data; name="memberInfo"
+Content-Type: application/json
 
 {
   "memberNo": "1",
@@ -136,11 +140,25 @@ Accept: */*
   "status" : "재직중",
   "imgUrl" : "memberFilePath"
 }
+--WebAppBoundary
+Content-Disposition: form-data; name="memberImage"; filename="pikachu.png"
+
+< ./pikachu.png
+--WebAppBoundary--
+
+
+
+
+
 
 ### 사원가입 박다은
 POST http://localhost:8080/signup
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=WebAppBoundary
 Accept: */*
+
+--WebAppBoundary
+Content-Disposition: form-data; name="memberInfo"
+Content-Type: application/json
 
 {
   "memberNo": "2",
@@ -158,15 +176,26 @@ Accept: */*
   "status" : "재직중",
   "imgUrl" : "memberFilePath"
 }
+--WebAppBoundary
+Content-Disposition: form-data; name="memberImage"; filename="pikachu.png"
+
+< ./pikachu.png
+--WebAppBoundary--
+
+
 
 
 ### 사원가입 이진우
 POST http://localhost:8080/signup
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=WebAppBoundary
 Accept: */*
 
+--WebAppBoundary
+Content-Disposition: form-data; name="memberInfo"
+Content-Type: application/json
+
 {
-  "memberNo": "3",
+ "memberNo": "3",
   "memberName": "이진우",
   "memberPW" : "3333",
   "phone": "010-3333-3333",
@@ -181,11 +210,21 @@ Accept: */*
   "status" : "재직중",
   "imgUrl" : "memberFilePath"
 }
+--WebAppBoundary
+Content-Disposition: form-data; name="memberImage"; filename="pikachu.png"
+
+< ./pikachu.png
+--WebAppBoundary--
+
 
 ### 사원가입 최승욱
 POST http://localhost:8080/signup
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=WebAppBoundary
 Accept: */*
+
+--WebAppBoundary
+Content-Disposition: form-data; name="memberInfo"
+Content-Type: application/json
 
 {
   "memberNo": "4",
@@ -203,11 +242,22 @@ Accept: */*
   "status" : "재직중",
   "imgUrl" : "memberFilePath"
 }
+--WebAppBoundary
+Content-Disposition: form-data; name="memberImage"; filename="pikachu.png"
+
+< ./pikachu.png
+--WebAppBoundary--
+
+
 
 ### 사원가입 김현지
 POST http://localhost:8080/signup
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=WebAppBoundary
 Accept: */*
+
+--WebAppBoundary
+Content-Disposition: form-data; name="memberInfo"
+Content-Type: application/json
 
 {
   "memberNo": "5",
@@ -225,6 +275,11 @@ Accept: */*
   "status" : "재직중",
   "imgUrl" : "memberFilePath"
 }
+--WebAppBoundary
+Content-Disposition: form-data; name="memberImage"; filename="pikachu.png"
+
+< ./pikachu.png
+--WebAppBoundary--
 
 
 ### 사원가입 퇴사예정자
@@ -273,26 +328,26 @@ Accept: */*
 ### GET 요청
 GET http://localhost:8080/test
 Content-Type: application/json
-Authorization: Bearer eyJkYXRlIjoxNzE0NDY4MDk5NjQ4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLsgqzsm5AiLCJkZXBObyI6MSwibWVtYmVyTm8iOiIxIiwicG9zaXRpb25MZXZlbCI6MSwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDEiLCJyb2xlIjoiTFYxIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MSwiZXhwIjoxNzE0NTU0NDk5fQ.SS22TIkDtA-wfkbFvCBw23hiYg5sLnarKFwWhywof3k
+Authorization: Bearer eyJkYXRlIjoxNzE0NjIyMTI5MDIzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLsp4Hsm5AiLCJkZXBObyI6MSwibWVtYmVyTm8iOiIxIiwicG9zaXRpb25MZXZlbCI6MSwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDEiLCJyb2xlIjoiTFYxIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MSwiZXhwIjoxNzE0NzA4NTI5fQ.Qc-Gt8t9NwO8Zo4Zg4Tl5n21tpGRsNuPjPAidR1emXE
 
 
 ### POST 요청
 POST http://localhost:8080/test2
 Content-Type: application/json
-Authorization: Bearer eyJkYXRlIjoxNzE0NDQ2MDU5NjUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYxLExWMixMVjMiLCJwb3NpdGlvblN0YXR1cyI6IlkiLCJwb3NpdGlvbk5vIjozLCJleHAiOjE3MTQ1MzI0NTl9.CpzSPq063B3bhrjr00qfQt58N7H8-uMQfdt76hpMDuE
+Authorization: Bearer eyJkYXRlIjoxNzE0NjIyMTI5MDIzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLsp4Hsm5AiLCJkZXBObyI6MSwibWVtYmVyTm8iOiIxIiwicG9zaXRpb25MZXZlbCI6MSwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDEiLCJyb2xlIjoiTFYxIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MSwiZXhwIjoxNzE0NzA4NTI5fQ.Qc-Gt8t9NwO8Zo4Zg4Tl5n21tpGRsNuPjPAidR1emXE
 
 
 ### 직급 권한 수정
 PUT http://localhost:8080/signupPosition/3
 Content-Type: application/json
 Accept: */*
-Authorization: Bearer eyJkYXRlIjoxNzE0NDQ2NjY3Mjg0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MywiZXhwIjoxNzE0NTMzMDY3fQ.VLF7FjAx9jilQOtu_jdNlqvhDMQtnRtwedUYBO0q690
+Authorization: Bearer eyJkYXRlIjoxNzE0NjIyMTI5MDIzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLsp4Hsm5AiLCJkZXBObyI6MSwibWVtYmVyTm8iOiIxIiwicG9zaXRpb25MZXZlbCI6MSwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDEiLCJyb2xlIjoiTFYxIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MSwiZXhwIjoxNzE0NzA4NTI5fQ.Qc-Gt8t9NwO8Zo4Zg4Tl5n21tpGRsNuPjPAidR1emXE
 
 {
 
   "positionName": "대표",
   "positionLevel":  3,
-  "authority": "LV2",
+  "authority": "LV3",
   "positionStatus": "Y"
 
 }
@@ -301,7 +356,7 @@ Authorization: Bearer eyJkYXRlIjoxNzE0NDQ2NjY3Mjg0LCJ0eXBlIjoiand0IiwiYWxnIjoiSF
 PUT http://localhost:8080/auth/resign/6
 Content-Type: application/json
 Accept: */*
-Authorization: Bearer eyJkYXRlIjoxNzE0NDYwNTM4MTM5LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MywiZXhwIjoxNzE0NTQ2OTM4fQ.7CZ0Y-4hJQBo9kparvDUFXd0O1SpzqDw_jrH-el9HOA
+Authorization: Bearer eyJkYXRlIjoxNzE0NjE4NzY2MDAxLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLsp4Hsm5AiLCJkZXBObyI6MSwibWVtYmVyTm8iOiI2IiwicG9zaXRpb25MZXZlbCI6MSwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDYiLCJyb2xlIjoiTFYxIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MSwiZXhwIjoxNzE0NzA1MTY2fQ.glhDL8cpNeqTvJ4BZSCBe3h7LEmFwXHUMC7y4IsQ3Ug
 
 {
   "status": "퇴사"
