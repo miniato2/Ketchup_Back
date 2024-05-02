@@ -1,46 +1,54 @@
 package com.devsplan.ketchup.reserve.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+
+@Getter
 @Entity
 @Table(name = "TBL_RESERVE")
 public class Reserve {
 
     @Id
-    @Column(name = "RSV_NO")
+    @Column(name = "RSV_NO", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int rsvNo;
-
-    @Column(name = "RSC_CATEGORY")
-    private String rscCategory;
-
-    @Column(name = "RSC_NAME")
-    private String rscName;
-
-    @Column(name = "RSC_INFO")
-    private String rscInfo;
-
-    @Column(name = "RSC_CAP")
-    private int rscCap;
-
-    @Column(name = "RSC_IS_AVAILABLE")
-    private boolean rscIsAvailable;
-
-    @Column(name = "RSV_DESCR")
-    private String rsvDescr;
 
     @Column(name = "RSV_START_DTTM")
     private LocalDateTime rsvStartDttm;
 
     @Column(name = "RSV_END_DTTM")
-    private LocalDateTime rsvEndDttim;
+    private LocalDateTime rsvEndDttm;
 
-    @Column(name = "MEMBER_NAME")
-    private String memberName;
+    @Column(name = "RSV_DESCR")
+    private String rsvDescr;
 
-    protected Reserve() {}
+    @ManyToOne
+    @JoinColumn(name = "RESOURCES")
+    private Resource resources;
+
+    public Reserve() {
+    }
+
+    public Reserve(int rsvNo, String rsvDescr, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, Resource resource) {
+        this.rsvNo = rsvNo;
+        this.rsvDescr = rsvDescr;
+        this.rsvStartDttm = rsvStartDttm;
+        this.rsvEndDttm = rsvEndDttm;
+        this.resources = resource;
+    }
+
+    public Reserve(int rsvNo, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String rsvDescr) {
+        this.rsvNo = rsvNo;
+        this.rsvStartDttm = rsvStartDttm;
+        this.rsvEndDttm = rsvEndDttm;
+        this.rsvDescr = rsvDescr;
+    }
+
+    public void setResources(Resource resources) {
+        this.resources = resources;
+    }
 }
+

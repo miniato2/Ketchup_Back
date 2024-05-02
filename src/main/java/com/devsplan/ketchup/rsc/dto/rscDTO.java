@@ -15,4 +15,5 @@ public class rscDTO {
     private int rscCap;                 // 인원(수용 가능 인원 / 탑승 가능 인원)
     private char rscIsAvailable;        // 사용 가능 여부
     private String rscDescr;            // 비고
+
 }

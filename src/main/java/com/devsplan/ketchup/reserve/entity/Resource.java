@@ -1,11 +1,14 @@
-package com.devsplan.ketchup.rsc.entity;
-
+package com.devsplan.ketchup.reserve.entity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@Getter
+@AllArgsConstructor
 @Entity
-@Table(name = "tbl_rsc")
-public class Rsc {
+@Table(name = "TBL_RESOURCE")
+public class Resource {
+
     @Id
     @Column(name = "RSC_NO", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,11 +27,14 @@ public class Rsc {
     private int rscCap;
 
     @Column(name = "RSC_IS_AVAILABLE", nullable = false)
-    private char rscIsAvailable;
+    private boolean rscIsAvailable;
 
     @Column(name = "RSC_DESCR")
     private String rscDescr;
 
-    protected Rsc() {}
+    protected Resource() {}
 
+    public boolean getRscIsAvailable() {
+        return rscIsAvailable;
+    }
 }
