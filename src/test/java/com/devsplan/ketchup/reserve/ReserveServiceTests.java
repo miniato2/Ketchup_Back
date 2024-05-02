@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @SpringBootTest
-public class ReserveRestTests {
+public class ReserveServiceTests {
 
     @Autowired
     private ReserveService reserveService;
