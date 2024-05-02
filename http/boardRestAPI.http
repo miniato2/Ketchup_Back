@@ -36,8 +36,8 @@ Content-Disposition: form-data; name="boardInfo";
 Content-Type: application/json
 
 {
-  "boardTitle": "게시물12",
-  "boardContent": "게시물 내용 12"
+  "boardTitle": "게시물10",
+  "boardContent": "게시물 내용 10"
 }
 --WebAppBoundary
 Content-Disposition: form-data; name="files"; filename="pikachu.png"
@@ -46,25 +46,22 @@ Content-Disposition: form-data; name="files"; filename="pikachu.png"
 --WebAppBoundary--
 
 ### 게시글 수정
-PUT http://localhost:8080/boards/7
+PUT http://localhost:8080/boards/12
 Content-Type: multipart/form-data; boundary=WebAppBoundary
-Authorization: Bearer eyJkYXRlIjoxNzE0Mzk4MzEyNDc2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0NDg0NzEyfQ.aKblxmCCZ0RPaGYZMMdhht0130M5WQPrdvcRtWhkm3I
+Authorization: Bearer eyJkYXRlIjoxNzE0NjI4NzM3ODA3LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0NzE1MTM3fQ.imtcqVufGsvXoPWdShVU-Ibh0IdF0kx5hQQ2sinz5KI
 
 --WebAppBoundary
-Content-Disposition: form-data; name="boardInfo"; filename="board.json";
+Content-Disposition: form-data; name="boardInfo";
 Content-Type: application/json
 
 {
-  "boardTitle": "게시물 11",
-  "boardContent": "게시물 내용 11"
+  "boardTitle": "게시물 12",
+  "boardContent": "게시물 내용 12"
 }
-
 --WebAppBoundary
-Content-Disposition: form-data; name="files"; filename="example5.img"
-Content-Type: image/png
-### Content-Type: text/plain
+Content-Disposition: form-data; name="files"; filename="pikachu.png"
 
-This is the content of the test-file.
+< ./pikachu.png
 --WebAppBoundary--
 
 ### 게시글 삭제

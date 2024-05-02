@@ -174,10 +174,10 @@ public class BoardController {
 
 
     /* 게시물 수정 */
-    /*@PutMapping("/{boardNo}")
+    @PutMapping("/{boardNo}")
     public ResponseEntity<ResponseDTO> updateBoard(@PathVariable int boardNo
                                                     , @RequestPart("boardInfo") BoardDTO boardInfo
-                                                    , @RequestPart("files") List<MultipartFile> file
+                                                    , @RequestPart("files") List<MultipartFile> files
                                                     , @RequestHeader("Authorization") String token) {
 
         // "Bearer " 이후의 토큰 값만 추출
@@ -194,14 +194,14 @@ public class BoardController {
 
 
         // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
-        if (file != null && !file.isEmpty()) {
-            boardService.updateBoardWithFile(boardNo, boardInfo, file, memberNo);
+        if (files != null && !files.isEmpty()) {
+            boardService.updateBoardWithFile(boardNo, boardInfo, files, memberNo);
         } else {
             boardService.updateBoard(boardNo, boardInfo, memberNo);
         }
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시물 수정 성공", null));
-    }*/
+    }
 
 
     /* 게시물 삭제 */

@@ -72,16 +72,16 @@ public class BoardService {
 
     }
 
-
     @Transactional
     public Map<String, Object> insertBoardWithFile(BoardDTO boardDTO, List<MultipartFile> files) throws IOException {
+
         Map<String, Object> result = new HashMap<>();
         List<BoardFileDTO> boardFileDTOList = new ArrayList<>();
 
         try {
-            // 게시글 저장
             boardDTO.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
             Board savedBoard = modelMapper.map(boardDTO, Board.class);
+
             boardRepository.save(savedBoard);
 
             // 파일이 있으면 각 파일을 저장하고, BoardFile 엔티티를 생성하여 연결
@@ -93,38 +93,10 @@ public class BoardService {
                     }
                     String fileName = UUID.randomUUID().toString().replace("-", "");
                     String replaceFileName = FileUtils.saveFile(IMAGE_URL, fileName, file);
-                    BoardFileDTO boardFileDTO = new BoardFileDTO(boardDTO.getBoardNo(), replaceFileName);
 
+                    BoardFileDTO boardFileDTO = new BoardFileDTO(savedBoard.getBoardNo(), replaceFileName);
                     boardFileDTOList.add(boardFileDTO);
                     fileCount++;
-                   /* String fileOriginName = UUID.randomUUID().toString().replace("-", "");
-                    String fileName = file.getOriginalFilename();
-                    String fileType = file.getContentType();
-                    String savedFilePath = fileUtils.saveFile(IMAGE_DIR, fileName, file);
-                    String filePath = savedFilePath + "\\" + fileName;
-
-                    // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
-                    File uploadDir = new File(IMAGE_DIR);
-                    if (!uploadDir.exists()) {
-                        uploadDir.mkdirs();
-                    }
-
-                    File newFile = new File(savedFilePath);
-                    file.transferTo(newFile);
-
-                    savedBoard.boardFilePath(filePath);
-                    boardRepository.save(savedBoard);
-
-                    BoardFileDTO boardFileDTO = new BoardFileDTO();
-                    boardFileDTO.setBoardNo(savedBoard.getBoardNo());
-                    boardFileDTO.setBoardFileName(fileName);
-                    boardFileDTO.setBoardFilePath(filePath);
-                    boardFileDTO.setBoardOriginName(fileOriginName);
-                    boardFileDTO.setBoardFileSize(file.getSize());
-                    boardFileDTO.setFileType(fileType);
-
-                    BoardFile boardFile = modelMapper.map(boardFileDTO, BoardFile.class);
-                    boardFileRepository.save(boardFile);*/
                 }
 
                 // 파일 정보를 BoardFile 엔티티로 변환하여 저장
@@ -132,15 +104,10 @@ public class BoardService {
                         .map(boardFileDTO -> modelMapper.map(boardFileDTO, BoardFile.class))
                         .collect(Collectors.toList());
 
+                savedBoard.boardImgUrl(boardFileDTOList.get(0).getBoardFileImgUrl());
+
+                boardRepository.save(savedBoard);
                 boardFileRepository.saveAll(boardFileList);
-//
-
-                if (!boardFileDTOList.isEmpty()) {
-                    boardDTO.setBoardImgUrl(boardFileDTOList.get(0).getBoardFileImgUrl());
-                }
-
-
-
                 result.put("result", true);
             } else {
                 // 파일이 없는 경우에 대한 처리
@@ -251,7 +218,7 @@ public class BoardService {
         }
     }
 
-    /*@Transactional
+    @Transactional
     public String updateBoardWithFile(int boardNo, BoardDTO boardDTO, List<MultipartFile> files, String memberNo) {
 
         Board foundBoard = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
@@ -262,45 +229,47 @@ public class BoardService {
             foundBoard.boardUpdateDttm(new Timestamp(System.currentTimeMillis()));
 
             Board updatedBoard = boardRepository.save(foundBoard);
+            List<BoardFileDTO> boardFileDTOList = new ArrayList<>();
+
             try {
+
                 if (files != null && !files.isEmpty()) {
+                    int fileCount = 0; // 등록된 파일 수를 세는 변수 추가
                     for (MultipartFile file : files) {
-
-                        String fileName = file.getOriginalFilename();
-                        String fileType = file.getContentType();
-                        String savedFilePath = fileUtils.saveFile(IMAGE_DIR, fileName, file);
-                        String filePath = savedFilePath + "\\" + fileName;
-
-                        // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
-                        File uploadDir = new File(IMAGE_DIR);
-                        if (!uploadDir.exists()) {
-                            uploadDir.mkdirs();
+                        if (fileCount >= 5) { // 등록된 파일이 5개 이상이면 더 이상 파일을 등록하지 않음
+                            break;
                         }
+                        String fileName = UUID.randomUUID().toString().replace("-", "");
+                        String replaceFileName = FileUtils.saveFile(IMAGE_URL, fileName, file);
 
-                        File newFile = new File(filePath);
-                        file.transferTo(newFile);
-
-                        BoardFileDTO boardFileDTO = new BoardFileDTO();
-                        boardFileDTO.setBoardNo(updatedBoard.getBoardNo());
-                        boardFileDTO.setBoardFileName(fileName);
-                        boardFileDTO.setBoardFilePath(filePath);
-                        boardFileDTO.setBoardOriginName(fileName);
-                        boardFileDTO.setBoardFileSize(file.getSize());
-                        boardFileDTO.setFileType(fileType);
-
-                        BoardFile boardFile = modelMapper.map(boardFileDTO, BoardFile.class);
-                        boardFileRepository.save(boardFile);
+                        BoardFileDTO boardFileDTO = new BoardFileDTO(updatedBoard.getBoardNo(), replaceFileName);
+                        boardFileDTOList.add(boardFileDTO);
+                        fileCount++;
                     }
+
+                    // 파일 정보를 BoardFile 엔티티로 변환하여 저장
+                    List<BoardFile> boardFileList = boardFileDTOList.stream()
+                            .map(boardFileDTO -> modelMapper.map(boardFileDTO, BoardFile.class))
+                            .collect(Collectors.toList());
+
+
+                    updatedBoard.boardImgUrl(boardFileDTOList.get(0).getBoardFileImgUrl());
+                    boardRepository.save(updatedBoard);
+//                        boardFileRepository.save(boardFileList);
+                } else {
+                    // 파일이 없는 경우에 대한 처리
+                    log.info("첨부 파일이 없습니다.");
                 }
+
             } catch (IOException e) {
-                log.error("Failed to save or update board file: " + e.getMessage());
-                return "파일 저장에 실패했습니다.";
+            log.error("Failed to save or update board file: " + e.getMessage());
+            return "파일 저장에 실패했습니다.";
             }
             return "게시물 수정 성공";
         } else {
             return "게시물 수정 권한이 없습니다.";
         }
-    }*/
+    }
 
     /* 부서별 자료실 게시물 삭제 */
     @Transactional
@@ -313,24 +282,22 @@ public class BoardService {
             return false;
         }
 
-//        // 게시물에 첨부된 파일 삭제
-//        List<BoardFile> boardFiles = boardFileRepository.findByBoardNo(boardNo);
-//        for (BoardFile boardFile : boardFiles) {
-//            String filePath = boardFile.getBoardFilePath();
-//
-//            boolean isFileDeleted = fileUtils.deleteFile(IMAGE_DIR, FilenameUtils.getName(filePath));
-//
-//            if (!isFileDeleted) {
-//                log.error("파일 삭제에 실패했습니다: {}", filePath);
-//            }
-//            boardFileRepository.delete(boardFile);
-//        }
+        // 게시물에 첨부된 파일 삭제
+        List<BoardFile> boardFiles = boardFileRepository.findByBoardNo(boardNo);
+        for (BoardFile boardFile : boardFiles) {
+            String imgUrl = boardFile.getBoardFileImgUrl();
+
+            boolean isFileDeleted = fileUtils.deleteFile(IMAGE_DIR, FilenameUtils.getName(imgUrl));
+
+            if (!isFileDeleted) {
+                log.error("파일 삭제에 실패했습니다: {}", imgUrl);
+            }
+            boardFileRepository.delete(boardFile);
+        }
 
         // 게시물 삭제
         boardRepository.delete(board);
         return true;
     }
-
-
 
 }
