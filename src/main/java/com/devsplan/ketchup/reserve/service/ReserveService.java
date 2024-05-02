@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +29,12 @@ public class ReserveService {
         this.modelMapper = modelMapper;
     }
 
-    public List<ReserveDTO> selectReserveList(String rscCategory, LocalDateTime rsvStartDttm) {
-        List<Reserve> reserveList = reserveRepository.findByResourcesRscCategoryAndRsvStartDttm(rscCategory, rsvStartDttm);
+    public List<ReserveDTO> selectReserveList(String rscCategory, LocalDate rsvDate) {
+        LocalDateTime startOfDay = rsvDate.atStartOfDay();
+        LocalDateTime endOfDay = rsvDate.atTime(23, 59, 59);
+
+        List<Reserve> reserveList = reserveRepository.findByResourcesRscCategoryAndRsvStartDttmBetween(rscCategory, startOfDay, endOfDay);
+
         return reserveList.stream()
                 .map(reserve -> {
                     ReserveDTO reserveDTO = new ReserveDTO();

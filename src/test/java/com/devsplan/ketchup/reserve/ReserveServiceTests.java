@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -29,10 +30,10 @@ public class ReserveServiceTests {
     void selectReserveList() {
         // given
         String rscCategory = "회의실";
-        LocalDateTime rsvStartDttm = LocalDateTime.of(2024, 5, 1, 13, 30);
+        LocalDate rsvDate = LocalDate.of(2024, 5, 1);
 
         // when
-        List<ReserveDTO> foundReserve = reserveService.selectReserveList(rscCategory, rsvStartDttm);
+        List<ReserveDTO> foundReserve = reserveService.selectReserveList(rscCategory, rsvDate);
 
         // then
         Assertions.assertNotNull(foundReserve);
