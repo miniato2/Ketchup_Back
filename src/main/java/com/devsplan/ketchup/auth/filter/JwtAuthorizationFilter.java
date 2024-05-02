@@ -6,6 +6,8 @@ import com.devsplan.ketchup.auth.model.DetailsMember;
 import com.devsplan.ketchup.common.AuthConstants;
 import com.devsplan.ketchup.common.Authority;
 
+import com.devsplan.ketchup.member.dto.MemberDTO;
+import com.devsplan.ketchup.member.dto.PositionDTO;
 import com.devsplan.ketchup.member.entity.Member;
 import com.devsplan.ketchup.member.entity.Position;
 import com.devsplan.ketchup.util.TokenUtils;
@@ -63,11 +65,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     Claims claims = TokenUtils.getClaimsFromToken(token);
                     DetailsMember authentication = new DetailsMember();
                     Authority authority = Authority.valueOf(claims.get("role").toString());
-                    System.out.println();
 
-                    System.out.println(authority);
-                    Member tMember = new Member();
-                    Position tPosition = new Position();
+
+                    System.out.println("이건뭐야??"+authority);
+                    MemberDTO tMember = new MemberDTO();
+                    PositionDTO tPosition = new PositionDTO();
                     tPosition.setAuthority(authority);
 
                     tMember.setPosition(tPosition);
@@ -86,9 +88,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
                     System.out.println("----------------------해당 사원의 직급 이름------");
                     System.out.println(claims.get("positionName").toString());
+                    System.out.println(tPosition.getPositionNo());
+                    System.out.println("----------------------여기가 직급번호 세팅직전-----------");
                     tPosition.setPositionNo( Integer.parseInt( ( claims.get("positionNo").toString() ) ) );
-                    tPosition.setPositionName(claims.get("positionName").toString());
-//                    tPosition.setAuthority(Auclaims.get("role").toString());
+//                    tPosition.setPositionName(claims.get("positionName").toString());
+
 
                     // Role을 설정합니다.
                     System.out.println("----------------------요청보낼때 토큰 role 설정해주는곳------");

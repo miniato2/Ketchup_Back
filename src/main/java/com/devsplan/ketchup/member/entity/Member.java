@@ -42,131 +42,160 @@ public class Member {
     @Column(name = "MEMBER_RESIGNDATETIME")
     private LocalDateTime resignDateTime;
 
+    protected Member() {
+    }
 
+    public Member(String memberNo, String memberName, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, Dep department, Position position, String account, String status, String imgUrl, LocalDateTime resignDateTime) {
+        this.memberNo = memberNo;
+        this.memberName = memberName;
+        this.memberPW = memberPW;
+        this.phone = phone;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.address = address;
+        this.privateEmail = privateEmail;
+        this.companyEmail = companyEmail;
+        this.department = department;
+        this.position = position;
+        this.account = account;
+        this.status = status;
+        this.imgUrl = imgUrl;
+        this.resignDateTime = resignDateTime;
+    }
 
+    public Member memberNo(String memberNo){
+        this.memberNo = memberNo;
+        return this;
+    }
+
+    public Member phone(String phone){
+        this.phone = phone;
+        return this;
+
+    }
+    public Member memberPW(String memberPW){
+        this.memberPW = memberPW;
+        return this;
+
+    }
+    public Member birthDate(String birthDate){
+        this.birthDate = birthDate;
+        return this;
+
+    }
+    public Member gender(char gender){
+        this.gender = gender;
+        return this;
+
+    }
+    public Member address(String address){
+        this.address = address;
+        return this;
+
+    }
+    public Member privateEmail(String privateEmail){
+        this.privateEmail = privateEmail;
+        return this;
+
+    }
+    public Member companyEmail(String companyEmail){
+        this.companyEmail = companyEmail;
+        return this;
+
+    }
+    public Member department(Dep department){
+        this.department = department;
+        return this;
+
+    }
+    public Member position(Position position){
+        this.position = position;
+        return this;
+
+    }
+    public Member account(String account){
+        this.account = account;
+        return this;
+
+    }
+    public Member status(String status){
+        this.status = status;
+        return this;
+
+    }
+    public Member imgUrl(String imgUrl){
+        this.imgUrl = imgUrl;
+        return this;
+
+    }
+    public Member resignDateTime(LocalDateTime resignDateTime){
+        this.resignDateTime = resignDateTime;
+        return this;
+
+    }
+
+    public Member build() {
+        return new Member(memberNo,memberName,memberPW,phone,birthDate,gender,address,privateEmail,companyEmail,department,position,account,status,imgUrl,resignDateTime);
+    }
 
     public String getMemberNo() {
         return memberNo;
-    }
-
-    public void setMemberNo(String memberNo) {
-        this.memberNo = memberNo;
     }
 
     public String getMemberName() {
         return memberName;
     }
 
-    public void setMemberName(String memberName) {
-        this.memberName = memberName;
-    }
-
     public String getMemberPW() {
         return memberPW;
-    }
-
-    public void setMemberPW(String memberPW) {
-        this.memberPW = memberPW;
     }
 
     public String getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public String getBirthDate() {
         return birthDate;
-    }
-
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
     }
 
     public char getGender() {
         return gender;
     }
 
-    public void setGender(char gender) {
-        this.gender = gender;
-    }
-
     public String getAddress() {
         return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getPrivateEmail() {
         return privateEmail;
     }
 
-    public void setPrivateEmail(String privateEmail) {
-        this.privateEmail = privateEmail;
-    }
-
     public String getCompanyEmail() {
         return companyEmail;
-    }
-
-    public void setCompanyEmail(String companyEmail) {
-        this.companyEmail = companyEmail;
     }
 
     public Dep getDepartment() {
         return department;
     }
 
-    public void setDepartment(Dep department) {
-        this.department = department;
-    }
-
     public Position getPosition() {
         return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
     }
 
     public String getAccount() {
         return account;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
-    }
-
-    public String getState() {
+    public String getStatus() {
         return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getImgUrl() {
         return imgUrl;
     }
 
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
     public LocalDateTime getResignDateTime() {
         return resignDateTime;
-    }
-
-    public void setResignDateTime(LocalDateTime resignDateTime) {
-        this.resignDateTime = resignDateTime;
     }
 
     @Override

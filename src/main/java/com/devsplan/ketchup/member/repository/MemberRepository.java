@@ -19,18 +19,6 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
     Optional<Member> findByMemberNo(String memberNo);
 
-    @Transactional
-    default void resignMember(String memberNo, MemberDTO memberDTO) {
-      Member resignMember = findByMemberNo(memberNo).get();
-      memberDTO.setMemberNo(memberNo);
-      resignMember.setResignDateTime(memberDTO.getResignDateTime());
-      resignMember.setStatus(memberDTO.getStatus());
-       save(resignMember);
-    }
-
-
-
-
 
 
 
