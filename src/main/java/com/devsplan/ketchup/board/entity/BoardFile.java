@@ -13,20 +13,23 @@ public class BoardFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int boardFileNo;
 
-    @Column(name = "board_file_name", nullable = false)
-    private String boardFileName;
+    @Column(name = "board_file_imgurl")
+    private String boardFileImgUrl;
 
-    @Column(name = "board_file_path", nullable = false)
-    private String boardFilePath;
-
-    @Column(name = "board_origin_name", nullable = false)
-    private String boardOriginName;
-
-    @Column(name = "board_file_size", nullable = false)
-    private Long boardFileSize;              // 파일 사이즈
-
-    @Column(name = "file_type", nullable = false)
-    private String fileType;            // 파일 타입
+//    @Column(name = "board_file_name", nullable = false)
+//    private String boardFileName;
+//
+//    @Column(name = "board_file_path", nullable = false)
+//    private String boardFilePath;
+//
+//    @Column(name = "board_origin_name", nullable = false)
+//    private String boardOriginName;
+//
+//    @Column(name = "board_file_size", nullable = false)
+//    private Long boardFileSize;              // 파일 사이즈
+//
+//    @Column(name = "file_type", nullable = false)
+//    private String fileType;            // 파일 타입
 
 //    @OnDelete(action = OnDeleteAction.CASCADE)
     @Column(name = "board_no", nullable = false) // 여기에 추가
@@ -42,65 +45,77 @@ public class BoardFile {
         return this;
     }
 
+    public BoardFile(int boardFileNo, String boardFileImgUrl, int boardNo) {
+        this.boardFileNo = boardFileNo;
+        this.boardFileImgUrl = boardFileImgUrl;
+        this.boardNo = boardNo;
+    }
+
     public BoardFile boardNo(int val) {
         this.boardNo = val;
         return this;
     }
 
-    public BoardFile boardFileName(String val) {
-        this.boardFileName = val;
+    public BoardFile boardFileImgUrl(String val) {
+        this.boardFileImgUrl = val;
         return this;
     }
 
-    public BoardFile boardFilePath(String val) {
-        this.boardFilePath = val;
-        return this;
-    }
-
-    public BoardFile boardOriginName(String val) {
-        this.boardOriginName = val;
-        return this;
-    }
-
-    public BoardFile boardFileSize(Long val) {
-        this.boardFileSize = val;
-        return this;
-    }
-
-    public BoardFile fileType(String val) {
-        this.fileType = val;
-        return this;
-    }
-
+//
+//    public BoardFile boardFileName(String val) {
+//        this.boardFileName = val;
+//        return this;
+//    }
+//
+//    public BoardFile boardFilePath(String val) {
+//        this.boardFilePath = val;
+//        return this;
+//    }
+//
+//    public BoardFile boardOriginName(String val) {
+//        this.boardOriginName = val;
+//        return this;
+//    }
+//
+//    public BoardFile boardFileSize(Long val) {
+//        this.boardFileSize = val;
+//        return this;
+//    }
+//
+//    public BoardFile fileType(String val) {
+//        this.fileType = val;
+//        return this;
+//    }
+//
     protected BoardFile() {}
-
-    public BoardFile(int boardFileNo, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize, String fileType, int boardNo) {
-        this.boardFileNo = boardFileNo;
-        this.boardFileName = boardFileName;
-        this.boardFilePath = boardFilePath;
-        this.boardOriginName = boardOriginName;
-        this.boardFileSize = boardFileSize;
-        this.fileType = fileType;
-        this.boardNo = boardNo;
-    }
-
-    public String getBoardFilePath() {
-        return boardFilePath;
-    }
-    public String getBoardFileName() {
-        return boardFileName;
-    }
-
-    @Override
-    public String toString() {
-        return "BoardFile{" +
-                "boardFileNo=" + boardFileNo +
-                ", boardFileName='" + boardFileName + '\'' +
-                ", boardFilePath='" + boardFilePath + '\'' +
-                ", boardOriginName='" + boardOriginName + '\'' +
-                ", boardFileSize=" + boardFileSize +
-                ", fileType='" + fileType + '\'' +
-                ", boardNo=" + boardNo +
-                '}';
-    }
+//
+//    public BoardFile(int boardFileNo, String boardFileName, String boardFilePath, String boardOriginName, Long boardFileSize, String fileType, int boardNo) {
+//        this.boardFileNo = boardFileNo;
+//        this.boardFileName = boardFileName;
+//        this.boardFilePath = boardFilePath;
+//        this.boardOriginName = boardOriginName;
+//        this.boardFileSize = boardFileSize;
+//        this.fileType = fileType;
+//        this.boardNo = boardNo;
+//    }
+//
+//    public String getBoardFilePath() {
+//        return boardFilePath;
+//    }
+//    public String getBoardFileName() {
+//        return boardFileName;
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "BoardFile{" +
+//                "boardFileNo=" + boardFileNo +
+//                ", boardFileName='" + boardFileName + '\'' +
+//                ", boardFilePath='" + boardFilePath + '\'' +
+//                ", boardOriginName='" + boardOriginName + '\'' +
+//                ", boardFileSize=" + boardFileSize +
+//                ", fileType='" + fileType + '\'' +
+//                ", boardNo=" + boardNo +
+//                '}';
+//    }
 }

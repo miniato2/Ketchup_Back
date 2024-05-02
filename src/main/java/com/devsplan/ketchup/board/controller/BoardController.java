@@ -171,7 +171,7 @@ public class BoardController {
 
 
     /* 게시물 수정 */
-    @PutMapping("/{boardNo}")
+    /*@PutMapping("/{boardNo}")
     public ResponseEntity<ResponseDTO> updateBoard(@PathVariable int boardNo
                                                     , @RequestPart("boardInfo") BoardDTO boardInfo
                                                     , @RequestPart("files") List<MultipartFile> file
@@ -198,7 +198,7 @@ public class BoardController {
         }
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시물 수정 성공", null));
-    }
+    }*/
 
 
     /* 게시물 삭제 */

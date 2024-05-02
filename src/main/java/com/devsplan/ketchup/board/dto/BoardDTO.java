@@ -26,8 +26,8 @@ public class BoardDTO {
     private String boardContent;                // 게시물 내용
     private Timestamp boardCreateDttm;      // 게시글 등록일시
     private Timestamp boardUpdateDttm;      // 게시글 수정일시
-    private String boardFilePath;
-
+//    private String boardFilePath;
+    private String boardImgUrl;
 
 
     public void setBoardCreateDttm(Timestamp timestamp) {
@@ -37,5 +37,6 @@ public class BoardDTO {
     public void setBoardUpdateDttm(Timestamp timestamp) {
         this.boardUpdateDttm = timestamp;
     }
+
 
 }
