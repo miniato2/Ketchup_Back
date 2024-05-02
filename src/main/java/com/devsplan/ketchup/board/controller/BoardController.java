@@ -124,9 +124,9 @@ public class BoardController {
     /* 게시물 등록 */
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<ResponseDTO> insertBoard(@RequestPart("boardInfo") BoardDTO boardDTO
-                                                   , @RequestPart(required = false) List<MultipartFile> files
+                                                   , @RequestPart(required = false, name="files") List<MultipartFile> files
                                                    , @RequestHeader("Authorization") String token) throws IOException {
-        try{
+        try {
             // "Bearer " 이후의 토큰 값만 추출
             String jwtToken = token.substring(7);
 
@@ -139,6 +139,7 @@ public class BoardController {
 
             System.out.println("memberNo : " + memberNo);
             System.out.println("depNo : " + depNo);
+            System.out.println("File Content: " + new String(files.toString().getBytes(), StandardCharsets.UTF_8));
 
             boardDTO.setMemberNo(memberNo);
             boardDTO.setDepartmentNo(depNo);
@@ -149,15 +150,16 @@ public class BoardController {
                         .body(new ResponseDTO(HttpStatus.FORBIDDEN, "해당 부서의 게시물만 등록할 수 있습니다.", null));
             }
 
-            // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
+//             파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
             if (files != null && !files.isEmpty()) {
 
-                boardService.insertBoardWithFile(boardDTO, files);
+            boardService.insertBoardWithFile(boardDTO, files);
             } else {
+
                 boardService.insertBoard(boardDTO);
             }
-
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시물 등록 성공", null));
+
         } catch (ExpiredJwtException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
         } catch (JwtException e) {
@@ -166,6 +168,7 @@ public class BoardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
         }
+
 
     }
 

@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -74,22 +75,28 @@ public class BoardService {
 
     @Transactional
     public Map<String, Object> insertBoardWithFile(BoardDTO boardDTO, List<MultipartFile> files) throws IOException {
-
-        log.info("boardDTO : " + boardDTO);
         Map<String, Object> result = new HashMap<>();
         List<BoardFileDTO> boardFileDTOList = new ArrayList<>();
 
         try {
+            // 게시글 저장
+            boardDTO.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
+            Board savedBoard = modelMapper.map(boardDTO, Board.class);
+            boardRepository.save(savedBoard);
+
             // 파일이 있으면 각 파일을 저장하고, BoardFile 엔티티를 생성하여 연결
             if (files != null && !files.isEmpty()) {
+                int fileCount = 0; // 등록된 파일 수를 세는 변수 추가
                 for (MultipartFile file : files) {
+                    if (fileCount >= 5) { // 등록된 파일이 5개 이상이면 더 이상 파일을 등록하지 않음
+                        break;
+                    }
                     String fileName = UUID.randomUUID().toString().replace("-", "");
-                    String replaceFileName = null;
-
-                    replaceFileName = FileUtils.saveFile(IMAGE_URL, fileName, file);
+                    String replaceFileName = FileUtils.saveFile(IMAGE_URL, fileName, file);
                     BoardFileDTO boardFileDTO = new BoardFileDTO(boardDTO.getBoardNo(), replaceFileName);
 
                     boardFileDTOList.add(boardFileDTO);
+                    fileCount++;
                    /* String fileOriginName = UUID.randomUUID().toString().replace("-", "");
                     String fileName = file.getOriginalFilename();
                     String fileType = file.getContentType();
@@ -119,17 +126,20 @@ public class BoardService {
                     BoardFile boardFile = modelMapper.map(boardFileDTO, BoardFile.class);
                     boardFileRepository.save(boardFile);*/
                 }
-                boardDTO.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
-                Board savedBoard = modelMapper.map(boardDTO, Board.class);
-                boardRepository.save(savedBoard);
 
-                List<BoardFile> boardFileList = new ArrayList<>();
-                boardFileDTOList.forEach(file -> {
-                    BoardFile boardFile = modelMapper.map(file, BoardFile.class);
-                    boardFileList.add(boardFile);
-                });
+                // 파일 정보를 BoardFile 엔티티로 변환하여 저장
+                List<BoardFile> boardFileList = boardFileDTOList.stream()
+                        .map(boardFileDTO -> modelMapper.map(boardFileDTO, BoardFile.class))
+                        .collect(Collectors.toList());
 
                 boardFileRepository.saveAll(boardFileList);
+//
+
+                if (!boardFileDTOList.isEmpty()) {
+                    boardDTO.setBoardImgUrl(boardFileDTOList.get(0).getBoardFileImgUrl());
+                }
+
+
 
                 result.put("result", true);
             } else {
@@ -138,6 +148,8 @@ public class BoardService {
                 result.put("result", false);
             }
         } catch (Exception e) {
+            e.printStackTrace();
+
             log.error("첨부파일 등록 실패: " + e.getMessage());
             result.put("result", false);
         }
