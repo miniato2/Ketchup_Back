@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +24,6 @@ public class ReserveServiceTests {
 
     @Autowired
     private ReserveService reserveService;
-
 
     @DisplayName("자원 예약 목록 조회")
     @Test
@@ -38,6 +38,20 @@ public class ReserveServiceTests {
         // then
         Assertions.assertNotNull(foundReserve);
         System.out.println("자원 예약 목록 조회 = " + foundReserve);
+    }
+
+    @DisplayName("자원 예약 상세 조회")
+    @Test
+    void selectReserveDetail() {
+        // given
+        int rsvNo = 3;
+
+        // when
+        ReserveDTO foundReserve = reserveService.selectReserveDetail(rsvNo);
+
+        // then
+        Assertions.assertNotNull(foundReserve);
+        System.out.println("자원 예약 상세 조회 = " + foundReserve);
     }
 
     private static Stream<Arguments> getResourceInfo() {
@@ -163,4 +177,16 @@ public class ReserveServiceTests {
         // then
         System.out.println("등록한 예약 내용 = " + newReserve);
     }
+
+
+//    @Transactional
+//    @ParameterizedTest
+//    @MethodSource("updatedReserveInfo")
+//    void updateReserve(ReserveDTO updateReserve) {
+//        // given
+//
+//        // when
+//
+//        // then
+//    }
 }

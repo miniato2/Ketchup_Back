@@ -6,6 +6,7 @@ import com.devsplan.ketchup.reserve.repository.ReserveRepository;
 import com.devsplan.ketchup.reserve.dto.ResourceDTO;
 import com.devsplan.ketchup.reserve.entity.Resource;
 import com.devsplan.ketchup.reserve.repository.ResourceRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ReserveService {
 
     private final ReserveRepository reserveRepository;
@@ -47,6 +49,7 @@ public class ReserveService {
                 }).collect(Collectors.toList());
     }
 
+    // 자원 예약 목록 조회
     private ResourceDTO convertToResourceDTO(Resource resource) {
         if (resource != null) {
             return new ResourceDTO(
@@ -61,6 +64,21 @@ public class ReserveService {
         }
         return null;
     }
+
+    // 자원 예약 상세 조회
+    public ReserveDTO selectReserveDetail(int rsvNo) {
+        Reserve reserve = reserveRepository.findById((long) rsvNo).orElseThrow(() -> new IllegalArgumentException("해당하는 예약 번호를 찾을 수 없습니다."));
+
+        ReserveDTO reserveDTO = new ReserveDTO();
+        reserveDTO.setRsvNo(reserve.getRsvNo());
+        reserveDTO.setRsvDescr(reserve.getRsvDescr());
+        reserveDTO.setRsvStartDttm(reserve.getRsvStartDttm());
+        reserveDTO.setRsvEndDttm(reserve.getRsvEndDttm());
+        reserveDTO.setResources(convertToResourceDTO(reserve.getResources()));
+
+        return reserveDTO;
+    }
+
 
     // 원래 하나의 로직안에서 두 개의 등록을 진행하려고 했었음.
 //    @Transactional
@@ -110,5 +128,6 @@ public class ReserveService {
         Optional<Resource> optionalResource = resourceRepository.findById((long) rscNo);
         return optionalResource.orElse(null);
     }
+
 
 }
