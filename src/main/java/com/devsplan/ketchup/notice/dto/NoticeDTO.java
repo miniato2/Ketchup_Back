@@ -23,19 +23,19 @@ public class NoticeDTO {
     private String noticeContent;                // 공지 내용
     private Timestamp noticeCreateDttm;          // 공지 등록일시
     private Timestamp noticeUpdateDttm;          // 공지 수정일시
-    private String noticeFilePath;               // 공지 파일 경로
+    private String noticeImgUrl;               // 공지 파일 경로
 
-    public NoticeDTO(int noticeNo, String memberNo, char noticeFix, String noticeTitle, String noticeContent, Timestamp noticeCreateDttm, String noticeFilePath) {
+    public NoticeDTO(int noticeNo, String memberNo, char noticeFix, String noticeTitle, String noticeContent, Timestamp noticeCreateDttm, String noticeImgUrl) {
         this.noticeNo = noticeNo;
         this.memberNo = memberNo;
         this.noticeFix = noticeFix;
         this.noticeTitle = noticeTitle;
         this.noticeContent = noticeContent;
         this.noticeCreateDttm = noticeCreateDttm;
-        this.noticeFilePath = noticeFilePath;
+        this.noticeImgUrl = noticeImgUrl;
     }
 
-    public NoticeDTO(int noticeNo, String memberNo, char noticeFix, String noticeTitle, String noticeContent, List<NoticeFileDTO> noticeFiles, Timestamp noticeCreateDttm, String noticeFilePath) {
+    public NoticeDTO(int noticeNo, String memberNo, char noticeFix, String noticeTitle, String noticeContent, List<NoticeFileDTO> noticeFiles, Timestamp noticeCreateDttm, String noticeImgUrl) {
         this.noticeNo = noticeNo;
         this.memberNo = memberNo;
         this.noticeFix = noticeFix;
@@ -43,10 +43,10 @@ public class NoticeDTO {
         this.noticeContent = noticeContent;
         this.noticeFiles = noticeFiles;
         this.noticeCreateDttm = noticeCreateDttm;
-        this.noticeFilePath = noticeFilePath;
+        this.noticeImgUrl = noticeImgUrl;
     }
 
-    public NoticeDTO(int noticeNo, String memberNo, char noticeFix, String noticeTitle, List<NoticeFileDTO> noticeFiles, String noticeContent, Timestamp noticeUpdateDttm, String noticeFilePath) {
+    public NoticeDTO(int noticeNo, String memberNo, char noticeFix, String noticeTitle, List<NoticeFileDTO> noticeFiles, String noticeContent, Timestamp noticeUpdateDttm, String noticeImgUrl) {
         this.noticeNo = noticeNo;
         this.memberNo = memberNo;
         this.noticeFix = noticeFix;
@@ -54,6 +54,6 @@ public class NoticeDTO {
         this.noticeFiles = noticeFiles;
         this.noticeContent = noticeContent;
         this.noticeUpdateDttm = noticeUpdateDttm;
-        this.noticeFilePath = noticeFilePath;
+        this.noticeImgUrl = noticeImgUrl;
     }
 }

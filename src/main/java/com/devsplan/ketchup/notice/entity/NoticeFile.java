@@ -13,63 +13,32 @@ public class NoticeFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int noticeFileNo;            // 공지 파일 번호
 
-    @Column(name = "notice_file_name", nullable = false)
-    private String noticeFileName;       // 공지 파일명
-
-    @Column(name = "notice_file_path", nullable = false)
-    private String noticeFilePath;       // 공지 파일 경로
-
-    @Column(name = "notice_origin_name", nullable = false)
-    private String noticeOriginName;     // 공지 원본 파일명
-
-    @Column(name = "notice_file_size", nullable = false)
-    private Long noticeFileSize;         // 공지 파일 사이즈
-
-    @Column(name = "notice_file_type", nullable = false)
-    private String noticeFileType;       // 공지 파일 타입
-
     @Column(name = "notice_no", nullable = false)
-    private int noticeNo;                // 공지 번호
+    private int noticeNo;                  // 공지 번호
+
+    @Column(name = "notice_file_imgurl", nullable = false)
+    private String noticeFileImgUrl;       // 공지 파일 경로
 
     protected NoticeFile(){}
 
-    public NoticeFile noticeFileName(String val) {
-        this.noticeFileName = val;
+    public NoticeFile noticeNo(int val) {
+        this.noticeNo = val;
         return this;
     }
 
-    public NoticeFile noticeFilePath(String val) {
-        this.noticeFilePath = val;
+    public NoticeFile noticeFileImgUrl(String val) {
+        this.noticeFileImgUrl = val;
         return this;
     }
 
-    public NoticeFile noticeOriginName(String val) {
-        this.noticeOriginName = val;
-        return this;
-    }
-
-    public NoticeFile noticeFileSize(Long val) {
-        this.noticeFileSize = val;
-        return this;
-    }
-
-    public NoticeFile noticeFileType(String val) {
-        this.noticeFileType = val;
-        return this;
-    }
-
-    public NoticeFile(int noticeFileNo, String noticeFileName, String noticeFilePath, String noticeOriginName, Long noticeFileSize, String noticeFileType, int noticeNo) {
+    public NoticeFile(int noticeFileNo, int noticeNo, String noticeFileImgUrl) {
         this.noticeFileNo = noticeFileNo;
-        this.noticeFileName = noticeFileName;
-        this.noticeFilePath = noticeFilePath;
-        this.noticeOriginName = noticeOriginName;
-        this.noticeFileSize = noticeFileSize;
-        this.noticeFileType = noticeFileType;
         this.noticeNo = noticeNo;
+        this.noticeFileImgUrl = noticeFileImgUrl;
     }
 
-    public String getNoticeFilePath() {
-        return noticeFilePath;
+    public String getNoticeFileImgUrl() {
+        return noticeFileImgUrl;
     }
 
 }
