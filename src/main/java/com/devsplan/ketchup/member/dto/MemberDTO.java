@@ -38,6 +38,10 @@ public class MemberDTO {
         this.imgUrl = imgUrl;
     }
 
+    // 이진우 테스트
+    public MemberDTO(String memberNo) {
+    }
+
     public String getMemberNo() {
         return memberNo;
     }

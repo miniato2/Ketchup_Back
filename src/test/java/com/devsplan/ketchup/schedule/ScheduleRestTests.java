@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-//@AutoConfigureMockMvc
 public class ScheduleRestTests {
 
     @Autowired
@@ -71,7 +70,7 @@ public class ScheduleRestTests {
 
     private static Stream<Arguments> getScheduleInfo() {
         return Stream.of(
-                Arguments.of(2, 1, "신규 등록한 일정2", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
+                Arguments.of(3, 1, "신규 등록한 일정3", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
         );
     }
 
@@ -97,6 +96,7 @@ public class ScheduleRestTests {
         Assertions.assertDoesNotThrow(
                 () -> scheduleService.insertSchedule(newSchedule)
         );
+        System.out.println("새로 등록한 일정 = " + newSchedule);
     }
 
     @DisplayName("부서별 일정 수정")
