@@ -17,15 +17,13 @@ public class ReceiverDTO {
     public ReceiverDTO() {
     }
 
-    public ReceiverDTO(int mailNo, String receiverMem, Timestamp readTime, char receiverDelStatus) {
+    public ReceiverDTO(int mailNo, String receiverMem, char receiverDelStatus) {
         this.mailNo = mailNo;
         this.receiverMem = receiverMem;
-        this.readTime = readTime;
         this.receiverDelStatus = receiverDelStatus;
     }
 
-    public ReceiverDTO(int receiverNo, int mailNo, String receiverMem, Timestamp readTime, char receiverDelStatus) {
-        this.receiverNo = receiverNo;
+    public ReceiverDTO(int mailNo, String receiverMem, Timestamp readTime, char receiverDelStatus) {
         this.mailNo = mailNo;
         this.receiverMem = receiverMem;
         this.readTime = readTime;
