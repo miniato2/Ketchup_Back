@@ -156,7 +156,10 @@ public class MemberService {
     }
 
 
-
-
-
+//    public List<MemberDTO> findAllMembers() {
+//
+////     return  memberRepository.findAllMembers();
+//
+//
+//    }
 }
