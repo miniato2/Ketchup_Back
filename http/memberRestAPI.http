@@ -361,6 +361,14 @@ Authorization: Bearer eyJkYXRlIjoxNzE0NjE4NzY2MDAxLCJ0eXBlIjoiand0IiwiYWxnIjoiSF
   "status": "퇴사"
 }
 
+###사원 상세 조회
+GET http://localhost:8080/members/3
+Content-Type: application/json
+Accept: */*
+Authorization: Bearer eyJkYXRlIjoxNzE0NjE4NzY2MDAxLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLsp4Hsm5AiLCJkZXBObyI6MSwibWVtYmVyTm8iOiI2IiwicG9zaXRpb25MZXZlbCI6MSwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDYiLCJyb2xlIjoiTFYxIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MSwiZXhwIjoxNzE0NzA1MTY2fQ.glhDL8cpNeqTvJ4BZSCBe3h7LEmFwXHUMC7y4IsQ3Ug
+
+
+
 
 ### 사원 목록 조회
 GET http://localhost:8080/members?offset=1
