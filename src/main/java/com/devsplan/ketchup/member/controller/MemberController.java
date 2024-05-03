@@ -131,6 +131,17 @@ public class MemberController {
 
 
 
+    @GetMapping ("/Email/{memberNo}")
+    public String sendVerifyEmail(@PathVariable String memberNo){
+        System.out.println(memberNo);
+
+        String verifyCode = memberService.sendVerifyEmail(memberNo);
+
+        return verifyCode;
+
+
+    }
+
 
 
 

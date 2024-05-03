@@ -26,5 +26,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     Page<Member> findByStatusAndMemberNameContainingIgnoreCase(String 재직중, String search, Pageable paging);
 
 
+
+
 //   List<Member> findAllMembers();
 }
