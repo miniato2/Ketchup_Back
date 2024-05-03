@@ -32,8 +32,8 @@ public class ReserveServiceTests {
     @Test
     void selectReserveList() {
         // given
-        String rscCategory = "회의실";
-        LocalDate rsvDate = LocalDate.of(2024, 5, 3);
+        String rscCategory = "법인차량";
+        LocalDate rsvDate = LocalDate.of(2024, 5, 2);
 
         // when
         List<ReserveDTO> foundReserve = reserveService.selectReserveList(rscCategory, rsvDate);
@@ -47,7 +47,7 @@ public class ReserveServiceTests {
     @Test
     void selectReserveDetail() {
         // given
-        int rsvNo = 4;
+        int rsvNo = 2;
 
         // when
         ReserveDTO foundReserve = reserveService.selectReserveDetail(rsvNo);
@@ -91,44 +91,44 @@ public class ReserveServiceTests {
 
     private static Stream<Arguments> getReserveInfo() {
         return Stream.of(
-//                Arguments.of(
-//                        LocalDateTime.of(2024, 5, 1, 13, 30),
-//                        LocalDateTime.of(2024, 5, 1, 18, 0),
-//                        1,
-//                        "위클리 미팅",
-//                        "회의실",
-//                        "회의실 A",
-//                        "별관 3층 301호",
-//                        10,
-//                        true,
-//                        "5월 첫째주 위클리 미팅"
-//                )
-//                ,
-//                Arguments.of(
-//                        LocalDateTime.of(2024, 5, 2, 10, 0),
-//                        LocalDateTime.of(2024, 5, 2, 12, 0),
-//                        2,
-//                        "물류 창고 방문",
-//                        "법인차량",
-//                        "황금마티즈",
-//                        "본관 지하 1층 주차장 B20 영역",
-//                        4,
-//                        true,
-//                        "물류 창고 방문을 위한 법인 차량 대여"
-//                ),
-//                Arguments.of(
-//                        LocalDateTime.of(2024, 5, 3, 15, 0),
-//                        LocalDateTime.of(2024, 5, 3, 17, 0),
-//                        3,
-//                        "진급식",
-//                        "회의실",
-//                        "회의실 B",
-//                        "본관 4층 401호",
-//                        8,
-//                        true,
-//                        "이대리 등 30명 진급 축하식을 위한 진급식 진행"
-//                )
-//                ,
+                Arguments.of(
+                        LocalDateTime.of(2024, 5, 1, 13, 30),
+                        LocalDateTime.of(2024, 5, 1, 18, 0),
+                        1,
+                        "위클리 미팅",
+                        "회의실",
+                        "회의실 A",
+                        "별관 3층 301호",
+                        10,
+                        true,
+                        "5월 첫째주 위클리 미팅"
+                )
+                ,
+                Arguments.of(
+                        LocalDateTime.of(2024, 5, 2, 10, 0),
+                        LocalDateTime.of(2024, 5, 2, 12, 0),
+                        2,
+                        "물류 창고 방문",
+                        "법인차량",
+                        "황금마티즈",
+                        "본관 지하 1층 주차장 B20 영역",
+                        4,
+                        true,
+                        "물류 창고 방문을 위한 법인 차량 대여"
+                ),
+                Arguments.of(
+                        LocalDateTime.of(2024, 5, 3, 15, 0),
+                        LocalDateTime.of(2024, 5, 3, 17, 0),
+                        3,
+                        "진급식",
+                        "회의실",
+                        "회의실 B",
+                        "본관 4층 401호",
+                        8,
+                        true,
+                        "이대리 등 30명 진급 축하식을 위한 진급식 진행"
+                )
+                ,
                 Arguments.of(
                         LocalDateTime.of(2024, 5, 3, 17, 0),
                         LocalDateTime.of(2024, 5, 3, 17, 30),

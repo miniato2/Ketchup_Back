@@ -1,14 +1,40 @@
 ### 자원 예약 목록 조회
-GET http://localhost:8080/reserves?category=회의실&rsvDate=2024-05-03
+GET http://localhost:8080/reserves?category=회의실&rsvDate=2024-05-04
 Authorization: Bearer eyJkYXRlIjoxNzE0Njk3NjEzNDk0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0Nzg0MDEzfQ.8oTTf5UEsIZa4-CegR-IdKLJqj8MGv7-RdCvSZqXNsA
 
 ### 자원 예약 상세 조회
+GET http://localhost:8080/
+Authorization: Bearer eyJkYXRlIjoxNzE0Njk3NjEzNDk0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0Nzg0MDEzfQ.8oTTf5UEsIZa4-CegR-IdKLJqj8MGv7-RdCvSZqXNsA
+
 
 ### 자원 예약 등록
-POST http://localhost:8080/
+POST http://localhost:8080/reserves
+Content-Type: application/json
+Authorization: Bearer eyJkYXRlIjoxNzE0Njk3NjEzNDk0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0Nzg0MDEzfQ.8oTTf5UEsIZa4-CegR-IdKLJqj8MGv7-RdCvSZqXNsA
+
+{
+  "rsvStartDttm": "2024-05-04 오후 3시 0분",
+  "rsvEndDttm": "2024-05-04 오후 4시 30분",
+  "rsvDescr": "주말에도 코딩쳐야하는 내 인생 레전드",
+  "resources": {
+    "rscNo": 3,
+    "rscCategory": "회의실",
+    "rscName": "회의실 B",
+    "rscInfo": "본관 4층 401호",
+    "rscCap": 20,
+    "rscIsAvailable": true,
+    "rscDescr": "Smart TV, HDMI, 마이크, 스피커, 빔프로젝터, 의자 비치"
+  }
+}
+
 
 ### 자원 예약 수정
 
+Authorization: Bearer eyJkYXRlIjoxNzE0Njk3NjEzNDk0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0Nzg0MDEzfQ.8oTTf5UEsIZa4-CegR-IdKLJqj8MGv7-RdCvSZqXNsA
+
+
 ### 자원 예약 삭제
+Authorization: Bearer eyJkYXRlIjoxNzE0Njk3NjEzNDk0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0Nzg0MDEzfQ.8oTTf5UEsIZa4-CegR-IdKLJqj8MGv7-RdCvSZqXNsA
+
 
 
