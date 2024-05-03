@@ -103,10 +103,6 @@ public class MailService {
             mailList = mailRepository.findBySenderMemAndSendDelStatus(senderMem, 'N');
         }
 
-        // --------------------------------------------------
-
-//        List<Mail> mailList = mailRepository.findBySenderMemAndSendDelStatus(senderMem, 'N');
-
         List<ReceiverDTO> mailReceiverList;
         List<MailDTO> mailDtoList = new ArrayList<>();
 

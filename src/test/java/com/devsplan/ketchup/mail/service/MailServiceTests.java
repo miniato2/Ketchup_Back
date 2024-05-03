@@ -79,9 +79,11 @@ public class MailServiceTests {
     void selectSendMailList() {
         // given
         String senderTest = "1";
+        String search = "mailtitle";
+        String searchValue = "바나나";
 
         // when
-        List<MailDTO> mailList = mailService.selectSendMailList(senderTest);
+        List<MailDTO> mailList = mailService.selectSendMailList(senderTest, search, searchValue);
 
         // then
         Assertions.assertNotNull(mailList);
@@ -95,9 +97,11 @@ public class MailServiceTests {
     void selectReceiveMailList() {
         // given
         String receiverTest = "2";
+        String search = "mailtitle";
+        String searchValue = "바나나";
 
         // when
-        List<MailDTO> mailList = mailService.selectReceiveMailList(receiverTest);
+        List<MailDTO> mailList = mailService.selectReceiveMailList(receiverTest, search, searchValue);
 
         // then
         Assertions.assertNotNull(mailList);
