@@ -108,14 +108,17 @@ public class MemberController {
 
 
     @GetMapping("/members")
-    public ResponseEntity<ResponseDTO> findAllMembers(@RequestParam(name = "offset", defaultValue = "1") String offset){
+    public ResponseEntity<ResponseDTO> findAllMembers(
+            @RequestParam(name = "search", defaultValue = "") String search,
+            @RequestParam(name = "offset", defaultValue = "1"
+            ) String offset){
 
         Criteria cri = new Criteria(Integer.valueOf(offset),10);
 
         PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
         /* 1. offset의 번호에 맞는 페이지에 뿌려줄 Member들 */
 
-        Page<MemberDTO> memberList = memberService.findAllMembersWithPaging(cri);
+        Page<MemberDTO> memberList = memberService.findAllMembersWithPaging(cri,search);
         pagingResponseDTO.setData(memberList);
 
         /* 2. PageDTO : 화면에서 페이징 처리에 필요한 정보들 */
@@ -125,6 +128,9 @@ public class MemberController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공",pagingResponseDTO));
 
     }
+
+
+
 
 
 
