@@ -14,11 +14,14 @@ import com.devsplan.ketchup.member.repository.PositionRepository;
 import com.devsplan.ketchup.util.FileUtils;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,6 +46,12 @@ public class MemberService {
     private final PositionRepository positionRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+
+    @Autowired
+    private JavaMailSender javaMailSender;
+
+
 
     @Value("${image.image-dir}")
     private String IMAGE_DIR;
@@ -176,6 +185,41 @@ public class MemberService {
         }
 
         return memberList;
+    }
+
+    public String sendVerifyEmail(String memberNo) {
+
+
+        SimpleMailMessage simpleMessage = new SimpleMailMessage();
+
+       Member findMember=  memberRepository.findByMemberNo(memberNo).get();
+
+       String email = findMember.getPrivateEmail();
+
+
+       String authCode = createAuthCode();
+
+
+        simpleMessage.setTo(email);
+
+
+        simpleMessage.setSubject("KETCHUP 인증번호 입니다.");
+
+
+        simpleMessage.setText("인증번호는 " + authCode + " 입니다.");
+
+        System.out.println("콘솔확인 이메일 인증번호  " + authCode);
+
+
+        javaMailSender.send(simpleMessage);
+
+        return authCode;
+    }
+
+
+    private String createAuthCode() {
+
+        return String.valueOf((int)(Math.random() * 1000000));
     }
 
 
