@@ -59,7 +59,7 @@ public class ScheduleServiceTests {
 
     private static Stream<Arguments> getScheduleInfo() {
         return Stream.of(
-                Arguments.of(3, 1, "신규 등록한 일정3", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
+                Arguments.of(2, 1, "신규 등록한 일정3", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
         );
     }
 
@@ -96,11 +96,11 @@ public class ScheduleServiceTests {
         ScheduleDTO updateSchedule = new ScheduleDTO(
                 2,
                 new DepartmentDTO(dptNo),
-                "수정된 일정4",
+                "수정된 일정!!!!!!!!!!!!!!!!!!",
                 LocalDateTime.of(2025, 6, 23, 10, 0),
                 skdEndDttm,
-                "수정된 위치4",
-                "수정된 메모4"
+                "수정된 위치!!!!!!!!!!!",
+                "수정된 메모!!!!!!!!!!!!!"
         );
 
         // then

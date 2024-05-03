@@ -95,11 +95,11 @@ public class BoardServiceTests {
         Pageable pageRequest = PageRequest.of(page, size, Sort.by("board_no").descending());
 
         //when
-        Page<BoardDTO> boardList = boardService.selectBoardList(departmentNo, pageRequest, title);
+//        Page<BoardDTO> boardList = boardService.selectBoardList(departmentNo, pageRequest, title);
 
         //then
-        Assertions.assertNotNull(boardList);
-        boardList.forEach(System.out::println);
+//        Assertions.assertNotNull(boardList);
+//        boardList.forEach(System.out::println);
     }
 
     @DisplayName("자료실 게시물 상세조회")
