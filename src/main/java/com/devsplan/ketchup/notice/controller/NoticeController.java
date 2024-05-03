@@ -1,26 +1,19 @@
 package com.devsplan.ketchup.notice.controller;
 
-import com.devsplan.ketchup.common.Pagenation;
-import com.devsplan.ketchup.common.PagingButton;
-import com.devsplan.ketchup.common.ResponseDTO;
+import com.devsplan.ketchup.common.*;
 import com.devsplan.ketchup.notice.dto.NoticeDTO;
 import com.devsplan.ketchup.notice.service.NoticeService;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URLEncoder;
 import java.util.List;
+
+import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
 
 @RestController
 @RequestMapping("/notices")
@@ -28,21 +21,23 @@ public class NoticeController {
 
     private final NoticeService noticeService;
 
-    @Value("${jwt.key}")
-    private String jwtSecret;
-
     public NoticeController(NoticeService noticeService) {
         this.noticeService = noticeService;
     }
 
     /* 공지 목록 조회(페이징, 제목검색) */
     @GetMapping
-    public ResponseEntity<ResponseDTO> selectNoticeList(@PageableDefault(sort = "boardCreateDttm", direction = Sort.Direction.DESC) Pageable pageable
+    public ResponseEntity<ResponseDTO> selectNoticeList(@RequestParam(name = "offset", defaultValue = "1") String offset
                                                         , @RequestParam(required = false) String title) {
         try {
-            Page<NoticeDTO> noticeList = noticeService.selectNoticeList(pageable, title);
-            PagingButton paging = Pagenation.getPagingButtonInfo(noticeList);
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "목록 조회 성공", paging));
+            Criteria cri = new Criteria(Integer.parseInt(offset),10);
+            PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
+
+            Page<NoticeDTO> noticeList = noticeService.selectNoticeList(cri, title);
+            pagingResponseDTO.setData(noticeList);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "목록 조회 성공", pagingResponseDTO));
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
         }
@@ -71,15 +66,9 @@ public class NoticeController {
                                                     , @RequestPart(required = false)List<MultipartFile> files
                                                     , @RequestHeader("Authorization") String token) {
         try{
-            // "Bearer " 이후의 토큰 값만 추출
-            String jwtToken = token.substring(7);
+            String memberNo = decryptToken(token).get("memberNo", String.class);
+            String authority = decryptToken(token).get("role").toString();
 
-            // 토큰 파싱하여 클레임 추출
-            Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-
-            // 클레임에서 권한 추출
-            String memberNo = claims.get("memberNo", String.class);
-            String authority = claims.get("role").toString();
             System.out.println("[ authority ] : " + authority);
 
             // LV3 또는 LV2 권한을 가진 사원만 공지 등록 가능
@@ -111,16 +100,8 @@ public class NoticeController {
                                                     , @RequestPart(required = false, name = "files")List<MultipartFile> files
                                                     , @RequestHeader("Authorization") String token) {
         try {
-            // "Bearer " 이후의 토큰 값만 추출
-            String jwtToken = token.substring(7);
-
-            // 토큰 파싱하여 클레임 추출
-            Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-
-            // 클레임에서 회원 번호와 권한 추출
-            String memberNo = claims.get("memberNo", String.class);
-            String authority = claims.get("role", String.class);
-
+            String memberNo = decryptToken(token).get("memberNo", String.class);
+            String authority = decryptToken(token).get("role").toString();
 
             // LV3 또는 LV2 권한을 가진 권한자 또는 해당 공지의 등록자만 공지 수정 가능
             if ("LV3".equals(authority) || "LV2".equals(authority)) {
@@ -151,15 +132,8 @@ public class NoticeController {
     public ResponseEntity<ResponseDTO> deleteNotice(@PathVariable int noticeNo
                                                     , @RequestHeader("Authorization") String token) {
         try{
-            // "Bearer " 이후의 토큰 값만 추출
-            String jwtToken = token.substring(7);
-
-            // 토큰 파싱하여 클레임 추출
-            Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-
-            // 클레임에서 회원 번호 추출
-            String memberNo = claims.get("memberNo", String.class);
-            String authority = claims.get("role", String.class);
+            String memberNo = decryptToken(token).get("memberNo", String.class);
+            String authority = decryptToken(token).get("role").toString();
 
             // 권한이 LV3 또는 LV2이거나 작성자와 일치하는 경우에만 삭제 시도
             if ("LV3".equals(authority) || "LV2".equals(authority)) {

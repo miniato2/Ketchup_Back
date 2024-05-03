@@ -12,7 +12,7 @@ import lombok.ToString;
 @Table(name = "TBL_APPLINE")
 public class AppLine {
     @Id
-    @Column(name = "APPLINE_NO", nullable = false)
+    @Column(name = "APP_LINE_NO", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int appLineNo;
     @Column(name = "APPROVAL_NO", nullable = false)

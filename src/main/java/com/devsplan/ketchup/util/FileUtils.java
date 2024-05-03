@@ -22,9 +22,6 @@ public class FileUtils {
     public static String saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
 
         Path uploadPath = Paths.get(uploadDir); // 상대경로- src외부에도 파일이 함께 저장됨
-//        Path uploadPath = Paths.get(IMAGE_DIR).toAbsolutePath().normalize();  // 절대경로(에러발생 수정필요)
-
-
 
         if(!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);

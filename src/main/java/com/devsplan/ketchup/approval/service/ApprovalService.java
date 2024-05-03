@@ -3,6 +3,7 @@ package com.devsplan.ketchup.approval.service;
 import com.devsplan.ketchup.approval.dto.*;
 import com.devsplan.ketchup.approval.entity.*;
 import com.devsplan.ketchup.approval.repository.*;
+import com.devsplan.ketchup.common.Criteria;
 import com.devsplan.ketchup.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -58,6 +59,7 @@ public class ApprovalService {
         this.modelMapper = modelMapper;
     }
 
+    //기안 상신
     @Transactional
     public Object insertApproval(AppInputDTO appInputDTO,
                                  List<MultipartFile> multipartFileList) {
@@ -70,28 +72,6 @@ public class ApprovalService {
         //기안 count + 1 => 현재 등록하려는 기안 번호 세팅
         int approvalNo = (int) approvalRepository.count() + 1;
         List<AppFileDTO> fileDTOList = new ArrayList<>();
-
-        //파일 저장
-        try {
-            if (multipartFileList != null || !multipartFileList.isEmpty()) {
-
-                for (MultipartFile multipartFile : multipartFileList) {
-                    String fileName = UUID.randomUUID().toString().replace("-", "");
-                    String replaceFileName = null;
-
-                    replaceFileName = FileUtils.saveFile(IMAGE_DIR, fileName, multipartFile);
-
-                    AppFileDTO appFileDTO = new AppFileDTO(approvalNo, replaceFileName);
-                    fileDTOList.add(appFileDTO);
-                }
-                List<AppFile> appFileList = new ArrayList<>();
-                //파일
-                fileDTOList.forEach(file -> {
-                    AppFile appFile = modelMapper.map(file, AppFile.class);
-                    appFileList.add(appFile);
-                });
-                appFileRepository.saveAll(appFileList);
-            }
 
             List<AppLine> appLineList = new ArrayList<>();
             List<RefLine> refLineList = new ArrayList<>();
@@ -126,6 +106,28 @@ public class ApprovalService {
             appLineRepository.saveAll(appLineList);
             refLineRepository.saveAll(refLineList);
 
+        //파일 저장
+        try {
+            if (multipartFileList != null || !multipartFileList.isEmpty()) {
+
+                for (MultipartFile multipartFile : multipartFileList) {
+                    String fileName = UUID.randomUUID().toString().replace("-", "");
+                    String replaceFileName = null;
+
+                    replaceFileName = FileUtils.saveFile(IMAGE_DIR, fileName, multipartFile);
+
+                    AppFileDTO appFileDTO = new AppFileDTO(approvalNo, replaceFileName);
+                    fileDTOList.add(appFileDTO);
+                }
+                List<AppFile> appFileList = new ArrayList<>();
+                //파일
+                fileDTOList.forEach(file -> {
+                    AppFile appFile = modelMapper.map(file, AppFile.class);
+                    appFileList.add(appFile);
+                });
+                appFileRepository.saveAll(appFileList);
+            }
+
             result = 1;
 
         } catch (IOException e) {
@@ -140,59 +142,67 @@ public class ApprovalService {
 
     //내가 작성한 기안 조회
     @Transactional
-    public List<ApprovalSelectDTO> selectMyApproval(String memberNo, List<String> status, String searchValue) {
+    public Page<ApprovalSelectDTO> selectMyApproval(String memberNo, List<String> status, String searchValue, Criteria cri) {
 
         //결재자 참조자 멤버 엔티티가 연결되는 무언가가 있어야할듯
 
-        List<ApprovalSelect> approvalSelectList = null;
+        int index = cri.getPageNum() - 1;
+        int count = cri.getAmount();
+        Pageable paging = PageRequest.of(index, count, Sort.by("approvalNo").descending());
+
+        Page<ApprovalSelect> approvalSelectList = null;
 
         if(searchValue == null){
-            approvalSelectList = approvalSelectRepository.findMyApproval(memberNo, status);
+            approvalSelectList = approvalSelectRepository.findMyApproval(memberNo, status, paging);
         }else{
-            approvalSelectList = approvalSelectRepository.findMyApprovalWithSearch(memberNo, status, searchValue);
+            approvalSelectList = approvalSelectRepository.findMyApprovalWithSearch(memberNo, status, searchValue, paging);
         }
 
-//        Page<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.map(approval -> modelMapper.map(approval, ApprovalSelectDTO.class));
-        List<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.stream().map(approval -> modelMapper.map(approval, ApprovalSelectDTO.class)).collect(Collectors.toList());
-
-        log.info(approvalSelectDTOList.toString());
+        Page<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.map(approval -> modelMapper.map(approval, ApprovalSelectDTO.class));
 
         return approvalSelectDTOList;
     }
 
+
+
     //받은 기안 조회
     @Transactional
-    public List<ApprovalSelectDTO> selectReceiveApp(String memberNo, List<String> status, String searchValue){
+    public Page<ApprovalSelectDTO> selectReceiveApp(String memberNo, List<String> status, String searchValue, Criteria cri){
+        int index = cri.getPageNum() - 1;
+        int count = cri.getAmount();
+        Pageable paging = PageRequest.of(index, count, Sort.by("approvalNo").descending());
 
-        List<ApprovalSelect> approvalSelectList = null;
+        Page<ApprovalSelect> approvalSelectList = null;
 
         if(searchValue == null){
-            approvalSelectList = approvalSelectRepository.findReceiveApp(memberNo, status);
+            approvalSelectList = approvalSelectRepository.findReceiveApp(memberNo, status, paging);
         }else{
-            approvalSelectList = approvalSelectRepository.findReceiveAppWithSearch(memberNo, status, searchValue);
+            approvalSelectList = approvalSelectRepository.findReceiveAppWithSearch(memberNo, status, searchValue, paging);
         }
-        List<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.stream().map(approvalAnd ->
-                        modelMapper.map(approvalAnd, ApprovalSelectDTO.class))
-                .collect(Collectors.toList());
+        Page<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.map(approvalAnd ->
+                        modelMapper.map(approvalAnd, ApprovalSelectDTO.class));
 
         return approvalSelectDTOList;
     }
 
     //참조선으로 등록된 기안 조회
     @Transactional
-    public List<ApprovalSelectDTO> selectRefApp(String memberNo, String status, String searchValue) {
-        List<ApprovalSelect> approvalSelectList = null;
+    public Page<ApprovalSelectDTO> selectRefApp(String memberNo, String status, String searchValue, Criteria cri) {
+        int index = cri.getPageNum() - 1;
+        int count = cri.getAmount();
+        Pageable paging = PageRequest.of(index, count, Sort.by("approvalNo").descending());
+        Page<ApprovalSelect> approvalSelectList = null;
+
         List<Integer> appNo = refLineRepository.findAppNoByMemberNo(memberNo); //사원번호로 참조선에 등록된 기안번호를 조회
 
         if(searchValue == null){
-            approvalSelectList = approvalSelectRepository.findRefApp(status, appNo);
+            approvalSelectList = approvalSelectRepository.findRefApp(status, appNo, paging);
         }else{
-            approvalSelectList = approvalSelectRepository.findRefAppWithSearch(status, searchValue, appNo);
+            approvalSelectList = approvalSelectRepository.findRefAppWithSearch(status, searchValue, appNo, paging);
         }
 
-        List<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.stream().map(approvalAnd ->
-                        modelMapper.map(approvalAnd, ApprovalSelectDTO.class))
-                .collect(Collectors.toList());
+        Page<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.map(approvalAnd ->
+                        modelMapper.map(approvalAnd, ApprovalSelectDTO.class));
 
         return approvalSelectDTOList;
     }
@@ -221,7 +231,7 @@ public class ApprovalService {
         return (result > 0) ? "성공" : "실패";
     }
 
-    //기안 처리 (결재 반려)
+    //기안 처리 (결재, 반려)
     @Transactional
     public String updateApproval2(AppUpdateDTO appUpdateDTO, String memberNo, int approvalNo){
         int result = 0;
@@ -240,7 +250,7 @@ public class ApprovalService {
                     appLine = appLine.alDate(appDate).build();
                     result = 1;
                 }else{
-                    approval.appStatus("진행").appFinalDate(appDate).build();
+                    approval.appStatus("진행").appFinalDate(appDate).sequence(approval.getSequence() + 1).build();
                     appLine = appLine.alDate(appDate).build();
                     result = 1;
                 }

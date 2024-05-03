@@ -8,6 +8,6 @@ import lombok.*;
 @Setter
 @ToString
 public class AppUpdateDTO {
-    private String action;
-    private String refusal;
+    private String action; //
+    private String refusal;//
 }

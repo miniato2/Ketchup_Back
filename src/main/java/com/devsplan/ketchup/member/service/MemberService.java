@@ -1,6 +1,7 @@
 package com.devsplan.ketchup.member.service;
 
 
+import com.devsplan.ketchup.common.Criteria;
 import com.devsplan.ketchup.member.dto.DepDTO;
 import com.devsplan.ketchup.member.dto.MemberDTO;
 import com.devsplan.ketchup.member.dto.PositionDTO;
@@ -14,6 +15,10 @@ import com.devsplan.ketchup.util.FileUtils;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -155,11 +160,23 @@ public class MemberService {
 
     }
 
+    public Page<MemberDTO> findAllMembersWithPaging(Criteria cri) {
 
-//    public List<MemberDTO> findAllMembers() {
-//
-////     return  memberRepository.findAllMembers();
-//
-//
-//    }
+        int index = cri.getPageNum() -1;
+        int count = cri.getAmount();
+
+        Pageable paging = PageRequest.of(index, count, Sort.by("memberNo").descending());
+
+        Page<Member> result = memberRepository.findByStatus("재직중",paging);
+
+        Page<MemberDTO> memberList = result.map(member -> modelMapper.map(member, MemberDTO.class));
+
+        for(int i =0; i< memberList.toList().size(); i++){
+            memberList.toList().get(i).setImgUrl(IMAGE_URL+memberList.toList().get(i).getImgUrl());
+        }
+
+        return memberList;
+    }
+
+
 }
