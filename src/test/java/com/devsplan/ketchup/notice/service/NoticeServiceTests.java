@@ -1,5 +1,7 @@
 package com.devsplan.ketchup.notice.service;
 
+import com.devsplan.ketchup.board.dto.BoardDTO;
+import com.devsplan.ketchup.common.Criteria;
 import com.devsplan.ketchup.notice.dto.NoticeDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -31,13 +33,11 @@ public class NoticeServiceTests {
     @Test
     void selectNoticeList() {
         // given
-        int page = 0;
-        int size = 10;
+        Criteria cri = new Criteria(Integer.valueOf(1),10);
         String title = "공지제목1";
-        Pageable pageRequest = PageRequest.of(page, size, Sort.by("board_no").descending());
 
         // when
-        Page<NoticeDTO> noticeList = noticeService.selectNoticeList(pageRequest, title);
+        Page<NoticeDTO> noticeList = noticeService.selectNoticeList(cri, title);
 
         // then
         Assertions.assertNotNull(noticeList);
