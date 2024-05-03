@@ -2,10 +2,9 @@ package com.devsplan.ketchup.approval.controller;
 
 import com.devsplan.ketchup.approval.dto.*;
 import com.devsplan.ketchup.approval.service.ApprovalService;
-import com.devsplan.ketchup.common.Pagenation;
-import com.devsplan.ketchup.common.PagingButton;
-import com.devsplan.ketchup.common.ResponseDTO;
+import com.devsplan.ketchup.common.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
 
 @RestController
 @RequestMapping
@@ -41,32 +43,76 @@ public class ApprovalController {
         );
     }
 
+    //기안 상세 조회
+    @GetMapping("/approvals/{approvalNo}")
+    public ResponseEntity<ResponseDTO> selectApprovalDetail(@PathVariable int approvalNo){
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "성공", approvalService.selectApproval(approvalNo)));
+    }
+
+    //기안 목록 조회
     @GetMapping("/approvals")
-    public List<ApprovalDTO> selectApprovalList(){
+    public ResponseEntity<ResponseDTO> selectApprovalList(@RequestParam String memberNo,
+                                                          @RequestParam(defaultValue = "1") int category,
+                                                          @RequestParam(defaultValue = "전체") String status,
+                                                          @RequestParam(defaultValue = "") String search,
+                                                          @RequestParam(name = "offset", defaultValue = "1")String offset,
+                                                          @RequestHeader("Authorization") String token){
+
+        System.out.println(memberNo);
+        System.out.println(category);
+        System.out.println(status);
+        System.out.println(search);
+        System.out.println(offset);
+
+        Criteria cri = new Criteria(Integer.valueOf(offset), 10);
+        PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
+
         Page<ApprovalSelectDTO> appList = null;
-        PagingButton paging = null;
+
+//        String memberNo = decryptToken(token).get("memberNo", String.class); //사원 번호
+
+        List<String> statusList = new ArrayList<>();
 
         // 검색 결과
-        /*switch (category){
+        switch (category){
             case 1:
-                if(status == 전체){ status = 대기, 진행; }
-                approvalService.selectMyApproval(member, status, search);
+                if(status.equals("전체")){
+                    statusList.add("대기");
+                    statusList.add("진행");
+                }else {
+                    statusList.add(status);
+                }
+                appList = approvalService.selectMyApproval(memberNo, statusList, search, cri);
                 break;
             case 2:
-                if(status == 전체){ status = 완료, 반려, 회수; }
-                approvalService.selectMyApproval(member, status, search);
+                if(status.equals("전체")){
+                    statusList.add("완료");
+                    statusList.add("반려");
+                    statusList.add("회수");
+                }else {
+                    statusList.add(status);
+                }
+                appList = approvalService.selectMyApproval(memberNo, statusList, search, cri);
                 break;
             case 3:
-                if(status == 전체){ status = 대기, 진행 }
-                approvalService.selectReceiveApp(); //
+                if(status.equals("전체")){
+                    statusList.add("대기");
+                    statusList.add("진행");
+                }else{
+                    statusList.add(status);
+                }
+                appList = approvalService.selectReceiveApp(memberNo, statusList, search, cri);
                 break;
             case 4:
-                status = 완료
-                approvalService.selectRefApp(); //상태 없음 => 무조건 승인된건만
+                status = "완료";
+                appList = approvalService.selectRefApp(memberNo, status, search, cri);
                 break;
-        }*/
-        return null;
+        }
 
+        pagingResponseDTO.setData(appList);
+        pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) appList.getTotalElements()));
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", pagingResponseDTO));
     }
 
     //양식 조회
@@ -82,16 +128,18 @@ public class ApprovalController {
     //기안 상태 수정
     @PutMapping("/approvals/{approvalNo}")
     public ResponseEntity<ResponseDTO> updateApprovals(@PathVariable int approvalNo,
-                                                       @RequestBody AppUpdateDTO appUpdateDTO){
+                                                       @RequestBody AppUpdateDTO appUpdateDTO,
+                                                       @RequestHeader("Authorization") String token){
         String result = "";
-        String memberNo = "1";
+        String memberNo = decryptToken(token).get("memberNo", String.class); //사원 번호 받아옮
 
         if(appUpdateDTO.getAction().equals("회수")){
             result = approvalService.updateApproval(approvalNo);
         }else{
             result = approvalService.updateApproval2(appUpdateDTO, memberNo, approvalNo);
         }
-
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "성공", result));
     }
+
+
 }

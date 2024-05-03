@@ -1,6 +1,5 @@
 package com.devsplan.ketchup.approval.dto;
 
-import com.devsplan.ketchup.member.dto.MemberDTO;
 import lombok.*;
 
 import java.util.List;
@@ -22,8 +21,8 @@ public class ApprovalSelectDTO {
     private String refusal;
     private int sequence;
     private List<AppFileDTO> appFileList;
-    private List<AppLineDTO> appLineList;
-    private List<RefLineDTO> refLineList;
+    private List<AppLineAndMemberDTO> appLineList;
+    private List<RefLineAndMemberDTO> refLineList;
 
     public ApprovalSelectDTO(MemberDTO member, FormDTO form, String appTitle, String appContents) {
         this.member = member;
