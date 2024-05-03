@@ -34,9 +34,6 @@ public class ApprovalController {
     public ResponseEntity<ResponseDTO> insertApproval(@ModelAttribute AppInputDTO appInputDTO,
                                                       List<MultipartFile> multipartFileList){
 
-        log.info("==================================");
-        log.info(appInputDTO.toString());
-
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "기안상신 완료",
                         approvalService.insertApproval(appInputDTO, multipartFileList))
@@ -57,12 +54,6 @@ public class ApprovalController {
                                                           @RequestParam(defaultValue = "") String search,
                                                           @RequestParam(name = "offset", defaultValue = "1")String offset,
                                                           @RequestHeader("Authorization") String token){
-
-        System.out.println(memberNo);
-        System.out.println(category);
-        System.out.println(status);
-        System.out.println(search);
-        System.out.println(offset);
 
         Criteria cri = new Criteria(Integer.valueOf(offset), 10);
         PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
