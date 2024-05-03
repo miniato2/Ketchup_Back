@@ -130,4 +130,9 @@ public class ReserveService {
 
         reserveRepository.save(foundReserve.builder());
     }
+
+    @Transactional
+    public void deleteById(int rsvNo) {
+        reserveRepository.deleteById((long) rsvNo);
+    }
 }
