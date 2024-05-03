@@ -5,7 +5,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @ToString
 public class RscDTO {
     private int rscNo;                  // 자원 번호
