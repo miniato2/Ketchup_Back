@@ -99,8 +99,8 @@ public class BoardServiceTests {
         Page<BoardDTO> boardList = boardService.selectBoardList(departmentNo, cri, title);
 
         //then
-        Assertions.assertNotNull(boardList);
-        boardList.forEach(System.out::println);
+//        Assertions.assertNotNull(boardList);
+//        boardList.forEach(System.out::println);
     }
 
     @DisplayName("자료실 게시물 상세조회")

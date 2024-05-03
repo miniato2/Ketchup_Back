@@ -41,6 +41,7 @@ public class NoticeServiceTests {
 
         // then
         Assertions.assertNotNull(noticeList);
+
     }
 
     @DisplayName("공지 상세 조회(첨부파일 다운)")
