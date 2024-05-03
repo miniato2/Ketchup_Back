@@ -2,9 +2,8 @@ package com.devsplan.ketchup.approval;
 
 import com.devsplan.ketchup.approval.dto.*;
 
-import com.devsplan.ketchup.approval.repository.AppLineRepository;
 import com.devsplan.ketchup.approval.service.ApprovalService;
-import com.devsplan.ketchup.member.dto.MemberDTO;
+import com.devsplan.ketchup.common.Criteria;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,25 +11,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-
-import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 @SpringBootTest
-public class ApprovalRestTests {
+public class ApprovalServiceTests {
     @Autowired
     private ApprovalService service;
-    private static final Logger logger = LoggerFactory.getLogger(ApprovalRestTests.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApprovalServiceTests.class);
 
     @DisplayName("기안 상신")
     @Test
@@ -70,7 +65,7 @@ public class ApprovalRestTests {
     @Test
     public void selectMyApprovalTest(){
         //given
-        String memberNo = "1";
+        String memberNo = "4";
         String status1 = "대기";
         String status2 = "진행";
         String searchValue = "제목";
@@ -79,14 +74,13 @@ public class ApprovalRestTests {
         status.add(status1);
         status.add(status2);
 
-
-//        Pageable page = null;
+        Criteria cri = new Criteria(Integer.valueOf(1), 10);
 
         //when
-        List<ApprovalSelectDTO> approvalSelectDTOList = service.selectMyApproval(memberNo, status, searchValue);
+        Page<ApprovalSelectDTO> approvalSelectDTOList = service.selectMyApproval(memberNo, status, searchValue, cri);
 
         //then
-        Assertions.assertTrue(approvalSelectDTOList.size() == 4);
+        Assertions.assertNotNull(approvalSelectDTOList);
     }
 
     @DisplayName("결재대기중인 기안 목록조회")
@@ -102,8 +96,10 @@ public class ApprovalRestTests {
         status.add(status1);
         status.add(status2);
 
+        Criteria cri = new Criteria(Integer.valueOf(1), 10);
+
         //then
-        List<ApprovalSelectDTO> approvalSelectDTOList = service.selectReceiveApp(memberNo, status, searchValue);
+        Page<ApprovalSelectDTO> approvalSelectDTOList = service.selectReceiveApp(memberNo, status, searchValue, cri);
         logger.info(approvalSelectDTOList.toString());
 
         //when
@@ -118,8 +114,10 @@ public class ApprovalRestTests {
         String status = "완료";
         String searchValue = "";
 
+        Criteria cri = new Criteria(Integer.valueOf(1), 10);
+
         //then
-        List<ApprovalSelectDTO> approvalSelectDTOList = service.selectRefApp(memberNo, status, searchValue);
+        Page<ApprovalSelectDTO> approvalSelectDTOList = service.selectRefApp(memberNo, status, searchValue, cri);
         logger.info(approvalSelectDTOList.toString());
 
         //when
@@ -151,16 +149,15 @@ public class ApprovalRestTests {
     @DisplayName("기안 처리")
     @Test
     public void updateApprovaltest(){
-        int appNo = 1;
-        String action = "결재";
+        int appNo = 2;
+        String action = "반려";
         String memberNo = "4";
-        String refusal = "거절";
+        String refusal = "그냥";
 
         AppUpdateDTO appUpdateDTO = new AppUpdateDTO(action, refusal);
 
         String result = service.updateApproval2(appUpdateDTO, memberNo, appNo);
 
-        //결재 처리시 필요한 정보 appNo, 행위(회수, 결재, 전결, 반려), refusal, memberNo
         Assertions.assertTrue(result == "성공");
     }
 

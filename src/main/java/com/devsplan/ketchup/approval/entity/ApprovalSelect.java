@@ -1,6 +1,5 @@
 package com.devsplan.ketchup.approval.entity;
 
-import com.devsplan.ketchup.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,11 +41,10 @@ public class ApprovalSelect {
     private List<AppFile> appFileList;
     @OneToMany
     @JoinColumn(name = "APPROVAL_NO")
-    private List<AppLine> appLineList;
+    private List<AppLineAndMember> appLineList;
     @OneToMany
     @JoinColumn(name = "APPROVAL_NO")
-    private List<RefLine> refLineList;
-
+    private List<RefLineAndMember> refLineList;
 
     protected ApprovalSelect(){}
 
@@ -97,11 +95,11 @@ public class ApprovalSelect {
         this.appFileList = appFileList;
         return this;
     }
-    public ApprovalSelect appLineList(List<AppLine> appLineList){
+    public ApprovalSelect appLineList(List<AppLineAndMember> appLineList){
         this.appLineList = appLineList;
         return this;
     }
-    public ApprovalSelect refLineList(List<RefLine> refLineList){
+    public ApprovalSelect refLineList(List<RefLineAndMember> refLineList){
         this.refLineList = refLineList;
         return this;
     }
