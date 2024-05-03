@@ -160,14 +160,14 @@ public class MemberService {
 
     }
 
-    public Page<MemberDTO> findAllMembersWithPaging(Criteria cri) {
+    public Page<MemberDTO> findAllMembersWithPaging(Criteria cri,String search) {
 
         int index = cri.getPageNum() -1;
         int count = cri.getAmount();
 
         Pageable paging = PageRequest.of(index, count, Sort.by("memberNo").descending());
 
-        Page<Member> result = memberRepository.findByStatus("재직중",paging);
+        Page<Member> result = memberRepository.findByStatusAndMemberNameContainingIgnoreCase("재직중",search,paging);
 
         Page<MemberDTO> memberList = result.map(member -> modelMapper.map(member, MemberDTO.class));
 
