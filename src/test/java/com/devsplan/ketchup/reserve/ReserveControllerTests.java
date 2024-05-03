@@ -32,11 +32,12 @@ public class ReserveControllerTests {
     @Test
     void selectReserveList() throws Exception {
         // given
-        String rscCategory = "법인차량";
+        String rscCategory = "회의실";
         LocalDate rsvDate = LocalDate.of(2024, 5, 4);
+        String formattedDate = rsvDate.toString();
 
         // when
-        request = MockMvcRequestBuilders.get("/reserves?category=" + rscCategory + "&rsvDate=" + rsvDate).header("Authorization", token);
+        request = MockMvcRequestBuilders.get("/reserves?category=" + rscCategory + "&rsvDate=" + formattedDate).header("Authorization", token);
 
         // then
         mvc.perform(request)
@@ -71,8 +72,7 @@ public class ReserveControllerTests {
 
         // then
         mvc.perform(request)
-                .andExpect(status().isCreated())
-                .andDo(print());
+                .andExpect(status().isCreated());
     }
 
 }

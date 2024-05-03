@@ -131,6 +131,7 @@ public class ReserveService {
         reserveRepository.save(foundReserve.builder());
     }
 
+    // 자원 예약 삭제
     @Transactional
     public void deleteById(int rsvNo) {
         reserveRepository.deleteById((long) rsvNo);

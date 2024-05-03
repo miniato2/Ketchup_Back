@@ -76,7 +76,7 @@ public class ReserveController {
     // 자원 예약 등록
     @PostMapping()
     public ResponseEntity<?> insertReserve(@RequestBody ReserveDTO newReserve) {
-        System.out.println("newReserve: " + newReserve);
+        log.debug("newReserve: {}", newReserve);
 
         if (newReserve.getResources() == null) {
             return ResponseEntity.badRequest().body("Resource information is missing.");
