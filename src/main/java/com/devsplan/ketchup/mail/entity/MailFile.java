@@ -2,11 +2,13 @@ package com.devsplan.ketchup.mail.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Table(name = "tbl_mail_file")
 @Getter
+@Setter
 @ToString
 public class MailFile {
     @Id
@@ -26,7 +28,7 @@ public class MailFile {
     @Column(name = "MAIL_FILE_ORI_NAME", nullable = false)
     private String mailFileOriName;
 
-    protected MailFile() {}
+    public MailFile() {}
 
     public MailFile(int mailFileNo, int mailNo, String mailFilePath, String mailFileName, String mailFileOriName) {
         this.mailFileNo = mailFileNo;

@@ -1,27 +1,45 @@
 package com.devsplan.ketchup.mail.service;
 
 import com.devsplan.ketchup.mail.dto.MailDTO;
+import com.devsplan.ketchup.mail.dto.MailFileDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
 import com.devsplan.ketchup.mail.entity.Mail;
+import com.devsplan.ketchup.mail.entity.MailFile;
 import com.devsplan.ketchup.mail.entity.Receiver;
+import com.devsplan.ketchup.mail.repository.MailFileRepository;
 import com.devsplan.ketchup.mail.repository.MailRepository;
 import com.devsplan.ketchup.mail.repository.ReceiverRepository;
+import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class MailService {
     private final MailRepository mailRepository;
     private final ReceiverRepository receiverRepository;
+    private final MailFileRepository mailFileRepository;
 
-    public MailService(MailRepository mailRepository, ReceiverRepository receiverRepository) {
+    public MailService(MailRepository mailRepository, ReceiverRepository receiverRepository, MailFileRepository mailFileRepository) {
         this.mailRepository = mailRepository;
         this.receiverRepository = receiverRepository;
+        this.mailFileRepository = mailFileRepository;
     }
+
+    @Value("${image.image-dir}/mails")
+    private String IMAGE_DIR;
+
+    @Value("${image.image-url}")
+    private String IMAGE_URL;
 
     // 메일 등록
     @Transactional
@@ -53,38 +71,93 @@ public class MailService {
         }
     }
 
-    public List<MailDTO> selectSendMailList(String senderMem) {
-        List<Mail> mailList = mailRepository.findBySenderMemAndSendDelStatus(senderMem, 'N');
-        for(Mail list : mailList) {
-            List<Receiver> mailReceiver = receiverRepository.findByMailNo(list.getMailNo());
-        }
-        System.out.println(mailList);
+    // 파일 업로드
+//    @Transactional
+//    public void insertMailFile(MultipartFile mailFile) {
+//        String mailFileName = UUID.randomUUID().toString().replace("-", "");
+//        String replaceFileName = "";
+//
+//        try {
+//            replaceFileName = FileUtils.saveFile(IMAGE_DIR, mailFileName, mailFile);
+//
+//            MailFile mailFiles = new MailFile();
+//
+//            mailFiles.setMailFilePath(replaceFileName);
+//            mailFiles.setMailFileName(mailFileName);
+//            mailFiles.setMailFileOriName(mailFile.getOriginalFilename());
+//
+//            mailFileRepository.save(mailFiles);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
 
-        return mailList.stream()
-                .map(mail -> new MailDTO(
-                        mail.getMailNo()
-                        , mail.getSenderMem()
-                        , mail.getMailTitle()
-                        , mail.getMailContent()
-                        , mail.getSendMailTime()
-                        , mail.getSendCancelStatus()
-                        , mail.getSendDelStatus()
-//                        , mailReceiver.stream()
-//                        .map(receiver -> new ReceiverDTO(
-//                                receiver.getMailNo(),
-//                                receiver.getReceiverMem(),
-//                                receiver.getReadTime(),
-//                                receiver.getReceiverDelStatus()
-//                        )).toList()
-                )).toList();
+    public List<MailDTO> selectSendMailList(String senderMem, String search, String searchValue) {
+
+        List<Mail> mailList = new ArrayList<>();
+        if(search != null) {
+            if(search.equals("mailtitle") && !searchValue.isEmpty()) {
+                mailList = mailRepository.findBySenderMemAndSendDelStatusAndMailTitleContaining(senderMem, 'N', searchValue);
+            }else if(search.equals("sendermem") && !searchValue.isEmpty()) {
+//                mailList = mailRepository.findBySenderMemAndSendDelStatusAndReceiverMemContaining(senderMem, 'N', searchValue);
+            }
+        }else {
+            mailList = mailRepository.findBySenderMemAndSendDelStatus(senderMem, 'N');
+        }
+
+        // --------------------------------------------------
+
+//        List<Mail> mailList = mailRepository.findBySenderMemAndSendDelStatus(senderMem, 'N');
+
+        List<ReceiverDTO> mailReceiverList;
+        List<MailDTO> mailDtoList = new ArrayList<>();
+
+        for(Mail list : mailList) {
+            List<Receiver> mailReceivers = receiverRepository.findByMailNo(list.getMailNo());
+            mailReceiverList =
+                    mailReceivers.stream()
+                    .map(receiverMap -> new ReceiverDTO(
+                            receiverMap.getReceiverNo(),
+                            receiverMap.getMailNo(),
+                            receiverMap.getReceiverMem(),
+                            receiverMap.getReadTime(),
+                            receiverMap.getReceiverDelStatus()
+                    )).toList();
+
+            mailDtoList.add(new MailDTO(
+                    list.getMailNo(),
+                    list.getSenderMem(),
+                    list.getMailTitle(),
+                    list.getMailContent(),
+                    list.getSendMailTime(),
+                    list.getSendCancelStatus(),
+                    list.getSendDelStatus(),
+                    mailReceiverList
+            ));
+        }
+
+        return mailDtoList;
     }
 
-    public List<MailDTO> selectReceiveMailList(String receiverMem) {
-        List<Receiver> receiverList = receiverRepository.findByReceiverMemAndReceiverDelStatus(receiverMem, 'N');
-        List<Mail> mailAllList = mailRepository.findAll();
+    // 받은 메일 조회 + 검색(페이징 X)
+    public List<MailDTO> selectReceiveMailList(String receiverMem, String search, String searchValue) {
+        List<Receiver> receivers = receiverRepository.findByReceiverMemAndReceiverDelStatus(receiverMem, 'N');
+
+        List<Mail> mailAllList = new ArrayList<>();
+
+        if(search != null) {
+            if(search.equals("mailtitle") && !searchValue.isEmpty()) {
+                mailAllList = mailRepository.findByMailTitleContaining(searchValue);
+            }else if(search.equals("sendermem") && !searchValue.isEmpty()) {
+                mailAllList = mailRepository.findBySenderMemContaining(searchValue);
+            }
+        }else {
+            mailAllList = mailRepository.findAll();
+        }
 
         List<MailDTO> receiverMail = new ArrayList<>();
-        for(Receiver list : receiverList) {
+        for(Receiver list : receivers) {
             for(Mail mailList : mailAllList) {
                 if(list.getMailNo() == mailList.getMailNo()) {
                     if(list.getReceiverDelStatus() == 'N') {
@@ -108,7 +181,6 @@ public class MailService {
     public MailDTO selectMailDetail(int mailNo) {
         Mail mailDetail = mailRepository.findByMailNoAndSendDelStatus(mailNo, 'N');
         List<Receiver> mailReceiver = receiverRepository.findByMailNo(mailNo);
-        System.out.println(mailDetail);
 
         return new MailDTO(
                 mailDetail.getMailNo()
@@ -155,9 +227,7 @@ public class MailService {
     }
 
     @Transactional
-        public int deleteSendMail(List<Integer> mailNo) {
-
-        System.out.println("삭제할 메일 번호!!!!!!!!!!!!!!" + mailNo);
+    public int deleteSendMail(List<Integer> mailNo) {
         int result = 0;
         for(Integer list : mailNo) {
             Mail oneMail = mailRepository.findByMailNo(list);
@@ -165,15 +235,12 @@ public class MailService {
             mailRepository.save(oneMail);
             result++;
         }
-        System.out.println("발신 삭제 : " + result);
 
         return result;
     }
 
     @Transactional
     public int deleteReceiveMail(List<Integer> mailNo) {
-        String receiverMem = "4";
-
         int result = 0;
         for(Integer list : mailNo) {
             List<Receiver> Receivers = receiverRepository.findByMailNo(list);
@@ -186,7 +253,6 @@ public class MailService {
                 result++;
             }
         }
-        System.out.println("수신 삭제 : " + result);
 
         return result;
     }
