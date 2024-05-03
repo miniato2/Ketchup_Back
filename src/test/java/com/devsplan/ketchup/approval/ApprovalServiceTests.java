@@ -48,9 +48,6 @@ public class ApprovalServiceTests {
         appFileList.add(multipartFile);
 
         AppInputDTO appInputDTO = new AppInputDTO(approvalDTO, appLineDTOList, refLineDTOList);
-//        logger.info(multipartFile.toString());
-//
-//        Assertions.assertTrue(true);
 
         //when
         String result = (String) service.insertApproval(appInputDTO, appFileList);

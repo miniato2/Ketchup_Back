@@ -144,8 +144,6 @@ public class ApprovalService {
     @Transactional
     public Page<ApprovalSelectDTO> selectMyApproval(String memberNo, List<String> status, String searchValue, Criteria cri) {
 
-        //결재자 참조자 멤버 엔티티가 연결되는 무언가가 있어야할듯
-
         int index = cri.getPageNum() - 1;
         int count = cri.getAmount();
         Pageable paging = PageRequest.of(index, count, Sort.by("approvalNo").descending());
