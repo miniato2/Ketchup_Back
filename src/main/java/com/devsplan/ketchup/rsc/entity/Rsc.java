@@ -24,11 +24,17 @@ public class Rsc {
     private int rscCap;
 
     @Column(name = "RSC_IS_AVAILABLE", nullable = false)
-    private char rscIsAvailable;
+    private boolean rscIsAvailable;
 
     @Column(name = "RSC_DESCR")
     private String rscDescr;
 
-    protected Rsc() {}
+    public Rsc() {}
 
+    public Rsc(String rscCategory, String rscName, String rscInfo, int rscCap) {
+        this.rscCategory = rscCategory;
+        this.rscName = rscName;
+        this.rscInfo = rscInfo;
+        this.rscCap = rscCap;
+    }
 }

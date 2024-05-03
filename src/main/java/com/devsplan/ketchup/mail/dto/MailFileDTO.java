@@ -12,6 +12,10 @@ public class MailFileDTO {
     private String mailFileName;        // 메일 파일 이름
     private String mailFileOriName;     // 메일 원본 파일 이름
 
+    public MailFileDTO() {
+
+    }
+
     public MailFileDTO(int mailNo, String mailFilePath, String mailFileName, String mailFileOriName) {
         this.mailNo = mailNo;
         this.mailFilePath = mailFilePath;
@@ -26,6 +30,4 @@ public class MailFileDTO {
         this.mailFileName = mailFileName;
         this.mailFileOriName = mailFileOriName;
     }
-
-
 }

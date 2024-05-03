@@ -2,7 +2,6 @@ package com.devsplan.ketchup.mail.service;
 
 import com.devsplan.ketchup.mail.dto.MailDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
-import com.devsplan.ketchup.mail.repository.MailRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
-public class MailRestTests {
+public class MailServiceTests {
     @Autowired
     MailService mailService;
 
