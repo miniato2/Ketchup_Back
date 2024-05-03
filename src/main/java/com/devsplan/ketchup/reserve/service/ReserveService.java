@@ -79,25 +79,7 @@ public class ReserveService {
         return reserveDTO;
     }
 
-
-    // 원래 하나의 로직안에서 두 개의 등록을 진행하려고 했었음.
-//    @Transactional
-//    public void insertReserve(ReserveDTO newReserve) {
-//        ResourceDTO resourceDTO = newReserve.getResources();
-//        Resource resource = new Resource(resourceDTO.getRscNo(), resourceDTO.getRscCategory(), resourceDTO.getRscName(), resourceDTO.getRscInfo(), resourceDTO.getRscCap(), resourceDTO.getRscIsAvailable(), resourceDTO.getRscDescr());
-//        System.out.println("어떤 자원을 등록할 건지 = " + resource);
-//        resourceRepository.save(resource);
-//
-//        Reserve reserve = new Reserve(
-//                newReserve.getRsvNo(),
-//                newReserve.getRsvDescr(),
-//                newReserve.getRsvStartDttm(),
-//                newReserve.getRsvEndDttm()
-//        );
-//        System.out.println("어떤 내용으로 자원 예약할 건지 = " + reserve);
-//        reserveRepository.save(reserve);
-//    }
-
+    // 자원 등록
     @Transactional
     public void insertResource(ResourceDTO resourceDTO) {
         Resource resource = new Resource(
@@ -112,6 +94,7 @@ public class ReserveService {
         resourceRepository.save(resource);
     }
 
+    // 자원 예약 등록
     @Transactional
     public void insertReserve(ReserveDTO newReserve, Resource resource) {
         Reserve reserve = new Reserve(
@@ -129,5 +112,21 @@ public class ReserveService {
         return optionalResource.orElse(null);
     }
 
+    // 자원 예약 수정
+    @Transactional
+    public void updateReserve(ReserveDTO updateReserve) {
+        Reserve foundReserve = reserveRepository.findById((long) updateReserve.getRsvNo()).orElseThrow(IllegalArgumentException::new);
 
+        if (updateReserve.getRsvStartDttm() != null) {
+            foundReserve.rsvStartDttm(updateReserve.getRsvStartDttm());
+        }
+        if (updateReserve.getRsvEndDttm() != null) {
+            foundReserve.rsvEndDttm(updateReserve.getRsvEndDttm());
+        }
+        if (updateReserve.getRsvDescr() != null) {
+            foundReserve.rsvDescr(updateReserve.getRsvDescr());
+        }
+
+        reserveRepository.save(foundReserve.builder());
+    }
 }

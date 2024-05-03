@@ -50,5 +50,30 @@ public class Reserve {
     public void setResources(Resource resources) {
         this.resources = resources;
     }
+
+    public Reserve rsvNo(int val) {
+        this.rsvNo = val;
+        return this;
+    }
+
+    public Reserve rsvStartDttm(LocalDateTime val) {
+        this.rsvStartDttm = val;
+        return this;
+    }
+
+    public Reserve rsvEndDttm(LocalDateTime val) {
+        this.rsvEndDttm = val;
+        return this;
+    }
+
+    public Reserve rsvDescr(String val) {
+        this.rsvDescr = val;
+        return this;
+    }
+
+    public Reserve builder() {
+        return new Reserve(rsvNo, rsvStartDttm, rsvEndDttm, rsvDescr);
+    }
+
 }
 

@@ -103,7 +103,7 @@ public class ScheduleServiceTests {
                 "수정된 메모4"
         );
 
-        // when
+        // then
         Assertions.assertDoesNotThrow(() -> scheduleService.updateSchedule(updateSchedule));
     }
 

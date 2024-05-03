@@ -4,6 +4,7 @@ import com.devsplan.ketchup.reserve.dto.ReserveDTO;
 import com.devsplan.ketchup.reserve.dto.ResourceDTO;
 import com.devsplan.ketchup.reserve.entity.Resource;
 import com.devsplan.ketchup.reserve.service.ReserveService;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,11 +14,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
 
 @SpringBootTest
 public class ReserveServiceTests {
@@ -178,15 +183,20 @@ public class ReserveServiceTests {
         System.out.println("등록한 예약 내용 = " + newReserve);
     }
 
+    @Transactional
+    @Test
+    void updateReserve(int rsvNo, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String rsvDescr) {
+        // given
+        // when
+            ReserveDTO updateReserve = new ReserveDTO(
+                    1,
+                    LocalDateTime.of(2024, 5, 3, 14, 30),
+                    LocalDateTime.of(2024, 5, 3, 15, 30),
+                    "위클리 미팅 연기"
+            );
 
-//    @Transactional
-//    @ParameterizedTest
-//    @MethodSource("updatedReserveInfo")
-//    void updateReserve(ReserveDTO updateReserve) {
-//        // given
-//
-//        // when
-//
-//        // then
-//    }
+        // then
+        Assertions.assertDoesNotThrow(() -> reserveService.updateReserve(updateReserve));
+        System.out.println("변경 완료된 자원 예약 수정 내용 = " + updateReserve);
+    }
 }
