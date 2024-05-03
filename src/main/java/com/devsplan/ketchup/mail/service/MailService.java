@@ -1,7 +1,6 @@
 package com.devsplan.ketchup.mail.service;
 
 import com.devsplan.ketchup.mail.dto.MailDTO;
-import com.devsplan.ketchup.mail.dto.MailFileDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
 import com.devsplan.ketchup.mail.entity.Mail;
 import com.devsplan.ketchup.mail.entity.MailFile;
@@ -12,8 +11,6 @@ import com.devsplan.ketchup.mail.repository.ReceiverRepository;
 import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,7 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class MailService {
@@ -72,26 +68,27 @@ public class MailService {
     }
 
     // 파일 업로드
-//    @Transactional
-//    public void insertMailFile(MultipartFile mailFile) {
-//        String mailFileName = UUID.randomUUID().toString().replace("-", "");
-//        String replaceFileName = "";
-//
-//        try {
-//            replaceFileName = FileUtils.saveFile(IMAGE_DIR, mailFileName, mailFile);
-//
-//            MailFile mailFiles = new MailFile();
-//
-//            mailFiles.setMailFilePath(replaceFileName);
-//            mailFiles.setMailFileName(mailFileName);
-//            mailFiles.setMailFileOriName(mailFile.getOriginalFilename());
-//
-//            mailFileRepository.save(mailFiles);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
+    @Transactional
+    public void insertMailFile(int sendMailNo, MultipartFile mailFile) {
+        String mailFileName = UUID.randomUUID().toString().replace("-", "");
+        String replaceFileName = "";
+
+        try {
+            replaceFileName = FileUtils.saveFile(IMAGE_DIR, mailFileName, mailFile);
+
+            MailFile mailFiles = new MailFile();
+
+            mailFiles.setMailNo(sendMailNo);
+            mailFiles.setMailFilePath(replaceFileName);
+            mailFiles.setMailFileName(mailFileName);
+            mailFiles.setMailFileOriName(mailFile.getOriginalFilename());
+
+            mailFileRepository.save(mailFiles);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
     public List<MailDTO> selectSendMailList(String senderMem, String search, String searchValue) {
 

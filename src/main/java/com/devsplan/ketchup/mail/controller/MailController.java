@@ -1,19 +1,12 @@
 package com.devsplan.ketchup.mail.controller;
 
-import com.devsplan.ketchup.common.Pagenation;
-import com.devsplan.ketchup.common.PagingButton;
-import com.devsplan.ketchup.common.ResponseDTO;
 import com.devsplan.ketchup.mail.dto.MailDTO;
+import com.devsplan.ketchup.mail.dto.MailFileDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
 import com.devsplan.ketchup.mail.service.MailService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +27,8 @@ public class MailController {
 
     @PostMapping
     public String insertMail(@RequestHeader("Authorization") String token,
-                                                  @RequestBody MailDTO mailDto){
+                             @RequestPart("mailInfo") MailDTO mailDto,
+                             @RequestPart("mailFile") MultipartFile mailFile){
         // 사원 번호
         String jwtToken = token.substring(7);
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
@@ -55,38 +49,11 @@ public class MailController {
 
         mailService.insertReceiver(mailDto.getReceivers());
 
+        // 첨부 파일 정보
+        mailService.insertMailFile(sendMailNo, mailFile);
+
         return "Send Mail!!";
     }
-
-//    @PostMapping
-//    public String insertMail(@RequestHeader("Authorization") String token,
-//                             @RequestBody MailDTO mailDto,
-//                             @RequestPart("mailFile") MultipartFile mailFile){
-//        // 사원 번호
-//        String jwtToken = token.substring(7);
-//        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-//        String memberNo = claims.get("memberNo", String.class);
-//
-//        // 메일 정보
-//        mailDto.setSenderMem(memberNo);
-//        mailDto.setSendCancelStatus('N');
-//        mailDto.setSendDelStatus('N');
-//
-//        int sendMailNo = mailService.insertMail(mailDto);
-//
-//        // 수신자 정보
-//        for(int i = 0; i < mailDto.getReceivers().size(); i++) {
-//            mailDto.getReceivers().get(i).setMailNo(sendMailNo);
-//            mailDto.getReceivers().get(i).setReceiverDelStatus('N');
-//        }
-//
-//        mailService.insertReceiver(mailDto.getReceivers());
-//
-//        System.out.println(mailFile);
-//        mailService.insertMailFile(mailFile);
-//
-//        return "Send Mail!!";
-//    }
 
     // 메일 조회 + 검색
     @GetMapping
@@ -117,36 +84,6 @@ public class MailController {
 
         return result;
     }
-
-    // 백업
-//    @GetMapping
-//    public String selectMailList(@RequestHeader("Authorization") String token,
-//                                 @RequestParam("part") String partValue,
-//                                 @RequestParam(value = "search", required = false) String search,
-//                                 @RequestParam(value = "searchvalue", required = false) String searchValue) {
-//        // 사원 번호
-//        String jwtToken = token.substring(7);
-//        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-//        String memberNo = claims.get("memberNo", String.class);
-//
-//        String result = "";
-//        List<MailDTO> mailList;
-//        if(partValue.equals("send")) {
-//            mailList = mailService.selectSendMailList(memberNo);
-//            for(MailDTO list : mailList) {
-//                System.out.println("보낸 메일" + list);
-//                result = "Send Mail List!!";
-//            }
-//        }else if(partValue.equals("receive")) {
-//            mailList = mailService.selectReceiveMailList(memberNo, search, searchValue);
-//            for(MailDTO list : mailList) {
-//                System.out.println("받은 메일" + list);
-//                result = "Receive Mail List!!";
-//            }
-//        }
-//
-//        return result;
-//    }
 
     @GetMapping("/{mailNo}")
     public String selectMailDetail(@PathVariable int mailNo) {
@@ -185,7 +122,8 @@ public class MailController {
     @PostMapping("/{mailNo}/reply")
     public String replyMail(@RequestHeader("Authorization") String token,
                             @PathVariable int mailNo,
-                            @RequestBody MailDTO mailDto){
+                            @RequestPart("mailInfo") MailDTO mailDto,
+                            @RequestPart("mailFile") MultipartFile mailFile){
         // 사원 번호
         String jwtToken = token.substring(7);
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
@@ -214,6 +152,8 @@ public class MailController {
         replyReceivers.add(replyReceiver);
 
         mailService.insertReceiver(replyReceivers);
+
+        mailService.insertMailFile(replyMailNo, mailFile);
 
         return "메일 답장 성공!!";
     }
