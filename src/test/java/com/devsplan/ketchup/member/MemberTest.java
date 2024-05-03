@@ -6,8 +6,10 @@ import com.devsplan.ketchup.member.dto.DepDTO;
 import com.devsplan.ketchup.member.dto.MemberDTO;
 
 import com.devsplan.ketchup.member.dto.PositionDTO;
+import com.devsplan.ketchup.member.entity.Member;
 import com.devsplan.ketchup.member.service.MemberService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -97,7 +99,7 @@ public class MemberTest {
 
                         new PositionDTO(
                                 1,
-                                "사원",
+                                "직원",
                                 3,
                                 Authority.LV1,
                                 'Y'  // char로 수정
@@ -176,14 +178,28 @@ public class MemberTest {
         // memberService.insertMember(member)를 호출하고 예외 발생 여부를 확인합니다.
         Assertions.assertDoesNotThrow(
                 () -> {
-                    // 멤버 추가 로직 실행
+
                     memberService.updatePosition(positionDTO);
                 },
-                "멤버 추가 중 예외가 발생했습니다."  // 예외 발생 시 메시지
+                "직급 수정중 예외가 발생했습니다"  // 예외 발생 시 메시지
         );
 
 
     }
+
+    @Test
+    void testMemberDetails(){
+        String memberNo = "1";
+
+        MemberDTO findMember = memberService.findMember(memberNo).get();
+
+        Assertions.assertNotNull(findMember);
+        System.out.println(findMember);
+
+
+    }
+
+
 
 
 
