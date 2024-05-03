@@ -2,6 +2,9 @@ package com.devsplan.ketchup.board.service;
 
 import com.devsplan.ketchup.board.dto.BoardDTO;
 import com.devsplan.ketchup.board.repository.BoardRepository;
+import com.devsplan.ketchup.common.Criteria;
+import com.devsplan.ketchup.common.PageDTO;
+import com.devsplan.ketchup.common.PagingResponseDTO;
 import com.devsplan.ketchup.util.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -89,13 +92,11 @@ public class BoardServiceTests {
     void selectBoardList() {
         //given
         int departmentNo = 1;
-        int page = 0;
-        int size = 10;
-        String title = "";
-        Pageable pageRequest = PageRequest.of(page, size, Sort.by("board_no").descending());
 
+        Criteria cri = new Criteria(Integer.valueOf(1),10);
+        String title = "";
         //when
-//        Page<BoardDTO> boardList = boardService.selectBoardList(departmentNo, pageRequest, title);
+        Page<BoardDTO> boardList = boardService.selectBoardList(departmentNo, cri, title);
 
         //then
 //        Assertions.assertNotNull(boardList);

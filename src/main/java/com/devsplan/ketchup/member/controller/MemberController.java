@@ -25,14 +25,11 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    private final MemberRepository memberRepository;
 
-    private final BCryptPasswordEncoder passwordEncoder;
 
-    public MemberController (MemberService memberService, MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder){
+    public MemberController (MemberService memberService){
         this.memberService = memberService;
-        this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
+
 
     }
 
@@ -100,6 +97,16 @@ public class MemberController {
     }
 
 
+    @GetMapping("/members/{memberNo}")
+    public ResponseEntity<ResponseDTO> findMember(@PathVariable String memberNo){
+
+      MemberDTO findMember  =  memberService.findMember(memberNo).get();
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공",findMember));
+
+    }
+
+
     @GetMapping("/members")
     public ResponseEntity<ResponseDTO> findAllMembers(@RequestParam(name = "offset", defaultValue = "1") String offset){
 
@@ -117,11 +124,9 @@ public class MemberController {
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공",pagingResponseDTO));
 
-
-
-
-
     }
+
+
 
 
 
