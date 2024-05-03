@@ -216,10 +216,8 @@ public class ReserveServiceTests {
         // given
         int rsvNo = 4;
 
-        // when
+        // when, then
         reserveService.deleteById(rsvNo);
-
-        // then
         Assertions.assertThrows(NoSuchElementException.class, () -> reserveRepository.findById((long) rsvNo).orElseThrow());
     }
 }

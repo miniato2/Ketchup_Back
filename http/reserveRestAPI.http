@@ -1,10 +1,11 @@
-### 검색 조건에 따른 조회
-
 ### 자원 예약 목록 조회
+GET http://localhost:8080/reserves?category=회의실&rsvDate=2024-05-03
+Authorization: Bearer eyJkYXRlIjoxNzE0Njk3NjEzNDk0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0Nzg0MDEzfQ.8oTTf5UEsIZa4-CegR-IdKLJqj8MGv7-RdCvSZqXNsA
 
 ### 자원 예약 상세 조회
 
 ### 자원 예약 등록
+POST http://localhost:8080/
 
 ### 자원 예약 수정
 
