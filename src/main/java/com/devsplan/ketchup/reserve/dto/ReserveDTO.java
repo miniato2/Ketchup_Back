@@ -31,4 +31,12 @@ public class ReserveDTO {
         this.rsvEndDttm = rsvEndDttm;
         this.rsvDescr = rsvDescr;
     }
+
+    public ReserveDTO(int rsvNo, String rsvDescr, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, ResourceDTO resources) {
+        this.rsvNo = rsvNo;
+        this.rsvDescr = rsvDescr;
+        this.rsvStartDttm = rsvStartDttm;
+        this.rsvEndDttm = rsvEndDttm;
+        this.resources = resources;
+    }
 }
