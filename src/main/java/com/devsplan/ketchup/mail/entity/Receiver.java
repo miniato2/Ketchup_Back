@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "tbl_receiver")
 @Getter
-@Setter
 @ToString
 public class Receiver {
     @Id
@@ -18,8 +17,6 @@ public class Receiver {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int receiverNo;
 
-//    @ManyToOne
-//    @JoinColumn(name = "Recivers", nullable = false)
     @Column(name = "MAIL_NO")
     private int mailNo;
 
@@ -32,5 +29,21 @@ public class Receiver {
     @Column(name = "RECEIVER_DEL_STATUS", nullable = false)
     private char receiverDelStatus;
 
-    public Receiver() {}
+    protected Receiver() {}
+
+    public Receiver mailNo(int val) {
+        this.mailNo = val;
+        return this;
+    }
+
+    public Receiver receiverDelStatus(char val) {
+        this.receiverDelStatus = val;
+        return this;
+    }
+
+    public Receiver(int mailNo, String receiverMem, char receiverDelStatus) {
+        this.mailNo = mailNo;
+        this.receiverMem = receiverMem;
+        this.receiverDelStatus = receiverDelStatus;
+    }
 }

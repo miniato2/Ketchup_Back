@@ -5,6 +5,7 @@ import lombok.*;
 import java.sql.Timestamp;
 import java.util.List;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -18,9 +19,6 @@ public class MailDTO {
     private char sendDelStatus;             // 발신 메일 삭제 여부
     private List<ReceiverDTO> receivers;    // 수신자 목록
     private List<MailFileDTO> mailFiles;    // 첨부 파일 목록
-
-    public MailDTO() {
-    }
 
     public MailDTO(String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
         this.mailTitle = mailTitle;
