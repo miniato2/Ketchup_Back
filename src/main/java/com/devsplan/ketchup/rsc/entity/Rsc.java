@@ -5,11 +5,12 @@ import lombok.Getter;
 
 @Entity
 @Table(name = "tbl_rsc")
+@Getter
 public class Rsc {
     @Id
     @Column(name = "RSC_NO", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int rsc_no;
+    private int rscNo;
 
     @Column(name = "RSC_CATEGORY", nullable = false)
     private String rscCategory;
@@ -29,7 +30,17 @@ public class Rsc {
     @Column(name = "RSC_DESCR")
     private String rscDescr;
 
-    public Rsc() {}
+    protected Rsc() {}
+
+    public Rsc rscIsAvailable(boolean rscIsAvailable) {
+        this.rscIsAvailable = rscIsAvailable;
+        return this;
+    }
+
+    public Rsc rscDescr(String rscDescr) {
+        this.rscDescr = rscDescr;
+        return this;
+    }
 
     public Rsc(String rscCategory, String rscName, String rscInfo, int rscCap) {
         this.rscCategory = rscCategory;
