@@ -57,11 +57,11 @@ public class MailService {
     @Transactional
     public void insertReceiver(List<ReceiverDTO> receivers) {
         for(ReceiverDTO list : receivers) {
-            Receiver receiver = new Receiver();
-
-            receiver.setMailNo(list.getMailNo());
-            receiver.setReceiverMem(list.getReceiverMem());
-            receiver.setReceiverDelStatus(list.getReceiverDelStatus());
+            Receiver receiver = new Receiver(
+                list.getMailNo(),
+                list.getReceiverMem(),
+                list.getReceiverDelStatus()
+            );
 
             receiverRepository.save(receiver);
         }
@@ -76,12 +76,12 @@ public class MailService {
         try {
             replaceFileName = FileUtils.saveFile(IMAGE_DIR, mailFileName, mailFile);
 
-            MailFile mailFiles = new MailFile();
-
-            mailFiles.setMailNo(sendMailNo);
-            mailFiles.setMailFilePath(replaceFileName);
-            mailFiles.setMailFileName(mailFileName);
-            mailFiles.setMailFileOriName(mailFile.getOriginalFilename());
+            MailFile mailFiles = new MailFile(
+                    sendMailNo,
+                    replaceFileName,
+                    mailFileName,
+                    mailFile.getOriginalFilename()
+            );
 
             mailFileRepository.save(mailFiles);
         } catch (IOException e) {
@@ -208,11 +208,11 @@ public class MailService {
 
         if(result == 1) {
             Mail oneMail = mailRepository.findByMailNo(mailNo);
-            oneMail.setSendCancelStatus('Y');
+            oneMail.sendCancelStatus('Y');
             mailRepository.save(oneMail);
 
             for(Receiver read : mailRead) {
-                read.setReceiverDelStatus('Y');
+                read.receiverDelStatus('Y');
             }
         }
 
@@ -224,7 +224,7 @@ public class MailService {
         int result = 0;
         for(Integer list : mailNo) {
             Mail oneMail = mailRepository.findByMailNo(list);
-            oneMail.setSendDelStatus('Y');
+            oneMail.sendDelStatus('Y');
             mailRepository.save(oneMail);
             result++;
         }
@@ -239,7 +239,7 @@ public class MailService {
             List<Receiver> Receivers = receiverRepository.findByMailNo(list);
 
             for(Receiver receiver : Receivers) {
-                receiver.setReceiverDelStatus('Y');
+                receiver.receiverDelStatus('Y');
 
                 receiverRepository.save(receiver);
 

@@ -50,26 +50,6 @@ public class MailServiceTests {
         receivers.add(receiverInfo1);
         receivers.add(receiverInfo2);
 
-        // 첨부파일
-//        String mailFileOriName = "testFile";
-//        String contentType = mailFileOriName.substring(mailFileOriName.lastIndexOf("."));
-//        System.out.println(contentType + "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-//        String mailFilePath = "src/test/resources/files/" + mailFileOriName + "." + contentType;
-//        System.out.println(mailFilePath + "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//        String mailFileName = "";
-
-//        MockMultipartFile mailFile1 = new MockMultipartFile(
-//                mailNo,
-//                mailFilePath,
-//                mailFileName,
-//                mailFileOriName
-//        );
-
-//        List<MailFileDTO> mailFiles = new ArrayList<>();
-//        mailFiles.add(mailFile1);
-//
-//        mailService.insertMailFile();
-
         // then
         Assertions.assertDoesNotThrow(() -> mailService.insertReceiver(receivers));
     }

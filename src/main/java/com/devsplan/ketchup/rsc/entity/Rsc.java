@@ -32,13 +32,13 @@ public class Rsc {
 
     protected Rsc() {}
 
-    public Rsc rscIsAvailable(boolean rscIsAvailable) {
-        this.rscIsAvailable = rscIsAvailable;
+    public Rsc rscIsAvailable(boolean val) {
+        this.rscIsAvailable = val;
         return this;
     }
 
-    public Rsc rscDescr(String rscDescr) {
-        this.rscDescr = rscDescr;
+    public Rsc rscDescr(String val) {
+        this.rscDescr = val;
         return this;
     }
 
