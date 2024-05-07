@@ -1,7 +1,8 @@
-package com.devsplan.ketchup.mail.service;
+package com.devsplan.ketchup.mail;
 
 import com.devsplan.ketchup.mail.dto.MailDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
+import com.devsplan.ketchup.mail.service.MailService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
