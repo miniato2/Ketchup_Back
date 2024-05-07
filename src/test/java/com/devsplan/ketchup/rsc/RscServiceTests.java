@@ -112,7 +112,6 @@ public class RscServiceTests {
         int rscNo = 2;
 
         RscDTO updateRsc = new RscDTO(
-                rscNo,
                 true,
                 "비고 수정했습니다."
         );
@@ -120,7 +119,7 @@ public class RscServiceTests {
         // when
 
         // then
-        Assertions.assertDoesNotThrow(() -> rscService.updateResource(updateRsc));
+        Assertions.assertDoesNotThrow(() -> rscService.updateResource(rscNo, updateRsc));
     }
 
     @DisplayName("자원 삭제")

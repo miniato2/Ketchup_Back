@@ -25,7 +25,7 @@ public class RscService {
     }
 
     @Transactional
-    public void insertResource(RscDTO rscDTO) {
+    public Object insertResource(RscDTO rscDTO) {
         Rsc resource = new Rsc(
                 rscDTO.getRscCategory(),
                 rscDTO.getRscName(),
@@ -33,7 +33,7 @@ public class RscService {
                 rscDTO.getRscCap()
         );
 
-        rscRepository.save(resource);
+        return rscRepository.save(resource);
     }
 
     public List<RscDTO> selectRscList(String part) {
@@ -66,15 +66,18 @@ public class RscService {
     }
 
     @Transactional
-    public void updateResource(RscDTO updateRsc) {
-        Rsc rsc = rscRepository.findByRscNo(updateRsc.getRscNo());
+    public int updateResource(int rscNo, RscDTO updateRsc) {
+        Rsc rsc = rscRepository.findByRscNo(rscNo);
+
+        int result = 0;
 
         // 자원 사용 가능 여부가 원래의 정보와 다른 경우
         if(rsc.isRscIsAvailable() != updateRsc.isRscIsAvailable()) {
             rsc.rscIsAvailable(updateRsc.isRscIsAvailable());
+            result += 1;
 
             // 사용 가능 불가로 변경되는 경우(true) - 예약 일정 삭제
-            if(updateRsc.isRscIsAvailable()) {
+//            if(updateRsc.isRscIsAvailable()) {
                 // 해당 자원에 대한 예약자 조회
 //                List<Reserve> reserveList = reserveRepository.findByRscNo(updateRsc.getRscNo());
 
@@ -83,6 +86,7 @@ public class RscService {
 //                    for(int i = 0; i < reserveList.size(); i++) {
 //                        System.out.println("예약 일정 삭제!!");
 //                        reserveRepository.deleteByRsv(reserveList.get(i).getRsvNo());
+//                        result += 1;
 //
 //                        System.out.println("예약자 예약 취소 메일 전송");
 //                        Mail rsvCancelMail;
@@ -108,14 +112,18 @@ public class RscService {
 //                            );
 //                        }
 //                        mailRepository.save(rsvCancelMail);
+//                        result += 1;
 //                    }
 //                }
-            }
+//            }
         }
 
-        if(!rsc.getRscDescr().equals(updateRsc.getRscDescr())) {
+        if(updateRsc.getRscDescr() != null) {
             rsc.rscDescr(updateRsc.getRscDescr());
+            result += 1;
         }
+
+        return result;
     }
 
     @Transactional

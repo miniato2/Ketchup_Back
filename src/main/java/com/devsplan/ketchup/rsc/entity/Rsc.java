@@ -48,4 +48,14 @@ public class Rsc {
         this.rscInfo = rscInfo;
         this.rscCap = rscCap;
     }
+
+    public Rsc(int rscNo, String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
+        this.rscNo = rscNo;
+        this.rscCategory = rscCategory;
+        this.rscName = rscName;
+        this.rscInfo = rscInfo;
+        this.rscCap = rscCap;
+        this.rscIsAvailable = rscIsAvailable;
+        this.rscDescr = rscDescr;
+    }
 }

@@ -14,6 +14,11 @@ public class RscDTO {
     private boolean rscIsAvailable;     // 사용 가능 여부
     private String rscDescr;            // 비고
 
+    public RscDTO(boolean rscIsAvailable, String rscDescr) {
+        this.rscIsAvailable = rscIsAvailable;
+        this.rscDescr = rscDescr;
+    }
+
     public RscDTO(int rscNo, boolean rscIsAvailable, String rscDescr) {
         this.rscNo = rscNo;
         this.rscIsAvailable = rscIsAvailable;
