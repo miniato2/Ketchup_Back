@@ -1,7 +1,8 @@
-package com.devsplan.ketchup.mail.service;
+package com.devsplan.ketchup.mail;
 
 import com.devsplan.ketchup.mail.dto.MailDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
+import com.devsplan.ketchup.mail.service.MailService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,26 +50,6 @@ public class MailServiceTests {
         List<ReceiverDTO> receivers = new ArrayList<>();
         receivers.add(receiverInfo1);
         receivers.add(receiverInfo2);
-
-        // 첨부파일
-//        String mailFileOriName = "testFile";
-//        String contentType = mailFileOriName.substring(mailFileOriName.lastIndexOf("."));
-//        System.out.println(contentType + "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-//        String mailFilePath = "src/test/resources/files/" + mailFileOriName + "." + contentType;
-//        System.out.println(mailFilePath + "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//        String mailFileName = "";
-
-//        MockMultipartFile mailFile1 = new MockMultipartFile(
-//                mailNo,
-//                mailFilePath,
-//                mailFileName,
-//                mailFileOriName
-//        );
-
-//        List<MailFileDTO> mailFiles = new ArrayList<>();
-//        mailFiles.add(mailFile1);
-//
-//        mailService.insertMailFile();
 
         // then
         Assertions.assertDoesNotThrow(() -> mailService.insertReceiver(receivers));

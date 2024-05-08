@@ -8,7 +8,6 @@ import lombok.ToString;
 @Entity
 @Table(name = "tbl_mail_file")
 @Getter
-@Setter
 @ToString
 public class MailFile {
     @Id
@@ -28,10 +27,9 @@ public class MailFile {
     @Column(name = "MAIL_FILE_ORI_NAME", nullable = false)
     private String mailFileOriName;
 
-    public MailFile() {}
+    protected MailFile() {}
 
-    public MailFile(int mailFileNo, int mailNo, String mailFilePath, String mailFileName, String mailFileOriName) {
-        this.mailFileNo = mailFileNo;
+    public MailFile(int mailNo, String mailFilePath, String mailFileName, String mailFileOriName) {
         this.mailNo = mailNo;
         this.mailFilePath = mailFilePath;
         this.mailFileName = mailFileName;

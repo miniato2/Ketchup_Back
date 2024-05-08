@@ -34,12 +34,15 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
         } else {
             String token = TokenUtils.generateJwtToken(memberDTO);
             responseMap.put("userInfo", jsonValue);
-            responseMap.put("message", "로그인 성공입니다.");
-
+            responseMap.put("message", "Log in!!.");
+            responseMap.put("token", token);
+            responseMap.put("status", 200);
             response.addHeader(AuthConstants.AUTH_HEADER, AuthConstants.TOKEN_TYPE + " " + token);
+
         }
 
         jsonObject = new JSONObject(responseMap);
+        response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         PrintWriter printWriter = response.getWriter();
         printWriter.print(jsonObject);

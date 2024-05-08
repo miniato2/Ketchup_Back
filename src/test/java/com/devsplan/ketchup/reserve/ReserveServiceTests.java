@@ -13,6 +13,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,8 +35,8 @@ public class ReserveServiceTests {
     @Test
     void selectReserveList() {
         // given
-        String rscCategory = "회의실";
-        LocalDate rsvDate = LocalDate.of(2024, 5, 3);
+        String rscCategory = "법인차량";
+        LocalDate rsvDate = LocalDate.of(2024, 5, 2);
 
         // when
         List<ReserveDTO> foundReserve = reserveService.selectReserveList(rscCategory, rsvDate);
@@ -47,7 +50,7 @@ public class ReserveServiceTests {
     @Test
     void selectReserveDetail() {
         // given
-        int rsvNo = 4;
+        int rsvNo = 17;
 
         // when
         ReserveDTO foundReserve = reserveService.selectReserveDetail(rsvNo);
@@ -91,45 +94,49 @@ public class ReserveServiceTests {
 
     private static Stream<Arguments> getReserveInfo() {
         return Stream.of(
-//                Arguments.of(
-//                        LocalDateTime.of(2024, 5, 1, 13, 30),
-//                        LocalDateTime.of(2024, 5, 1, 18, 0),
-//                        1,
-//                        "위클리 미팅",
-//                        "회의실",
-//                        "회의실 A",
-//                        "별관 3층 301호",
-//                        10,
-//                        true,
-//                        "5월 첫째주 위클리 미팅"
-//                )
-//                ,
-//                Arguments.of(
-//                        LocalDateTime.of(2024, 5, 2, 10, 0),
-//                        LocalDateTime.of(2024, 5, 2, 12, 0),
-//                        2,
-//                        "물류 창고 방문",
-//                        "법인차량",
-//                        "황금마티즈",
-//                        "본관 지하 1층 주차장 B20 영역",
-//                        4,
-//                        true,
-//                        "물류 창고 방문을 위한 법인 차량 대여"
-//                ),
-//                Arguments.of(
-//                        LocalDateTime.of(2024, 5, 3, 15, 0),
-//                        LocalDateTime.of(2024, 5, 3, 17, 0),
-//                        3,
-//                        "진급식",
-//                        "회의실",
-//                        "회의실 B",
-//                        "본관 4층 401호",
-//                        8,
-//                        true,
-//                        "이대리 등 30명 진급 축하식을 위한 진급식 진행"
-//                )
-//                ,
                 Arguments.of(
+                        "3",
+                        LocalDateTime.of(2024, 5, 1, 13, 30),
+                        LocalDateTime.of(2024, 5, 1, 18, 0),
+                        1,
+                        "위클리 미팅",
+                        "회의실",
+                        "회의실 A",
+                        "별관 3층 301호",
+                        10,
+                        true,
+                        "5월 첫째주 위클리 미팅"
+                )
+                ,
+                Arguments.of(
+                        "3",
+                        LocalDateTime.of(2024, 5, 2, 10, 0),
+                        LocalDateTime.of(2024, 5, 2, 12, 0),
+                        2,
+                        "물류 창고 방문",
+                        "법인차량",
+                        "황금마티즈",
+                        "본관 지하 1층 주차장 B20 영역",
+                        4,
+                        true,
+                        "물류 창고 방문을 위한 법인 차량 대여"
+                ),
+                Arguments.of(
+                        "3",
+                        LocalDateTime.of(2024, 5, 3, 15, 0),
+                        LocalDateTime.of(2024, 5, 3, 17, 0),
+                        3,
+                        "진급식",
+                        "회의실",
+                        "회의실 B",
+                        "본관 4층 401호",
+                        8,
+                        true,
+                        "이대리 등 30명 진급 축하식을 위한 진급식 진행"
+                )
+                ,
+                Arguments.of(
+                        "2",
                         LocalDateTime.of(2024, 5, 3, 17, 0),
                         LocalDateTime.of(2024, 5, 3, 17, 30),
                         3,
@@ -160,66 +167,64 @@ public class ReserveServiceTests {
     @DisplayName("자원 예약 등록 테스트")
     @ParameterizedTest
     @MethodSource("getReserveInfo")
-    public void insertReserveTest(LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, int rscNo, String rsvDescr, String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
+    public void insertReserveTest(String reserver, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, int rscNo, String rsvDescr, String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
         // given
         ResourceDTO resourceDTO = new ResourceDTO(rscNo, rscCategory, rscName, rscInfo, rscCap, rscIsAvailable, rscDescr);
         ReserveDTO newReserve = new ReserveDTO(
                 rsvDescr,
                 rsvStartDttm,
                 rsvEndDttm,
+                reserver,
                 resourceDTO
         );
 
-        // when
+        // when, then
         Assertions.assertDoesNotThrow(
                 () -> {
                     Resource resource = reserveService.getResourceFromDatabase(rscNo);
                     reserveService.insertReserve(newReserve, resource);
                 }
         );
-
-        // then
     }
 
-
-    private static Stream<Arguments> getUpdateReserveInfo() {
-        return Stream.of(
-                Arguments.of(
-                        1,
-                        LocalDateTime.of(2025, 5, 3, 14, 30),
-                        LocalDateTime.of(2025, 5, 3, 16, 30),
-                        "자원 예약 수정"
-                )
-        );
-    }
-
-    @DisplayName("자원 예약 수정")
-    @ParameterizedTest
-    @MethodSource("getUpdateReserveInfo")
-    void updateReserve(int rsvNo, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String rsvDescr) {
+    @DisplayName("자원 예약 수정 서비스 테스트")
+    @Test
+    void updateReserve() {
         // given
+        int rsvNo = 6;
+        LocalDateTime updatedStartDttm = LocalDateTime.of(2025, 5, 3, 14, 30);
+        LocalDateTime updatedEndDttm = LocalDateTime.of(2025, 5, 3, 16, 30);
+        String updatedDescr = "자원 예약 수정";
+
         ReserveDTO updateReserve = new ReserveDTO(
                 rsvNo,
-                LocalDateTime.of(2025, 5, 3, 14, 30),
-                LocalDateTime.of(2025, 5, 3, 16, 30),
-                "자원 예약 수정"
+                updatedDescr,
+                updatedStartDttm,
+                updatedEndDttm
         );
+
+        String memberNo = "3";
+
         // when
+        Assertions.assertDoesNotThrow(() -> reserveService.updateReserve(rsvNo, memberNo, updateReserve));
 
         // then
-        Assertions.assertDoesNotThrow(() -> reserveService.updateReserve(updateReserve));
+        ReserveDTO updatedReserve = reserveService.selectReserveDetail(rsvNo);
+        Assertions.assertNotNull(updatedReserve);
+        Assertions.assertEquals(updatedStartDttm, updatedReserve.getRsvStartDttm());
+        Assertions.assertEquals(updatedEndDttm, updatedReserve.getRsvEndDttm());
+        Assertions.assertEquals(updatedDescr, updatedReserve.getRsvDescr());
     }
 
     @DisplayName("자원 예약 삭제")
     @Test
     void deleteReserve() {
         // given
-        int rsvNo = 4;
+        int rsvNo = 16;
+        String memberNo = "2";
 
-        // when
-        reserveService.deleteById(rsvNo);
-
-        // then
+        // when, then
+        reserveService.deleteById(rsvNo, memberNo);
         Assertions.assertThrows(NoSuchElementException.class, () -> reserveRepository.findById((long) rsvNo).orElseThrow());
     }
 }

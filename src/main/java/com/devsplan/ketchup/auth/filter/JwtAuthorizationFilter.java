@@ -46,7 +46,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        List<String> roleLessList = Arrays.asList("/signup","/signupDep","/signupPosition","notices"); //
+        List<String> roleLessList = Arrays.asList("/signup","/signupDep","/signupPosition","/notices"); //
 
 
         if (roleLessList.contains((request.getRequestURI()))) {
@@ -67,7 +67,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     Authority authority = Authority.valueOf(claims.get("role").toString());
 
 
-                    System.out.println("이건뭐야??"+authority);
+
                     MemberDTO tMember = new MemberDTO();
                     PositionDTO tPosition = new PositionDTO();
                     tPosition.setAuthority(authority);

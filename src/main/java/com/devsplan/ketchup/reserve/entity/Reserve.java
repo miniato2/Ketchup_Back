@@ -14,20 +14,23 @@ public class Reserve {
     @Id
     @Column(name = "RSV_NO", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int rsvNo;
+    private int rsvNo;                  // 예약 번호
 
     @Column(name = "RSV_START_DTTM")
-    private LocalDateTime rsvStartDttm;
+    private LocalDateTime rsvStartDttm; // 시작 일정
 
     @Column(name = "RSV_END_DTTM")
-    private LocalDateTime rsvEndDttm;
+    private LocalDateTime rsvEndDttm;   // 종료 일정
 
     @Column(name = "RSV_DESCR")
-    private String rsvDescr;
+    private String rsvDescr;            // 사용 목적
+
+    @Column(name = "RESERVER")
+    private String memberNo;            // 예약자
 
     @ManyToOne
     @JoinColumn(name = "RESOURCES")
-    private Resource resources;
+    private Resource resources;         // 자원
 
     public Reserve() {
     }
@@ -38,6 +41,15 @@ public class Reserve {
         this.rsvStartDttm = rsvStartDttm;
         this.rsvEndDttm = rsvEndDttm;
         this.resources = resource;
+    }
+
+    public Reserve(int rsvNo, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String rsvDescr, String memberNo, Resource resources) {
+        this.rsvNo = rsvNo;
+        this.rsvStartDttm = rsvStartDttm;
+        this.rsvEndDttm = rsvEndDttm;
+        this.rsvDescr = rsvDescr;
+        this.memberNo = memberNo;
+        this.resources = resources;
     }
 
     public Reserve(int rsvNo, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String rsvDescr) {
@@ -71,8 +83,16 @@ public class Reserve {
         return this;
     }
 
+    public Reserve memberNo(String val) {
+        this.memberNo = val;
+        return this;
+    }
+
     public Reserve builder() {
-        return new Reserve(rsvNo, rsvStartDttm, rsvEndDttm, rsvDescr);
+        return new Reserve(rsvNo, rsvStartDttm, rsvEndDttm, rsvDescr, memberNo);
+    }
+
+    public Reserve(int rsvNo, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String rsvDescr, String memberNo) {
     }
 
 }

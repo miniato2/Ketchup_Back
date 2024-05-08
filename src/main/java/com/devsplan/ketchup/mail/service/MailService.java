@@ -1,5 +1,6 @@
 package com.devsplan.ketchup.mail.service;
 
+import com.devsplan.ketchup.common.Criteria;
 import com.devsplan.ketchup.mail.dto.MailDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
 import com.devsplan.ketchup.mail.entity.Mail;
@@ -11,6 +12,10 @@ import com.devsplan.ketchup.mail.repository.ReceiverRepository;
 import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,11 +62,11 @@ public class MailService {
     @Transactional
     public void insertReceiver(List<ReceiverDTO> receivers) {
         for(ReceiverDTO list : receivers) {
-            Receiver receiver = new Receiver();
-
-            receiver.setMailNo(list.getMailNo());
-            receiver.setReceiverMem(list.getReceiverMem());
-            receiver.setReceiverDelStatus(list.getReceiverDelStatus());
+            Receiver receiver = new Receiver(
+                list.getMailNo(),
+                list.getReceiverMem(),
+                list.getReceiverDelStatus()
+            );
 
             receiverRepository.save(receiver);
         }
@@ -76,12 +81,12 @@ public class MailService {
         try {
             replaceFileName = FileUtils.saveFile(IMAGE_DIR, mailFileName, mailFile);
 
-            MailFile mailFiles = new MailFile();
-
-            mailFiles.setMailNo(sendMailNo);
-            mailFiles.setMailFilePath(replaceFileName);
-            mailFiles.setMailFileName(mailFileName);
-            mailFiles.setMailFileOriName(mailFile.getOriginalFilename());
+            MailFile mailFiles = new MailFile(
+                    sendMailNo,
+                    replaceFileName,
+                    mailFileName,
+                    mailFile.getOriginalFilename()
+            );
 
             mailFileRepository.save(mailFiles);
         } catch (IOException e) {
@@ -90,8 +95,8 @@ public class MailService {
 
     }
 
+    // 보낸 메일 목록 조회 백업
     public List<MailDTO> selectSendMailList(String senderMem, String search, String searchValue) {
-
         List<Mail> mailList = new ArrayList<>();
         if(search != null) {
             if(search.equals("mailtitle") && !searchValue.isEmpty()) {
@@ -133,7 +138,7 @@ public class MailService {
         return mailDtoList;
     }
 
-    // 받은 메일 조회 + 검색(페이징 X)
+    // 받은 메일 조회 백업
     public List<MailDTO> selectReceiveMailList(String receiverMem, String search, String searchValue) {
         List<Receiver> receivers = receiverRepository.findByReceiverMemAndReceiverDelStatus(receiverMem, 'N');
 
@@ -208,11 +213,11 @@ public class MailService {
 
         if(result == 1) {
             Mail oneMail = mailRepository.findByMailNo(mailNo);
-            oneMail.setSendCancelStatus('Y');
+            oneMail.sendCancelStatus('Y');
             mailRepository.save(oneMail);
 
             for(Receiver read : mailRead) {
-                read.setReceiverDelStatus('Y');
+                read.receiverDelStatus('Y');
             }
         }
 
@@ -224,7 +229,7 @@ public class MailService {
         int result = 0;
         for(Integer list : mailNo) {
             Mail oneMail = mailRepository.findByMailNo(list);
-            oneMail.setSendDelStatus('Y');
+            oneMail.sendDelStatus('Y');
             mailRepository.save(oneMail);
             result++;
         }
@@ -239,7 +244,7 @@ public class MailService {
             List<Receiver> Receivers = receiverRepository.findByMailNo(list);
 
             for(Receiver receiver : Receivers) {
-                receiver.setReceiverDelStatus('Y');
+                receiver.receiverDelStatus('Y');
 
                 receiverRepository.save(receiver);
 

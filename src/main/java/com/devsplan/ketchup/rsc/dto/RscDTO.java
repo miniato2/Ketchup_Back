@@ -2,7 +2,6 @@ package com.devsplan.ketchup.rsc.dto;
 
 import lombok.*;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @ToString
@@ -14,4 +13,34 @@ public class RscDTO {
     private int rscCap;                 // 인원(수용 가능 인원 / 탑승 가능 인원)
     private boolean rscIsAvailable;     // 사용 가능 여부
     private String rscDescr;            // 비고
+
+    public RscDTO(boolean rscIsAvailable, String rscDescr) {
+        this.rscIsAvailable = rscIsAvailable;
+        this.rscDescr = rscDescr;
+    }
+
+    public RscDTO(int rscNo, boolean rscIsAvailable, String rscDescr) {
+        this.rscNo = rscNo;
+        this.rscIsAvailable = rscIsAvailable;
+        this.rscDescr = rscDescr;
+    }
+
+    public RscDTO(String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
+        this.rscCategory = rscCategory;
+        this.rscName = rscName;
+        this.rscInfo = rscInfo;
+        this.rscCap = rscCap;
+        this.rscIsAvailable = rscIsAvailable;
+        this.rscDescr = rscDescr;
+    }
+
+    public RscDTO(int rscNo, String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
+        this.rscNo = rscNo;
+        this.rscCategory = rscCategory;
+        this.rscName = rscName;
+        this.rscInfo = rscInfo;
+        this.rscCap = rscCap;
+        this.rscIsAvailable = rscIsAvailable;
+        this.rscDescr = rscDescr;
+    }
 }

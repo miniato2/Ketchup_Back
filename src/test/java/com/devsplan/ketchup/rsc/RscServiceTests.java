@@ -14,63 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Stream;
 
 @SpringBootTest
 public class RscServiceTests {
+    /* 자원 관리팀만 등록, 조회, 수정, 삭제가 가능함 */
+
     @Autowired
     RscService rscService;
 
     private static Stream<Arguments> getReserveInfo() {
         return Stream.of(
-//                Arguments.of(
-//                        LocalDateTime.of(2024, 5, 1, 13, 30),
-//                        LocalDateTime.of(2024, 5, 1, 18, 0),
-//                        1,
-//                        "위클리 미팅",
-//                        "회의실",
-//                        "회의실 A",
-//                        "별관 3층 301호",
-//                        10,
-//                        true,
-//                        "5월 첫째주 위클리 미팅"
-//                ),
-//                Arguments.of(
-//                        LocalDateTime.of(2024, 5, 2, 10, 0),
-//                        LocalDateTime.of(2024, 5, 2, 12, 0),
-//                        2,
-//                        "물류 창고 방문",
-//                        "법인차량",
-//                        "황금마티즈",
-//                        "본관 지하 1층 주차장 B20 영역",
-//                        4,
-//                        true,
-//                        "물류 창고 방문을 위한 법인 차량 대여"
-//                ),
-//                Arguments.of(
-//                        LocalDateTime.of(2024, 5, 3, 15, 0),
-//                        LocalDateTime.of(2024, 5, 3, 17, 0),
-//                        3,
-//                        "진급식",
-//                        "회의실",
-//                        "회의실 B",
-//                        "본관 4층 401호",
-//                        8,
-//                        true,
-//                        "이대리 등 30명 진급 축하식을 위한 진급식 진행"
-//                ),
-//                Arguments.of(
-//                        LocalDateTime.of(2024, 5, 3, 17, 0),
-//                        LocalDateTime.of(2024, 5, 3, 17, 30),
-//                        3,
-//                        "미국 바이어와 화상 미팅",
-//                        "회의실",
-//                        "회의실 B",
-//                        "본관 4층 401호",
-//                        8,
-//                        true,
-//                        "미국 바이어와 2024년 Q4 런칭 제품의 선박 일정 관련 줌 미팅"
-//                ),
                 Arguments.of(
                         "회의실",
                         "회의실A",
@@ -86,17 +41,32 @@ public class RscServiceTests {
                         6,
                         true,
                         null
+                ),
+                Arguments.of(
+                        "차량",
+                        "EQ900",
+                        "11가 1111",
+                        5,
+                        true,
+                        null
+                ),
+                Arguments.of(
+                        "차량",
+                        "아반떼",
+                        "11가 2222",
+                        5,
+                        true,
+                        null
                 )
-
         );
     }
 
     @DisplayName("자원 등록 테스트")
     @ParameterizedTest
     @MethodSource("getReserveInfo")
-    public void insertResourceTest(int rscNo, String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
+    public void insertResourceTest(String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
         // given
-        RscDTO rscDTO = new RscDTO(rscNo, rscCategory, rscName, rscInfo, rscCap, rscIsAvailable, rscDescr);
+        RscDTO rscDTO = new RscDTO(rscCategory, rscName, rscInfo, rscCap, rscIsAvailable, rscDescr);
 
         // when & then
         Assertions.assertDoesNotThrow(
@@ -108,6 +78,60 @@ public class RscServiceTests {
     @DisplayName("자원 등록 조회")
     @Test
     public void selectResource() {
+        // given
+        String part = "회의실";
 
+        // when
+        List<RscDTO> rscList = rscService.selectRscList(part);
+
+        // then
+        Assertions.assertNotNull(rscList);
+        System.out.println("자원 목록 조회");
+        System.out.println(rscList);
+    }
+
+    @DisplayName("자원 상세 조회")
+    @Test
+    public void selectResourceDetail() {
+        // given
+        int rscNo = 15;
+
+        // when
+        RscDTO rscDetail = rscService.selectResourceDetail(rscNo);
+
+        // then
+        Assertions.assertNotNull(rscDetail);
+        System.out.println("자원 상세 조회");
+        System.out.println(rscDetail);
+    }
+
+    @DisplayName("자원 수정")
+    @Test
+    public void updateResource() {
+        // given
+        int rscNo = 2;
+
+        RscDTO updateRsc = new RscDTO(
+                true,
+                "비고 수정했습니다."
+        );
+
+        // when
+
+        // then
+        Assertions.assertDoesNotThrow(() -> rscService.updateResource(rscNo, updateRsc));
+    }
+
+    @DisplayName("자원 삭제")
+    @Test
+    public void deleteResource() {
+        // given
+        int rscNo = 16;
+
+        // when
+        int result = rscService.deleteResource(rscNo);
+
+        // then
+        Assertions.assertEquals(1, result);
     }
 }

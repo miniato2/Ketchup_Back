@@ -12,23 +12,34 @@ public class ReserveDTO {
     private String rsvDescr;
     private LocalDateTime rsvStartDttm;
     private LocalDateTime rsvEndDttm;
+    private String reserver;
 
     private ResourceDTO resources;
 
     public ReserveDTO() {
     }
 
-    public ReserveDTO(String rsvDescr, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, ResourceDTO resources) {
+    public ReserveDTO(int rsvNo, String rsvDescr, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String reserver, ResourceDTO resources) {
+        this.rsvNo = rsvNo;
         this.rsvDescr = rsvDescr;
         this.rsvStartDttm = rsvStartDttm;
         this.rsvEndDttm = rsvEndDttm;
+        this.reserver = reserver;
         this.resources = resources;
     }
 
-    public ReserveDTO(int rsvNo, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String rsvDescr) {
-        this.rsvNo = rsvNo;
+    public ReserveDTO(String rsvDescr, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String reserver, ResourceDTO resourceDTO) {
+        this.rsvDescr = rsvDescr;
         this.rsvStartDttm = rsvStartDttm;
         this.rsvEndDttm = rsvEndDttm;
+        this.reserver = reserver;
+        this.resources = resourceDTO;
+    }
+
+    public ReserveDTO(int rsvNo, String rsvDescr, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm) {
+        this.rsvNo = rsvNo;
         this.rsvDescr = rsvDescr;
+        this.rsvStartDttm = rsvStartDttm;
+        this.rsvEndDttm = rsvEndDttm;
     }
 }

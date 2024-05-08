@@ -41,6 +41,7 @@ public class ReserveService {
         return reserveList.stream()
                 .map(reserve -> {
                     ReserveDTO reserveDTO = new ReserveDTO();
+                    reserveDTO.setReserver(reserve.getMemberNo());
                     reserveDTO.setRsvNo(reserve.getRsvNo());
                     reserveDTO.setRsvDescr(reserve.getRsvDescr());
                     reserveDTO.setRsvStartDttm(reserve.getRsvStartDttm());
@@ -75,6 +76,7 @@ public class ReserveService {
         reserveDTO.setRsvDescr(reserve.getRsvDescr());
         reserveDTO.setRsvStartDttm(reserve.getRsvStartDttm());
         reserveDTO.setRsvEndDttm(reserve.getRsvEndDttm());
+        reserveDTO.setReserver(reserve.getMemberNo());
         reserveDTO.setResources(convertToResourceDTO(reserve.getResources()));
 
         return reserveDTO;
@@ -100,9 +102,10 @@ public class ReserveService {
     public void insertReserve(ReserveDTO newReserve, Resource resource) {
         Reserve reserve = new Reserve(
                 newReserve.getRsvNo(),
-                newReserve.getRsvDescr(),
                 newReserve.getRsvStartDttm(),
                 newReserve.getRsvEndDttm(),
+                newReserve.getRsvDescr(),
+                newReserve.getReserver(),
                 resource
         );
         reserveRepository.save(reserve);
@@ -115,8 +118,14 @@ public class ReserveService {
 
     // 자원 예약 수정
     @Transactional
-    public void updateReserve(ReserveDTO updateReserve) {
-        Reserve foundReserve = reserveRepository.findById((long) updateReserve.getRsvNo()).orElseThrow(IllegalArgumentException::new);
+    public void updateReserve(int rsvNo, String memberNo, ReserveDTO updateReserve) {
+        Reserve foundReserve = reserveRepository.findById((long) rsvNo).orElseThrow(IllegalArgumentException::new);
+
+        String reserver = foundReserve.getMemberNo();
+
+        if (!memberNo.equals(reserver)) {
+            throw new IllegalArgumentException("예약 수정 권한이 없습니다.");
+        }
 
         if (updateReserve.getRsvStartDttm() != null) {
             foundReserve.rsvStartDttm(updateReserve.getRsvStartDttm());
@@ -131,8 +140,17 @@ public class ReserveService {
         reserveRepository.save(foundReserve.builder());
     }
 
+    // 자원 예약 삭제
     @Transactional
-    public void deleteById(int rsvNo) {
-        reserveRepository.deleteById((long) rsvNo);
+    public void deleteById(int rsvNo, String memberNo) {
+        Reserve reserve = reserveRepository.findById((long) rsvNo).orElseThrow(() -> new IllegalArgumentException("해당하는 예약 번호를 찾을 수 없습니다."));
+
+        String reserver = reserve.getMemberNo();
+
+        if (!memberNo.equals(reserver)) {
+            throw new IllegalStateException("예약 삭제 권한이 없습니다.");
+        }
+
+        reserveRepository.delete(reserve);
     }
 }

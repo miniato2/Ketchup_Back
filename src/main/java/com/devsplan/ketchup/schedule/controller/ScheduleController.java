@@ -57,6 +57,7 @@ public class ScheduleController {
             responseMap.put("schedule", foundSchedules);
             return ResponseEntity.ok().headers(headers).body(new ResponseMessage(200, "조회 성공", responseMap));
         } else {
+            // TODO List: 아무것도 없으면 그냥 빈 달력을 보여줘야하기때문에 페이지를 찾을 수 없다는 오류는 부적절함. 수정 필요함.
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(404, "페이지를 찾을 수 없습니다.", null));
         }
     }
