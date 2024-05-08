@@ -14,20 +14,23 @@ public class Reserve {
     @Id
     @Column(name = "RSV_NO", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int rsvNo;
+    private int rsvNo;                  // 예약 번호
 
     @Column(name = "RSV_START_DTTM")
-    private LocalDateTime rsvStartDttm;
+    private LocalDateTime rsvStartDttm; // 시작 일정
 
     @Column(name = "RSV_END_DTTM")
-    private LocalDateTime rsvEndDttm;
+    private LocalDateTime rsvEndDttm;   // 종료 일정
 
     @Column(name = "RSV_DESCR")
-    private String rsvDescr;
+    private String rsvDescr;            // 사용 목적
+
+    @Column(name = "RESERVER")
+    private String reserver;            // 예약자
 
     @ManyToOne
     @JoinColumn(name = "RESOURCES")
-    private Resource resources;
+    private Resource resources;         // 자원
 
     public Reserve() {
     }
