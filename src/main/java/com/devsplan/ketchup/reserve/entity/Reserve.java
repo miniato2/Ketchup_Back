@@ -1,5 +1,6 @@
 package com.devsplan.ketchup.reserve.entity;
 
+import com.devsplan.ketchup.rsc.entity.Resource;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -29,7 +30,7 @@ public class Reserve {
     private String memberNo;            // 예약자
 
     @ManyToOne
-    @JoinColumn(name = "RESOURCES")
+    @JoinColumn(name = "RSC_NO")
     private Resource resources;         // 자원
 
     public Reserve() {

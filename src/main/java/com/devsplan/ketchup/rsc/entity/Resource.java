@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
-@Table(name = "tbl_rsc")
+@Table(name = "tbl_resource")
 @Getter
-public class Rsc {
+public class Resource {
     @Id
     @Column(name = "RSC_NO", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,26 +30,26 @@ public class Rsc {
     @Column(name = "RSC_DESCR")
     private String rscDescr;
 
-    protected Rsc() {}
+    protected Resource() {}
 
-    public Rsc rscIsAvailable(boolean val) {
+    public Resource rscIsAvailable(boolean val) {
         this.rscIsAvailable = val;
         return this;
     }
 
-    public Rsc rscDescr(String val) {
+    public Resource rscDescr(String val) {
         this.rscDescr = val;
         return this;
     }
 
-    public Rsc(String rscCategory, String rscName, String rscInfo, int rscCap) {
+    public Resource(String rscCategory, String rscName, String rscInfo, int rscCap) {
         this.rscCategory = rscCategory;
         this.rscName = rscName;
         this.rscInfo = rscInfo;
         this.rscCap = rscCap;
     }
 
-    public Rsc(int rscNo, String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
+    public Resource(int rscNo, String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
         this.rscNo = rscNo;
         this.rscCategory = rscCategory;
         this.rscName = rscName;

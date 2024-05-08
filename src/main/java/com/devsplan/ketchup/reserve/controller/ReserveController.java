@@ -1,15 +1,12 @@
 package com.devsplan.ketchup.reserve.controller;
 
 import com.devsplan.ketchup.reserve.dto.ReserveDTO;
-import com.devsplan.ketchup.reserve.dto.ResourceDTO;
-import com.devsplan.ketchup.reserve.entity.Resource;
+import com.devsplan.ketchup.rsc.dto.ResourceDTO;
+import com.devsplan.ketchup.rsc.entity.Resource;
 import com.devsplan.ketchup.reserve.repository.ReserveRepository;
 import com.devsplan.ketchup.reserve.repository.ResourceRepository;
 import com.devsplan.ketchup.reserve.service.ReserveService;
-import com.devsplan.ketchup.schedule.dto.DepartmentDTO;
-import com.devsplan.ketchup.schedule.dto.ScheduleDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
