@@ -9,6 +9,7 @@ import com.devsplan.ketchup.reserve.service.ReserveService;
 import com.devsplan.ketchup.schedule.dto.DepartmentDTO;
 import com.devsplan.ketchup.schedule.dto.ScheduleDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -49,7 +50,7 @@ public class ReserveController {
         reserve.add(new ReserveDTO(6, "ReserveController에서 생성하는 사용 목적", rsvStartDttm, rsvEndDttm, new ResourceDTO(1, "회의실", "회의실 B", "본관 4층 401호", 20, true, "Smart TV, 빔프로젝터, 책상, 의자, 단상 비치, 경복궁 뷰")));
     }
 
-    //     자원 예약 목록 조회
+    // 자원 예약 목록 조회
     @GetMapping
     public ResponseEntity<ResponseMessage> selectReserveList(@RequestParam("category") String rscCategory,
                                                              @RequestParam("rsvDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate rsvDate) {
@@ -73,6 +74,34 @@ public class ReserveController {
         }
     }
 
+    // 자원 예약 상세 조회
+    @GetMapping("/{rsvNo}")
+    public ResponseEntity<ResponseMessage> selectReserveDetail(@PathVariable int rsvNo) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+
+        ReserveDTO selectedReserve = null;
+        for (ReserveDTO reserveDTO : reserve) {
+            if (reserveDTO.getRsvNo() == rsvNo) {
+                selectedReserve = reserveDTO;
+                break;
+            }
+        }
+
+        if (selectedReserve != null) {
+            // ReserveDTO를 Map으로 변환
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("rsvStartDttm", selectedReserve.getRsvStartDttm());
+            responseData.put("rsvEndDttm", selectedReserve.getRsvEndDttm());
+            responseData.put("rsvDescr", selectedReserve.getRsvDescr());
+
+            // ResponseEntity에 Map을 설정하여 반환
+            return ResponseEntity.ok().headers(headers).body(new ResponseMessage(200, "조회 성공", responseData));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(404, "해당 자원 예약건을 찾을 수 없습니다.", null));
+        }
+    }
+
     // 자원 예약 등록
     @PostMapping()
     public ResponseEntity<?> insertReserve(@RequestBody ReserveDTO newReserve) {
@@ -93,6 +122,40 @@ public class ReserveController {
         return ResponseEntity.created(URI.create("/reserves/" + newReserve.getRsvNo())).build();
     }
 
+    // 자원 예약 수정
+    @PutMapping("/{rsvNo}")
+    public ResponseEntity<?> updateSchedule(@PathVariable int rsvNo, @RequestBody ReserveDTO updateReserve) {
+        ReserveDTO foundReserve = reserve.stream()
+                .filter(reserve -> reserve.getRsvNo() == rsvNo)
+                .findFirst()
+                .orElse(null);
 
+        if (foundReserve != null) {
+            foundReserve.setRsvDescr(updateReserve.getRsvDescr());
+            foundReserve.setRsvStartDttm(updateReserve.getRsvStartDttm());
+            foundReserve.setRsvEndDttm(updateReserve.getRsvEndDttm());
+
+            String uri = "/reserves/" + rsvNo;
+            return ResponseEntity.ok().header(HttpHeaders.LOCATION, uri).body("예약이 성공적으로 수정되었습니다. URI: " + uri);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // 자원 예약 삭제
+    @DeleteMapping("/{rsvNo}")
+    public ResponseEntity<?> deleteReserve(@PathVariable int rsvNo) {
+        Optional<ReserveDTO> selectedReserveOptional = reserve.stream()
+                                                              .filter(reserve -> reserve.getRsvNo() == rsvNo)
+                                                              .findFirst();
+
+        if (selectedReserveOptional.isPresent()) {
+            ReserveDTO foundReserve = selectedReserveOptional.get();
+            reserve.remove(foundReserve);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }

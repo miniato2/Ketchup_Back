@@ -32,7 +32,7 @@ public class ScheduleServiceTests {
     @Test
     void selectScheduleList() {
         // given
-        int dptNo = 1;
+        int dptNo = 5;
 
         // when
         List<ScheduleDTO> foundSchedule = scheduleService.selectScheduleList(dptNo);
@@ -59,7 +59,7 @@ public class ScheduleServiceTests {
 
     private static Stream<Arguments> getScheduleInfo() {
         return Stream.of(
-                Arguments.of(2, 1, "신규 등록한 일정3", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
+                Arguments.of(2, 5, "신규 등록한 일정3", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
         );
     }
 
