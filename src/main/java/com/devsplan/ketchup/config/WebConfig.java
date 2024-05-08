@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -52,6 +53,7 @@ public class WebConfig implements WebMvcConfigurer {
         FilterRegistrationBean<HeaderFilter> registrationBean = new FilterRegistrationBean<>(createHeaderFilter());
         registrationBean.setOrder(Integer.MIN_VALUE);
         registrationBean.addUrlPatterns("/*");
+        registrationBean.setOrder(1); // 필터의 순서 설정
         return registrationBean;
     }
 
@@ -94,5 +96,13 @@ public class WebConfig implements WebMvcConfigurer {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setObjectMapper(objectMapper());
         converters.add(converter);
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*") // 모든 도메인에서의 요청 허용
+                .allowedMethods("GET", "POST", "PUT", "DELETE") // 허용할 메소드
+                .allowedHeaders("*"); // 허용할 헤더
     }
 }

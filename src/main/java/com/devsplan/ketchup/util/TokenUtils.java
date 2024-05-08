@@ -132,6 +132,7 @@ public class TokenUtils {
         Map<String, Object> claims = new HashMap<>();
 
         claims.put("memberNo", member.getMemberNo());
+        claims.put("memberName",member.getMemberName());
         claims.put("positionNo", member.getPosition().getPositionNo());
         claims.put("positionName", member.getPosition().getPositionName());
         claims.put("positionLevel", member.getPosition().getPositionLevel());
