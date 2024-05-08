@@ -1,8 +1,8 @@
 package com.devsplan.ketchup.reserve;
 
 import com.devsplan.ketchup.reserve.dto.ReserveDTO;
-import com.devsplan.ketchup.reserve.dto.ResourceDTO;
-import com.devsplan.ketchup.reserve.entity.Resource;
+import com.devsplan.ketchup.rsc.dto.ResourceDTO;
+import com.devsplan.ketchup.rsc.entity.Resource;
 import com.devsplan.ketchup.reserve.repository.ReserveRepository;
 import com.devsplan.ketchup.reserve.service.ReserveService;
 import org.junit.jupiter.api.Assertions;
@@ -13,8 +13,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
