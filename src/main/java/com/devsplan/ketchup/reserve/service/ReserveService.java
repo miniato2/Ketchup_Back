@@ -3,12 +3,11 @@ package com.devsplan.ketchup.reserve.service;
 import com.devsplan.ketchup.reserve.dto.ReserveDTO;
 import com.devsplan.ketchup.reserve.entity.Reserve;
 import com.devsplan.ketchup.reserve.repository.ReserveRepository;
-import com.devsplan.ketchup.reserve.dto.ResourceDTO;
-import com.devsplan.ketchup.reserve.entity.Resource;
+import com.devsplan.ketchup.rsc.dto.ResourceDTO;
+import com.devsplan.ketchup.rsc.entity.Resource;
 import com.devsplan.ketchup.reserve.repository.ResourceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,12 +54,12 @@ public class ReserveService {
     private ResourceDTO convertToResourceDTO(Resource resource) {
         if (resource != null) {
             return new ResourceDTO(
-                    resource.getRsc_no(),
+                    resource.getRscNo(),
                     resource.getRscCategory(),
                     resource.getRscName(),
                     resource.getRscInfo(),
                     resource.getRscCap(),
-                    resource.getRscIsAvailable(),
+                    resource.isRscIsAvailable(),
                     resource.getRscDescr()
             );
         }
@@ -91,7 +90,7 @@ public class ReserveService {
                 resourceDTO.getRscName(),
                 resourceDTO.getRscInfo(),
                 resourceDTO.getRscCap(),
-                resourceDTO.getRscIsAvailable(),
+                resourceDTO.isRscIsAvailable(),
                 resourceDTO.getRscDescr()
         );
         resourceRepository.save(resource);

@@ -1,11 +1,9 @@
 package com.devsplan.ketchup.rsc.service;
 
-import com.devsplan.ketchup.mail.entity.Mail;
 import com.devsplan.ketchup.mail.repository.MailRepository;
-import com.devsplan.ketchup.reserve.entity.Reserve;
 import com.devsplan.ketchup.reserve.repository.ReserveRepository;
-import com.devsplan.ketchup.rsc.dto.RscDTO;
-import com.devsplan.ketchup.rsc.entity.Rsc;
+import com.devsplan.ketchup.rsc.dto.ResourceDTO;
+import com.devsplan.ketchup.rsc.entity.Resource;
 import com.devsplan.ketchup.rsc.repository.RscRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +23,8 @@ public class RscService {
     }
 
     @Transactional
-    public Object insertResource(RscDTO rscDTO) {
-        Rsc resource = new Rsc(
+    public Object insertResource(ResourceDTO rscDTO) {
+        Resource resource = new Resource(
                 rscDTO.getRscCategory(),
                 rscDTO.getRscName(),
                 rscDTO.getRscInfo(),
@@ -36,11 +34,11 @@ public class RscService {
         return rscRepository.save(resource);
     }
 
-    public List<RscDTO> selectRscList(String part) {
-        List<Rsc> rscList = rscRepository.findByRscCategory(part);
+    public List<ResourceDTO> selectRscList(String part) {
+        List<Resource> rscList = rscRepository.findByRscCategory(part);
 
         return rscList.stream()
-                .map(rsc -> new RscDTO(
+                .map(rsc -> new ResourceDTO(
                         rsc.getRscNo(),
                         rsc.getRscCategory(),
                         rsc.getRscName(),
@@ -51,10 +49,10 @@ public class RscService {
                 )).toList();
     }
 
-    public RscDTO selectResourceDetail(int rscNo) {
-        Rsc rscDetail = rscRepository.findByRscNo(rscNo);
+    public ResourceDTO selectResourceDetail(int rscNo) {
+        Resource rscDetail = rscRepository.findByRscNo(rscNo);
 
-        return new RscDTO(
+        return new ResourceDTO(
                 rscDetail.getRscNo(),
                 rscDetail.getRscCategory(),
                 rscDetail.getRscName(),
@@ -66,8 +64,8 @@ public class RscService {
     }
 
     @Transactional
-    public int updateResource(int rscNo, RscDTO updateRsc) {
-        Rsc rsc = rscRepository.findByRscNo(rscNo);
+    public int updateResource(int rscNo, ResourceDTO updateRsc) {
+        Resource rsc = rscRepository.findByRscNo(rscNo);
 
         int result = 0;
 

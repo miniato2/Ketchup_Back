@@ -1,12 +1,12 @@
 package com.devsplan.ketchup.rsc.repository;
 
-import com.devsplan.ketchup.rsc.entity.Rsc;
+import com.devsplan.ketchup.rsc.entity.Resource;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface RscRepository extends JpaRepository<Rsc, Integer> {
-    List<Rsc> findByRscCategory(String part);
-    Rsc findByRscNo(int rscNo);
+public interface RscRepository extends JpaRepository<Resource, Integer> {
+    List<Resource> findByRscCategory(String part);
+    Resource findByRscNo(int rscNo);
     int deleteByRscNo(int rscNo);
 }

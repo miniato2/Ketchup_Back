@@ -1,12 +1,10 @@
 package com.devsplan.ketchup.rsc.controller;
 
 import com.devsplan.ketchup.common.ResponseDTO;
-import com.devsplan.ketchup.mail.dto.MailDTO;
-import com.devsplan.ketchup.rsc.dto.RscDTO;
+import com.devsplan.ketchup.rsc.dto.ResourceDTO;
 import com.devsplan.ketchup.rsc.service.RscService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +25,7 @@ public class RscController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> insertResource( @RequestBody RscDTO rscDto) {
+    public ResponseEntity<ResponseDTO> insertResource( @RequestBody ResourceDTO rscDto) {
 
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "자원 등록 성공",
@@ -51,7 +49,7 @@ public class RscController {
             rscCate = "차량";
         }
 
-        List<RscDTO> rscList = rscService.selectRscList(rscCate);
+        List<ResourceDTO> rscList = rscService.selectRscList(rscCate);
 
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "자원 목록 조회",
@@ -61,7 +59,7 @@ public class RscController {
 
     @GetMapping("/{rscNo}")
     public ResponseEntity<ResponseDTO> selectResourceDetail(@PathVariable int rscNo) {
-        RscDTO selectRsc = rscService.selectResourceDetail(rscNo);
+        ResourceDTO selectRsc = rscService.selectResourceDetail(rscNo);
 
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "자원 상세 조회",
@@ -71,7 +69,7 @@ public class RscController {
 
     @PutMapping("/{rscNo}")
     public ResponseEntity<ResponseDTO> updateResource(@PathVariable int rscNo,
-                                                      @RequestBody RscDTO updateRscDto) {
+                                                      @RequestBody ResourceDTO updateRscDto) {
 
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "자원 수정",
