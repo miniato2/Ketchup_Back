@@ -24,6 +24,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
+
 @RestController
 @RequestMapping("/reserves")
 @Slf4j
@@ -47,7 +49,7 @@ public class ReserveController {
         LocalDateTime rsvStartDttm = LocalDateTime.parse("2024-05-04 오후 4시 30분", formatter);
         LocalDateTime rsvEndDttm = LocalDateTime.parse("2024-05-04 오후 7시 30분", formatter);
 
-        reserve.add(new ReserveDTO(6, "ReserveController에서 생성하는 사용 목적", rsvStartDttm, rsvEndDttm, new ResourceDTO(1, "회의실", "회의실 B", "본관 4층 401호", 20, true, "Smart TV, 빔프로젝터, 책상, 의자, 단상 비치, 경복궁 뷰")));
+        reserve.add(new ReserveDTO(6, "ReserveController에서 생성하는 사용 목적", rsvStartDttm, rsvEndDttm, "3", new ResourceDTO(1, "회의실", "회의실 B", "본관 4층 401호", 20, true, "Smart TV, 빔프로젝터, 책상, 의자, 단상 비치, 경복궁 뷰")));
     }
 
     // 자원 예약 목록 조회
@@ -108,7 +110,7 @@ public class ReserveController {
         log.debug("newReserve: {}", newReserve);
 
         if (newReserve.getResources() == null) {
-            return ResponseEntity.badRequest().body("Resource information is missing.");
+            return ResponseEntity.badRequest().body("자원 정보가 비어있습니다.");
         }
         Optional<Resource> resourceOptional = resourceRepository.findById((long) newReserve.getResources().getRscNo());
 
@@ -124,37 +126,36 @@ public class ReserveController {
 
     // 자원 예약 수정
     @PutMapping("/{rsvNo}")
-    public ResponseEntity<?> updateSchedule(@PathVariable int rsvNo, @RequestBody ReserveDTO updateReserve) {
-        ReserveDTO foundReserve = reserve.stream()
-                .filter(reserve -> reserve.getRsvNo() == rsvNo)
-                .findFirst()
-                .orElse(null);
+    public ResponseEntity<?> updateSchedule(@PathVariable int rsvNo,
+                                            @RequestBody ReserveDTO updateReserve,
+                                            @RequestHeader("Authorization") String token) {
 
-        if (foundReserve != null) {
-            foundReserve.setRsvDescr(updateReserve.getRsvDescr());
-            foundReserve.setRsvStartDttm(updateReserve.getRsvStartDttm());
-            foundReserve.setRsvEndDttm(updateReserve.getRsvEndDttm());
+        String memberNo = decryptToken(token).get("memberNo", String.class);
 
+        try {
+            reserveService.updateReserve(rsvNo, memberNo, updateReserve);
             String uri = "/reserves/" + rsvNo;
+
             return ResponseEntity.ok().header(HttpHeaders.LOCATION, uri).body("예약이 성공적으로 수정되었습니다. URI: " + uri);
-        } else {
-            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 
     // 자원 예약 삭제
     @DeleteMapping("/{rsvNo}")
-    public ResponseEntity<?> deleteReserve(@PathVariable int rsvNo) {
-        Optional<ReserveDTO> selectedReserveOptional = reserve.stream()
-                                                              .filter(reserve -> reserve.getRsvNo() == rsvNo)
-                                                              .findFirst();
+    public ResponseEntity<?> deleteReserve(@PathVariable int rsvNo,
+                                           @RequestHeader("Authorization") String token) {
 
-        if (selectedReserveOptional.isPresent()) {
-            ReserveDTO foundReserve = selectedReserveOptional.get();
-            reserve.remove(foundReserve);
+        String memberNo = decryptToken(token).get("memberNo", String.class);
+
+        try {
+            reserveService.deleteById(rsvNo, memberNo);
             return ResponseEntity.noContent().build();
-        } else {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 

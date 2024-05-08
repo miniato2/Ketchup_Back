@@ -26,7 +26,7 @@ public class Reserve {
     private String rsvDescr;            // 사용 목적
 
     @Column(name = "RESERVER")
-    private String reserver;            // 예약자
+    private String memberNo;            // 예약자
 
     @ManyToOne
     @JoinColumn(name = "RESOURCES")
@@ -41,6 +41,15 @@ public class Reserve {
         this.rsvStartDttm = rsvStartDttm;
         this.rsvEndDttm = rsvEndDttm;
         this.resources = resource;
+    }
+
+    public Reserve(int rsvNo, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String rsvDescr, String memberNo, Resource resources) {
+        this.rsvNo = rsvNo;
+        this.rsvStartDttm = rsvStartDttm;
+        this.rsvEndDttm = rsvEndDttm;
+        this.rsvDescr = rsvDescr;
+        this.memberNo = memberNo;
+        this.resources = resources;
     }
 
     public Reserve(int rsvNo, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String rsvDescr) {
@@ -74,8 +83,16 @@ public class Reserve {
         return this;
     }
 
+    public Reserve memberNo(String val) {
+        this.memberNo = val;
+        return this;
+    }
+
     public Reserve builder() {
-        return new Reserve(rsvNo, rsvStartDttm, rsvEndDttm, rsvDescr);
+        return new Reserve(rsvNo, rsvStartDttm, rsvEndDttm, rsvDescr, memberNo);
+    }
+
+    public Reserve(int rsvNo, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String rsvDescr, String memberNo) {
     }
 
 }

@@ -1,5 +1,7 @@
 package com.devsplan.ketchup.reserve;
 
+import com.devsplan.ketchup.reserve.dto.ReserveDTO;
+import com.devsplan.ketchup.reserve.service.ReserveService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,11 +32,12 @@ public class ReserveControllerTests {
     @Autowired
     private MockMvc mvc;
 
-    // 토큰 넣어서 전역에서 사용
+    @Autowired
+    private ReserveService reserveService;
+
     private final String token = "Bearer eyJkYXRlIjoxNzE1MTMwMjc4MjI4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE1MjE2Njc4fQ.4KtDg3lZ7bdgJWSpEY6tNkqB-cQYRcI8kwncwqYBKMc";
 
     private RequestBuilder request;
-
 
     @DisplayName("자원 예약 목록 조회 컨트롤러 테스트")
     @Test
@@ -75,6 +79,7 @@ public class ReserveControllerTests {
                 "\"rsvStartDttm\": \"2024-05-05 오후 3시 0분\", " +
                 "\"rsvEndDttm\": \"2024-05-05 오후 4시 30분\", " +
                 "\"rsvDescr\": \"ReserveControllerTests에서 등록한 예약건\", " +
+                "\"reserver\": \"3\", " +
                 "\"resources\": { " +
                 "\"rscNo\": 3, " +
                 "\"rscCategory\": \"회의실\", " +
@@ -102,11 +107,14 @@ public class ReserveControllerTests {
     void updateReserve() throws Exception {
         // given
         int rsvNo = 6;
+        String updatedDescr = "rsvNo 6 예약건 수정의 건";
+        LocalDateTime updatedStartDttm = LocalDateTime.of(2024, 5, 8, 13, 0);
+        LocalDateTime updatedEndDttm = LocalDateTime.of(2024, 5, 8, 13, 30);
 
         String jsonbody = "{" +
-                "\"rsvDescr\": \"rsvNo 6 예약건 수정의 건\"," +
-                "\"rsvStartDttm\": \"2024-05-08 오후 1시 0분\"," +
-                "\"rsvEndDttm\": \"2024-05-08 오후 1시 30분\"" +
+                "\"rsvDescr\": \"" + updatedDescr + "\"," +
+                "\"rsvStartDttm\": \"" + updatedStartDttm.format(DateTimeFormatter.ofPattern("yyyy-MM-dd a h시 m분")) + "\"," +
+                "\"rsvEndDttm\": \"" + updatedEndDttm.format(DateTimeFormatter.ofPattern("yyyy-MM-dd a h시 m분")) + "\"" +
                 "}";
 
         // when
@@ -114,11 +122,18 @@ public class ReserveControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonbody)
                         .header("Authorization", token))
-                .andReturn();
+                        .andReturn();
 
         // then
         int status = result.getResponse().getStatus();
         Assertions.assertEquals(200, status);
+
+        // 수정된 예약 정보를 다시 조회하여 검증
+        ReserveDTO updatedReserve = reserveService.selectReserveDetail(rsvNo);
+        Assertions.assertNotNull(updatedReserve);
+        Assertions.assertEquals(updatedDescr, updatedReserve.getRsvDescr());
+        Assertions.assertEquals(updatedStartDttm, updatedReserve.getRsvStartDttm());
+        Assertions.assertEquals(updatedEndDttm, updatedReserve.getRsvEndDttm());
     }
 
     @DisplayName("자원 예약 삭제 컨트롤러 테스트")
