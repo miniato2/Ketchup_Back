@@ -1,17 +1,27 @@
 package com.devsplan.ketchup.mail.controller;
 
+import com.devsplan.ketchup.common.Criteria;
+import com.devsplan.ketchup.common.PageDTO;
+import com.devsplan.ketchup.common.PagingResponseDTO;
+import com.devsplan.ketchup.common.ResponseDTO;
 import com.devsplan.ketchup.mail.dto.MailDTO;
 import com.devsplan.ketchup.mail.dto.MailFileDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
 import com.devsplan.ketchup.mail.service.MailService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
 
 @RestController
 @RequestMapping("/mails")
@@ -26,13 +36,11 @@ public class MailController {
     }
 
     @PostMapping
-    public String insertMail(@RequestHeader("Authorization") String token,
+    public ResponseEntity<ResponseDTO> insertMail(@RequestHeader("Authorization") String token,
                              @RequestPart("mailInfo") MailDTO mailDto,
                              @RequestPart("mailFile") MultipartFile mailFile){
         // 사원 번호
-        String jwtToken = token.substring(7);
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-        String memberNo = claims.get("memberNo", String.class);
+        String memberNo = decryptToken(token).get("memberNo", String.class);
 
         // 메일 정보
         mailDto.setSenderMem(memberNo);
@@ -41,93 +49,137 @@ public class MailController {
 
         int sendMailNo = mailService.insertMail(mailDto);
 
-        // 수신자 정보
-        for(int i = 0; i < mailDto.getReceivers().size(); i++) {
-            mailDto.getReceivers().get(i).setMailNo(sendMailNo);
-            mailDto.getReceivers().get(i).setReceiverDelStatus('N');
+        if(sendMailNo == 0) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("메일 전송 실패"));
+        }else {
+            for(int i = 0; i < mailDto.getReceivers().size(); i++) {
+                mailDto.getReceivers().get(i).setMailNo(sendMailNo);
+                mailDto.getReceivers().get(i).setReceiverDelStatus('N');
+            }
+
+            mailService.insertReceiver(mailDto.getReceivers());
+
+            if(mailFile != null) {
+                mailService.insertMailFile(sendMailNo, mailFile);
+            }
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 전송 성공", null));
         }
-
-        mailService.insertReceiver(mailDto.getReceivers());
-
-        // 첨부 파일 정보
-        mailService.insertMailFile(sendMailNo, mailFile);
-
-        return "Send Mail!!";
     }
 
     // 메일 조회 + 검색
     @GetMapping
-    public String selectMailList(@RequestHeader("Authorization") String token,
-                                 @RequestParam("part") String partValue,
-                                 @RequestParam(value = "search", required = false) String search,
-                                 @RequestParam(value = "searchvalue", required = false) String searchValue) {
+    public ResponseEntity<ResponseDTO> selectMailList(@RequestHeader("Authorization") String token,
+                                                      @RequestParam("part") String partValue,
+                                                      @RequestParam(value = "search", defaultValue = "") String search,
+                                                      @RequestParam(value = "searchvalue", defaultValue = "") String searchValue) {
         // 사원 번호
-        String jwtToken = token.substring(7);
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-        String memberNo = claims.get("memberNo", String.class);
+        String memberNo = decryptToken(token).get("memberNo", String.class);
 
         String result = "";
-        List<MailDTO> mailList;
+        List<MailDTO> mailList = null;
         if(partValue.equals("send")) {
             mailList = mailService.selectSendMailList(memberNo, search, searchValue);
-            for(MailDTO list : mailList) {
-                System.out.println("보낸 메일" + list);
-                result = "Send Mail List!!";
-            }
+            result = "보낸 메일 조회";
         }else if(partValue.equals("receive")) {
             mailList = mailService.selectReceiveMailList(memberNo, search, searchValue);
-            for(MailDTO list : mailList) {
-                System.out.println("받은 메일" + list);
-                result = "Receive Mail List!!";
-            }
+            result = "받은 메일 조회";
         }
 
-        return result;
+        if(mailList != null) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, result + "성공", mailList));
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(result + "실패"));
+        }
     }
 
+    // 메일 조회 + 검색 + 페이지
+//    @GetMapping
+//    public ResponseEntity<ResponseDTO> selectMailList(@RequestHeader("Authorization") String token,
+//                                                      @RequestParam("part") String partValue,
+//                                                      @RequestParam(value = "search", defaultValue = "") String search,
+//                                                      @RequestParam(value = "searchvalue", defaultValue = "") String searchValue,
+//                                                      @RequestParam(name = "offset", defaultValue = "1") String offset) {
+//        // 사원 번호
+//        String memberNo = decryptToken(token).get("memberNo", String.class);
+//
+//        Criteria cri = new Criteria(Integer.valueOf(offset),10);
+//        PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
+//
+//        String result = "";
+//        Page<MailDTO> mailList = null;
+//        if(partValue.equals("send")) {
+//            mailList = mailService.selectSendMailList(memberNo, search, searchValue, cri);
+//            pagingResponseDTO.setData(mailList);
+//            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) mailList.getTotalElements()));
+//
+//            System.out.println("🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕");
+//            System.out.println(mailList);
+//
+//            result = "보낸 메일 조회";
+//        }else if(partValue.equals("receive")) {
+////            mailList = mailService.selectReceiveMailList(memberNo, search, searchValue, cri);
+////            pagingResponseDTO.setData(mailList);
+////            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) mailList.getTotalElements()));
+//
+//            result = "받은 메일 조회";
+//        }
+//
+//        if(mailList != null) {
+//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, result + "성공", mailList));
+//        }else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(result + "실패"));
+//        }
+//    }
+
     @GetMapping("/{mailNo}")
-    public String selectMailDetail(@PathVariable int mailNo) {
+    public ResponseEntity<ResponseDTO> selectMailDetail(@PathVariable int mailNo) {
         MailDTO oneMail = mailService.selectMailDetail(mailNo);
 
-        System.out.println(oneMail);
-
-        return "메일 상세 조회 성공!!";
+        if(oneMail != null) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 조회 성공", oneMail));
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("메일 상세 조회 실패"));
+        }
     }
 
     @PutMapping("/{mailNo}")
-    public String cancelSendMail(@PathVariable int mailNo) {
+    public ResponseEntity<ResponseDTO> cancelSendMail(@PathVariable int mailNo) {
         int result = mailService.cancelSendMail(mailNo);
 
-        return result == 0 ? "발송 취소 실패..." : "발송 취소 성공!!";
+        if(result > 0) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 발송 취소 성공", result));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("메일 발송 취소 실패"));
+        }
     }
 
     @PutMapping
-    public String deleteMail(@RequestParam("part") String partValue, @RequestParam("mailno") List<Integer> mailNo) {
+    public ResponseEntity<ResponseDTO> deleteMail(@RequestParam("part") String partValue, @RequestParam("mailno") List<Integer> mailNo) {
         String result = "";
+        int delResult = 0;
         if(partValue.equals("send")) {
-            // 보낸 메일 삭제
-            mailService.deleteSendMail(mailNo);
-
-            result = "보낸 메일을 삭제했습니다.";
+            delResult = mailService.deleteSendMail(mailNo);
+            result = "보낸 메일 삭제";
         }else if(partValue.equals("receive")) {
-            // 받은 메일 삭제
-            mailService.deleteReceiveMail(mailNo);
-
-            result = "받은 메일을 삭제했습니다.";
+            delResult = mailService.deleteReceiveMail(mailNo);
+            result = "받은 메일 삭제";
         }
 
-        return result;
+        if(delResult > 0) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, result + "성공", null));
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(result + "실패"));
+        }
     }
 
     @PostMapping("/{mailNo}/reply")
-    public String replyMail(@RequestHeader("Authorization") String token,
+    public ResponseEntity<ResponseDTO> replyMail(@RequestHeader("Authorization") String token,
                             @PathVariable int mailNo,
                             @RequestPart("mailInfo") MailDTO mailDto,
                             @RequestPart("mailFile") MultipartFile mailFile){
         // 사원 번호
-        String jwtToken = token.substring(7);
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-        String memberNo = claims.get("memberNo", String.class);
+        String memberNo = decryptToken(token).get("memberNo", String.class);
 
         // 이전 메일 가져오기
         MailDTO prevMail = mailService.selectMailDetail(mailNo);
@@ -142,19 +194,32 @@ public class MailController {
 
         int replyMailNo = mailService.replyMail(replyMail);
 
-        List<ReceiverDTO> replyReceivers = new ArrayList<>();
-        ReceiverDTO replyReceiver = new ReceiverDTO(
-                replyMailNo,
-                prevMail.getSenderMem(),
-                'N'
-        );
+        if(replyMailNo == 0) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("메일 답장 실패"));
+        }else {
+            List<ReceiverDTO> replyReceivers = new ArrayList<>();
+            ReceiverDTO replyReceiver = new ReceiverDTO(
+                    replyMailNo,
+                    prevMail.getSenderMem(),
+                    'N'
+            );
 
-        replyReceivers.add(replyReceiver);
+            replyReceivers.add(replyReceiver);
 
-        mailService.insertReceiver(replyReceivers);
+            mailService.insertReceiver(replyReceivers);
 
-        mailService.insertMailFile(replyMailNo, mailFile);
+            if(mailFile != null) {
+                mailService.insertMailFile(replyMailNo, mailFile);
+            }
 
-        return "메일 답장 성공!!";
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 답장 성공", null));
+        }
+
+
+
+
+
+
+
     }
 }
