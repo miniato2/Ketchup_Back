@@ -12,10 +12,7 @@ import com.devsplan.ketchup.mail.repository.ReceiverRepository;
 import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,9 +50,9 @@ public class MailService {
                 mailInfo.getSendDelStatus()
         );
 
-        mailRepository.save(mail);
+        Mail saveMail = mailRepository.save(mail);
 
-        return mail.getMailNo();
+        return saveMail.getMailNo();
     }
 
     // 수신자 등록
@@ -95,7 +92,7 @@ public class MailService {
 
     }
 
-    // 보낸 메일 목록 조회 백업
+    // 보낸 메일 목록 조회
     public List<MailDTO> selectSendMailList(String senderMem, String search, String searchValue) {
         List<Mail> mailList = new ArrayList<>();
         if(search != null) {
@@ -115,13 +112,13 @@ public class MailService {
             List<Receiver> mailReceivers = receiverRepository.findByMailNo(list.getMailNo());
             mailReceiverList =
                     mailReceivers.stream()
-                    .map(receiverMap -> new ReceiverDTO(
-                            receiverMap.getReceiverNo(),
-                            receiverMap.getMailNo(),
-                            receiverMap.getReceiverMem(),
-                            receiverMap.getReadTime(),
-                            receiverMap.getReceiverDelStatus()
-                    )).toList();
+                            .map(receiverMap -> new ReceiverDTO(
+                                    receiverMap.getReceiverNo(),
+                                    receiverMap.getMailNo(),
+                                    receiverMap.getReceiverMem(),
+                                    receiverMap.getReadTime(),
+                                    receiverMap.getReceiverDelStatus()
+                            )).toList();
 
             mailDtoList.add(new MailDTO(
                     list.getMailNo(),
@@ -138,7 +135,7 @@ public class MailService {
         return mailDtoList;
     }
 
-    // 받은 메일 조회 백업
+    // 받은 메일 조회
     public List<MailDTO> selectReceiveMailList(String receiverMem, String search, String searchValue) {
         List<Receiver> receivers = receiverRepository.findByReceiverMemAndReceiverDelStatus(receiverMem, 'N');
 
