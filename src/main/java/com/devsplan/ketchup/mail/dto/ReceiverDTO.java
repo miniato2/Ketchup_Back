@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.sql.Timestamp;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -13,9 +14,6 @@ public class ReceiverDTO {
     private String receiverMem;            // 수신자 사원 번호
     private Timestamp readTime;         // 메일 읽은 시간
     private char receiverDelStatus;     // 수신 메일 삭제 여부
-
-    public ReceiverDTO() {
-    }
 
     public ReceiverDTO(int mailNo, String receiverMem, char receiverDelStatus) {
         this.mailNo = mailNo;

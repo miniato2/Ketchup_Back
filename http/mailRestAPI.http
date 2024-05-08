@@ -1,14 +1,14 @@
 ### 메일 작성
 POST http://localhost:8080/mails
 Content-Type: multipart/form-data; boundary=WebAppBoundary
-Authorization: Bearer eyJkYXRlIjoxNzE0NzA4OTI3MzQzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0Nzk1MzI3fQ.dgXytZomTZM8G2PGmgRjADEwT0uRBeb0kHOKaOi9dsM
+Authorization: Bearer eyJkYXRlIjoxNzE1MDUxNDU2Mjc2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6MiwibWVtYmVyTm8iOiIyIiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDIiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE1MTM3ODU2fQ.dSstImx7tZqujLDOUX5sPIHG_IuikZBwrrbNjLoivPs
 
 --WebAppBoundary
 Content-Disposition: form-data; name="mailInfo"
 Content-Type: application/json
 
 {
-  "mailTitle": " 테스트앵두 메일",
+  "mailTitle": " 테스트바나나 메일",
   "mailContent": "테스트 메일 내용",
   "receivers": [
     {"receiverMem":  "1"}, {"receiverMem":  "4"}
@@ -22,8 +22,8 @@ Content-Disposition: form-data; name="mailFile"; filename="pikachu.png"
 --WebAppBoundary--
 
 ### 보낸 메일 조회 & 제목 검색 & 작성자 검색
-GET http://localhost:8080/mails?part=send&search=mailtitle&searchvalue=바나나
-Authorization: Bearer eyJkYXRlIjoxNzE0NzA0ODQ1MDAwLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6MiwibWVtYmVyTm8iOiIyIiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDIiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0NzkxMjQ0fQ.qjrqwD_LF_DsTSloQwgNGSQ9s00opunAa30xPlQmM6M
+GET http://localhost:8080/mails?part=send
+Authorization: Bearer eyJkYXRlIjoxNzE1MDUxNDU2Mjc2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6MiwibWVtYmVyTm8iOiIyIiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDIiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE1MTM3ODU2fQ.dSstImx7tZqujLDOUX5sPIHG_IuikZBwrrbNjLoivPs
 
 ### 받은 메일 조회
 GET http://localhost:8080/mails?part=receive&search=mailtitle&searchvalue=앵두
