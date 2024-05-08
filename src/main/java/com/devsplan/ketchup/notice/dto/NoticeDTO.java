@@ -19,7 +19,6 @@ public class NoticeDTO {
     private String memberNo;                     // 사번
     private char noticeFix;                      // 고정 공지
     private String noticeTitle;                  // 공지 제목
-    private List<NoticeFileDTO> noticeFiles;     // 공지 파일들
     private String noticeContent;                // 공지 내용
     private Timestamp noticeCreateDttm;          // 공지 등록일시
     private Timestamp noticeUpdateDttm;          // 공지 수정일시
@@ -35,25 +34,4 @@ public class NoticeDTO {
         this.noticeImgUrl = noticeImgUrl;
     }
 
-    public NoticeDTO(int noticeNo, String memberNo, char noticeFix, String noticeTitle, String noticeContent, List<NoticeFileDTO> noticeFiles, Timestamp noticeCreateDttm, String noticeImgUrl) {
-        this.noticeNo = noticeNo;
-        this.memberNo = memberNo;
-        this.noticeFix = noticeFix;
-        this.noticeTitle = noticeTitle;
-        this.noticeContent = noticeContent;
-        this.noticeFiles = noticeFiles;
-        this.noticeCreateDttm = noticeCreateDttm;
-        this.noticeImgUrl = noticeImgUrl;
-    }
-
-    public NoticeDTO(int noticeNo, String memberNo, char noticeFix, String noticeTitle, List<NoticeFileDTO> noticeFiles, String noticeContent, Timestamp noticeUpdateDttm, String noticeImgUrl) {
-        this.noticeNo = noticeNo;
-        this.memberNo = memberNo;
-        this.noticeFix = noticeFix;
-        this.noticeTitle = noticeTitle;
-        this.noticeFiles = noticeFiles;
-        this.noticeContent = noticeContent;
-        this.noticeUpdateDttm = noticeUpdateDttm;
-        this.noticeImgUrl = noticeImgUrl;
-    }
 }

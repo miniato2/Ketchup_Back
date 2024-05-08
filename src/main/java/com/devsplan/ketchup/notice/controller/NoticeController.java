@@ -93,6 +93,39 @@ public class NoticeController {
         }
     }
 
+    /*@PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<ResponseDTO> insertNotice(@ModelAttribute NoticeDTO noticeDTO
+            , @RequestParam(required = false) List<MultipartFile> files
+            , @RequestHeader("Authorization") String token) {
+        try{
+            String memberNo = decryptToken(token).get("memberNo", String.class);
+            String authority = decryptToken(token).get("role").toString();
+
+            System.out.println("[ authority ] : " + authority);
+
+            // LV3 또는 LV2 권한을 가진 사원만 공지 등록 가능
+            if (!authority.equals("LV3") && !authority.equals("LV2")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseDTO(HttpStatus.FORBIDDEN, "LV3 또는 LV2 권한자만 공지를 등록할 수 있습니다.", null));
+            }
+
+            // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
+            if (files != null && !files.isEmpty()) {
+                noticeService.insertNoticeWithFile(noticeDTO, files, memberNo);
+            } else {
+                noticeService.insertNotice(noticeDTO, memberNo);
+            }
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "공지 등록 성공", null));
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
+        } catch (JwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("유효하지 않은 토큰입니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
+        }
+    }
+*/
+
     /* 공지 수정 */
     @PutMapping("/{noticeNo}")
     public ResponseEntity<ResponseDTO> updateNotice(@PathVariable int noticeNo
