@@ -30,7 +30,7 @@ public class Reserve {
     private String memberNo;            // 예약자
 
     @ManyToOne
-    @JoinColumn(name = "RSC_NO")
+    @JoinColumn(name = "RESOURCES")
     private Resource resources;         // 자원
 
     public Reserve() {
