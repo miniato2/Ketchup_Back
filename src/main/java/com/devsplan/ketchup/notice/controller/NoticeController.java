@@ -61,9 +61,9 @@ public class NoticeController {
     }
 
     /* 공지 등록 */
-    @PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<ResponseDTO> insertNotice(@RequestPart("noticeDTO")NoticeDTO noticeDTO
-                                                    , @RequestPart(required = false)List<MultipartFile> files
+    @PostMapping
+    public ResponseEntity<ResponseDTO> insertNotice(@ModelAttribute NoticeDTO noticeDTO
+                                                    , @RequestParam(required = false) List<MultipartFile> uploadfiles
                                                     , @RequestHeader("Authorization") String token) {
         try{
             String memberNo = decryptToken(token).get("memberNo", String.class);
@@ -77,8 +77,8 @@ public class NoticeController {
             }
 
             // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
-            if (files != null && !files.isEmpty()) {
-                noticeService.insertNoticeWithFile(noticeDTO, files, memberNo);
+            if (uploadfiles != null && !uploadfiles.isEmpty()) {
+                noticeService.insertNoticeWithFile(noticeDTO, uploadfiles, memberNo);
             } else {
                 noticeService.insertNotice(noticeDTO, memberNo);
             }

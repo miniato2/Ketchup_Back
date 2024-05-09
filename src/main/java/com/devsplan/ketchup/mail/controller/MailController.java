@@ -71,8 +71,9 @@ public class MailController {
     @GetMapping
     public ResponseEntity<ResponseDTO> selectMailList(@RequestHeader("Authorization") String token,
                                                       @RequestParam("part") String partValue,
-                                                      @RequestParam(value = "search", defaultValue = "") String search,
-                                                      @RequestParam(value = "searchvalue", defaultValue = "") String searchValue) {
+                                                      @RequestParam(value = "search", required = false) String search,
+                                                      @RequestParam(value = "searchvalue", required = false
+                                                      ) String searchValue) {
         // 사원 번호
         String memberNo = decryptToken(token).get("memberNo", String.class);
 
