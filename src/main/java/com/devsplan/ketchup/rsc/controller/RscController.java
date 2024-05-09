@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
+
 @Controller
 @RequestMapping("/resources")
 public class RscController {
@@ -25,7 +27,7 @@ public class RscController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> insertResource( @RequestBody ResourceDTO rscDto) {
+    public ResponseEntity<ResponseDTO> insertResource(@RequestBody ResourceDTO rscDto) {
 
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "자원 등록 성공",
@@ -34,14 +36,7 @@ public class RscController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDTO> selectResource(@RequestHeader("Authorization") String token,
-                                                      @RequestParam("part") String partValue) {
-        // 부서
-        String jwtToken = token.substring(7);
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwtToken).getBody();
-        Integer depNo = claims.get("depNo", Integer.class);
-
-
+    public ResponseEntity<ResponseDTO> selectResource(@RequestParam("part") String partValue) {
         String rscCate = "";
         if(partValue.equals("conferences")) {
             rscCate = "회의실";
@@ -68,21 +63,24 @@ public class RscController {
     }
 
     @PutMapping("/{rscNo}")
-    public ResponseEntity<ResponseDTO> updateResource(@PathVariable int rscNo,
+    public ResponseEntity<ResponseDTO> updateResource(@RequestHeader("Authorization") String token,
+                                                      @PathVariable int rscNo,
                                                       @RequestBody ResourceDTO updateRscDto) {
+        String memberNo = decryptToken(token).get("memberNo", String.class);
 
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "자원 수정",
-                        rscService.updateResource(rscNo, updateRscDto))
+                        rscService.updateResource(memberNo, rscNo, updateRscDto))
         );
     }
 
     @DeleteMapping("/{rscNo}")
-    public ResponseEntity<ResponseDTO> deleteResource(@PathVariable int rscNo) {
+    public ResponseEntity<ResponseDTO> deleteResource(@RequestHeader("Authorization") String token, @PathVariable int rscNo) {
+        String memberNo = decryptToken(token).get("memberNo", String.class);
 
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "자원 삭제",
-                        rscService.deleteResource(rscNo))
+                        rscService.deleteResource(memberNo, rscNo))
         );
     }
 }
