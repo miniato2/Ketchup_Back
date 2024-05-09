@@ -1,15 +1,7 @@
 package com.devsplan.ketchup.schedule.entity;
 
-import com.devsplan.ketchup.common.ScheduleBuilder;
-import com.devsplan.ketchup.schedule.dto.ScheduleDTO;
-import com.fasterxml.jackson.core.JsonFactory;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "TBL_SCHEDULE")
@@ -26,10 +18,10 @@ public class Schedule {
     private String skdName;
 
     @Column(name = "SKD_START_DTTM")
-    private LocalDateTime skdStartDttm;
+    private String skdStartDttm;
 
     @Column(name = "SKD_END_DTTM")
-    private LocalDateTime skdEndDttm;
+    private String skdEndDttm;
 
     @Column(name = "SKD_LOCATION")
     private String skdLocation;
@@ -37,48 +29,9 @@ public class Schedule {
     @Column(name = "SKD_MEMO")
     private String skdMemo;
 
-    public Schedule skdNo(int val) {
-        this.skdNo = val;
-        return this;
-    }
-
-    public Schedule department(Department val) {
-        this.department = val;
-        return this;
-    }
-
-    public Schedule skdName(String val) {
-        this.skdName = val;
-        return this;
-    }
-
-    public Schedule skdStartDttm(LocalDateTime val) {
-        this.skdStartDttm = val;
-        return this;
-    }
-
-    public Schedule skdEndDttm(LocalDateTime val) {
-        this.skdEndDttm = val;
-        return this;
-    }
-
-    public Schedule skdLocation(String val) {
-        this.skdLocation = val;
-        return this;
-    }
-
-    public Schedule skdMemo(String val) {
-        this.skdMemo = val;
-        return this;
-    }
-
-    public Schedule builder() {
-        return new Schedule(skdNo, department, skdName, skdStartDttm, skdEndDttm, skdLocation, skdMemo);
-    }
-
     protected Schedule() {}
 
-    public Schedule(int skdNo, Department department, String skdName, LocalDateTime skdStartDttm, LocalDateTime skdEndDttm, String skdLocation, String skdMemo) {
+    public Schedule(int skdNo, Department department, String skdName, String skdStartDttm, String skdEndDttm, String skdLocation, String skdMemo) {
         this.skdNo = skdNo;
         this.department = department;
         this.skdName = skdName;
@@ -100,11 +53,11 @@ public class Schedule {
         return skdName;
     }
 
-    public LocalDateTime getSkdStartDttm() {
+    public String getSkdStartDttm() {
         return skdStartDttm;
     }
 
-    public LocalDateTime getSkdEndDttm() {
+    public String getSkdEndDttm() {
         return skdEndDttm;
     }
 
@@ -128,4 +81,64 @@ public class Schedule {
                 ", skdMemo='" + skdMemo + '\'' +
                 '}';
     }
+
+    public static class Builder {
+        private int skdNo;
+        private Department department;
+        private String skdName;
+        private String skdLocation;
+        private String skdMemo;
+        private String skdStartDttm;
+        private String skdEndDttm;
+
+        public Builder skdNo(int skdNo) {
+            this.skdNo = skdNo;
+            return this;
+        }
+
+        public Builder department(Department department) {
+            this.department = department;
+            return this;
+        }
+
+        public Builder skdName(String skdName) {
+            this.skdName = skdName;
+            return this;
+        }
+
+        public Builder skdLocation(String skdLocation) {
+            this.skdLocation = skdLocation;
+            return this;
+        }
+
+        public Builder skdMemo(String skdMemo) {
+            this.skdMemo = skdMemo;
+            return this;
+        }
+
+        public Builder skdStartDttm(String skdStartDttm) {
+            this.skdStartDttm = skdStartDttm;
+            return this;
+        }
+
+        public Builder skdEndDttm(String skdEndDttm) {
+            this.skdEndDttm = skdEndDttm;
+            return this;
+        }
+
+        public Schedule build() {
+            return new Schedule(this);
+        }
+    }
+
+    private Schedule(Builder builder) {
+        this.skdNo = builder.skdNo;
+        this.department = builder.department;
+        this.skdName = builder.skdName;
+        this.skdLocation = builder.skdLocation;
+        this.skdMemo = builder.skdMemo;
+        this.skdStartDttm = builder.skdStartDttm;
+        this.skdEndDttm = builder.skdEndDttm;
+    }
+
 }

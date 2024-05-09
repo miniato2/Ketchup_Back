@@ -15,6 +15,7 @@ Authorization: Bearer eyJkYXRlIjoxNzE1MTMwMjc4MjI4LCJ0eXBlIjoiand0IiwiYWxnIjoiSF
   "rsvStartDttm": "2024-05-04 오후 3시 0분",
   "rsvEndDttm": "2024-05-04 오후 4시 30분",
   "rsvDescr": "Worst is yet to come.",
+  "reserver": "5",
   "resources": {
     "rscNo": 3,
     "rscCategory": "회의실",

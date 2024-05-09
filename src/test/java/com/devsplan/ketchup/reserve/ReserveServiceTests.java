@@ -191,7 +191,7 @@ public class ReserveServiceTests {
     @Test
     void updateReserve() {
         // given
-        int rsvNo = 6;
+        int rsvNo = 16;
         LocalDateTime updatedStartDttm = LocalDateTime.of(2025, 5, 3, 14, 30);
         LocalDateTime updatedEndDttm = LocalDateTime.of(2025, 5, 3, 16, 30);
         String updatedDescr = "자원 예약 수정";
@@ -220,8 +220,8 @@ public class ReserveServiceTests {
     @Test
     void deleteReserve() {
         // given
-        int rsvNo = 16;
-        String memberNo = "2";
+        int rsvNo = 20;
+        String memberNo = "3";
 
         // when, then
         reserveService.deleteById(rsvNo, memberNo);
