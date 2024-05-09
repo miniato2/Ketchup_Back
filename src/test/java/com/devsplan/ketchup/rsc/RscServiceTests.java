@@ -107,6 +107,7 @@ public class RscServiceTests {
     public void updateResource() {
         // given
         int rscNo = 2;
+        String memberNo = "2";
 
         ResourceDTO updateRsc = new ResourceDTO(
                 true,
@@ -116,7 +117,7 @@ public class RscServiceTests {
         // when
 
         // then
-        Assertions.assertDoesNotThrow(() -> rscService.updateResource(rscNo, updateRsc));
+        Assertions.assertDoesNotThrow(() -> rscService.updateResource(memberNo, rscNo, updateRsc));
     }
 
     @DisplayName("자원 삭제")
@@ -124,9 +125,10 @@ public class RscServiceTests {
     public void deleteResource() {
         // given
         int rscNo = 16;
+        String memberNo = "2";
 
         // when
-        int result = rscService.deleteResource(rscNo);
+        int result = rscService.deleteResource(memberNo, rscNo);
 
         // then
         Assertions.assertEquals(1, result);
