@@ -320,8 +320,8 @@ Content-Type: application/json
 Accept: */*
 
 {
-  "memberNo": "1",
-  "memberPW": "3158"
+  "memberNo": "5",
+  "memberPW": "5555"
 }
 
 ### GET 요청

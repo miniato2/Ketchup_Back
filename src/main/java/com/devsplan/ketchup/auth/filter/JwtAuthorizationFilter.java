@@ -46,7 +46,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        List<String> roleLessList = Arrays.asList("/signup","/signupDep","/signupPosition","/notices"); //
+        List<String> roleLessList = Arrays.asList("/signup","/signupDep","/signupPosition","/notices","/calendar"); //
 
 
         if (roleLessList.contains((request.getRequestURI()))) {
@@ -91,7 +91,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     System.out.println(tPosition.getPositionNo());
                     System.out.println("----------------------여기가 직급번호 세팅직전-----------");
                     tPosition.setPositionNo( Integer.parseInt( ( claims.get("positionNo").toString() ) ) );
-//                    tPosition.setPositionName(claims.get("positionName").toString());
+//                  tPosition.setPositionName(claims.get("positionName").toString());
 
 
                     // Role을 설정합니다.

@@ -131,6 +131,8 @@ public class MemberService {
 
         Optional<MemberDTO> memberDTO = Optional.ofNullable(modelMapper.map(member, MemberDTO.class));
 
+
+
         /*
          * 별도의 검증 로직 작성
          * */

@@ -10,6 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,31 +91,48 @@ public class ScheduleService {
                 newSchedule.getSkdMemo()
         );
 
+        // 날짜와 시간 파싱 로직 수정
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm[:ss]");
+//        LocalDateTime skdStartDttm;
+//        LocalDateTime skdEndDttm;
+//        try {
+//            skdStartDttm = LocalDateTime.parse(newSchedule.getSkdStartDttmStr(), formatter);
+//            skdEndDttm = LocalDateTime.parse(newSchedule.getSkdEndDttmStr(), formatter);
+//        } catch (DateTimeParseException e) {
+//            log.error("날짜 형식 파싱 오류", e);
+//            throw new IllegalArgumentException("날짜 형식이 유효하지 않습니다.");
+//        }
+//
+//        Schedule schedule = new Schedule.Builder()
+//                .skdNo(newSchedule.getSkdNo())
+//                .department(department)
+//                .skdName(newSchedule.getSkdName())
+//                .skdLocation(newSchedule.getSkdLocation())
+//                .skdMemo(newSchedule.getSkdMemo())
+//                .skdStartDttm(skdStartDttm)
+//                .skdEndDttm(skdEndDttm)
+//                .build();
+
         scheduleRepository.save(schedule);
     }
-
 
     @Transactional
     public void updateSchedule(ScheduleDTO updateSchedule) {
         Schedule foundSchedule = scheduleRepository.findById((long) updateSchedule.getSkdNo()).orElseThrow(IllegalArgumentException::new);
 
-        if (updateSchedule.getSkdName() != null) {
-            foundSchedule.skdName(updateSchedule.getSkdName());
-        }
-        if (updateSchedule.getSkdStartDttm() != null) {
-            foundSchedule.skdStartDttm(updateSchedule.getSkdStartDttm());
-        }
-        if (updateSchedule.getSkdEndDttm() != null) {
-            foundSchedule.skdEndDttm(updateSchedule.getSkdEndDttm());
-        }
-        if (updateSchedule.getSkdLocation() != null) {
-            foundSchedule.skdLocation(updateSchedule.getSkdLocation());
-        }
-        if (updateSchedule.getSkdMemo() != null) {
-            foundSchedule.skdMemo(updateSchedule.getSkdMemo());
-        }
+        // 새로운 Schedule 객체를 생성하여 수정된 값만 적용
+        Schedule updatedSchedule = new Schedule.Builder()
+                .skdNo(foundSchedule.getSkdNo())
+                .department(foundSchedule.getDepartment())
+                .skdName(updateSchedule.getSkdName() != null ? updateSchedule.getSkdName() : foundSchedule.getSkdName())
+                .skdStartDttm(updateSchedule.getSkdStartDttm() != null ? updateSchedule.getSkdStartDttm() : foundSchedule.getSkdStartDttm())
+                .skdEndDttm(updateSchedule.getSkdEndDttm() != null ? updateSchedule.getSkdEndDttm() : foundSchedule.getSkdEndDttm())
+                .skdLocation(updateSchedule.getSkdLocation() != null ? updateSchedule.getSkdLocation() : foundSchedule.getSkdLocation())
+                .skdMemo(updateSchedule.getSkdMemo() != null ? updateSchedule.getSkdMemo() : foundSchedule.getSkdMemo())
+                .build();
 
-        scheduleRepository.save(foundSchedule.builder());
+        // 새로운 Schedule 객체 저장
+        scheduleRepository.save(updatedSchedule);
     }
 
     @Transactional
