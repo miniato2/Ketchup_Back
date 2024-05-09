@@ -139,6 +139,7 @@ public class TokenUtils {
         claims.put("positionStatus", member.getPosition().getPositionStatus());
         claims.put("role", member.getPosition().getAuthority().getRole()); // 역할 가져오기
         claims.put("depNo", member.getDepartment().getDepNo());
+        claims.put("depName", member.getDepartment().getDepName());
 
         return claims;
     }

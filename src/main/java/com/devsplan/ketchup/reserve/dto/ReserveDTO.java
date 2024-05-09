@@ -1,5 +1,6 @@
 package com.devsplan.ketchup.reserve.dto;
 
+import com.devsplan.ketchup.rsc.dto.ResourceDTO;
 import lombok.*;
 import java.time.LocalDateTime;
 

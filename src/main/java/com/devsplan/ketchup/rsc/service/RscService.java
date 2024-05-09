@@ -1,11 +1,13 @@
 package com.devsplan.ketchup.rsc.service;
 
 import com.devsplan.ketchup.mail.entity.Mail;
+import com.devsplan.ketchup.mail.entity.Receiver;
 import com.devsplan.ketchup.mail.repository.MailRepository;
+import com.devsplan.ketchup.mail.repository.ReceiverRepository;
 import com.devsplan.ketchup.reserve.entity.Reserve;
 import com.devsplan.ketchup.reserve.repository.ReserveRepository;
-import com.devsplan.ketchup.rsc.dto.RscDTO;
-import com.devsplan.ketchup.rsc.entity.Rsc;
+import com.devsplan.ketchup.rsc.dto.ResourceDTO;
+import com.devsplan.ketchup.rsc.entity.Resource;
 import com.devsplan.ketchup.rsc.repository.RscRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,16 +19,18 @@ public class RscService {
     private final RscRepository rscRepository;
     private final ReserveRepository reserveRepository;
     private final MailRepository mailRepository;
+    private final ReceiverRepository receiverRepository;
 
-    public RscService(RscRepository rscRepository, ReserveRepository reserveRepository, MailRepository mailRepository) {
+    public RscService(RscRepository rscRepository, ReserveRepository reserveRepository, MailRepository mailRepository, ReceiverRepository receiverRepository) {
         this.rscRepository = rscRepository;
         this.reserveRepository = reserveRepository;
         this.mailRepository = mailRepository;
+        this.receiverRepository = receiverRepository;
     }
 
     @Transactional
-    public Object insertResource(RscDTO rscDTO) {
-        Rsc resource = new Rsc(
+    public Object insertResource(ResourceDTO rscDTO) {
+        Resource resource = new Resource(
                 rscDTO.getRscCategory(),
                 rscDTO.getRscName(),
                 rscDTO.getRscInfo(),
@@ -36,11 +40,11 @@ public class RscService {
         return rscRepository.save(resource);
     }
 
-    public List<RscDTO> selectRscList(String part) {
-        List<Rsc> rscList = rscRepository.findByRscCategory(part);
+    public List<ResourceDTO> selectRscList(String part) {
+        List<Resource> rscList = rscRepository.findByRscCategory(part);
 
         return rscList.stream()
-                .map(rsc -> new RscDTO(
+                .map(rsc -> new ResourceDTO(
                         rsc.getRscNo(),
                         rsc.getRscCategory(),
                         rsc.getRscName(),
@@ -51,10 +55,10 @@ public class RscService {
                 )).toList();
     }
 
-    public RscDTO selectResourceDetail(int rscNo) {
-        Rsc rscDetail = rscRepository.findByRscNo(rscNo);
+    public ResourceDTO selectResourceDetail(int rscNo) {
+        Resource rscDetail = rscRepository.findByRscNo(rscNo);
 
-        return new RscDTO(
+        return new ResourceDTO(
                 rscDetail.getRscNo(),
                 rscDetail.getRscCategory(),
                 rscDetail.getRscName(),
@@ -66,8 +70,8 @@ public class RscService {
     }
 
     @Transactional
-    public int updateResource(int rscNo, RscDTO updateRsc) {
-        Rsc rsc = rscRepository.findByRscNo(rscNo);
+    public int updateResource(String memberNo, int rscNo, ResourceDTO updateRsc) {
+        Resource rsc = rscRepository.findByRscNo(rscNo);
 
         int result = 0;
 
@@ -77,45 +81,49 @@ public class RscService {
             result += 1;
 
             // 사용 가능 불가로 변경되는 경우(true) - 예약 일정 삭제
-//            if(updateRsc.isRscIsAvailable()) {
+            if(updateRsc.isRscIsAvailable()) {
                 // 해당 자원에 대한 예약자 조회
-//                List<Reserve> reserveList = reserveRepository.findByRscNo(updateRsc.getRscNo());
+                List<Reserve> reserveList = reserveRepository.findByResources(rsc);
 
                 // 예약 일정이 존재하는 경우
-//                if(reserveList.size() > 0) {
-//                    for(int i = 0; i < reserveList.size(); i++) {
-//                        System.out.println("예약 일정 삭제!!");
-//                        reserveRepository.deleteByRsv(reserveList.get(i).getRsvNo());
-//                        result += 1;
-//
-//                        System.out.println("예약자 예약 취소 메일 전송");
-//                        Mail rsvCancelMail;
-//                        if(/*회의실인 경우*/) {
-//                            rsvCancelMail = new Mail(
-//                                    /*
-//                                     * 작성자,
-//                                     * "회의실 예약 취소 안내",
-//                                     * "불가피한 사정으로 회의실의 사용이 불가하여 예약이 취소되었음을 안내드립니다.",
-//                                     * 'N',
-//                                     * 'N'
-//                                     */
-//                            );
-//                        }else {
-//                            rsvCancelMail = new Mail(
-//                                    /*
-//                                     * 작성자,
-//                                     * "차량 예약 취소 안내",
-//                                     * "불가피한 사정으로 차량의 사용이 불가하여 예약이 취소되었음을 안내드립니다.",
-//                                     * 'N',
-//                                     * 'N'
-//                                     */
-//                            );
-//                        }
-//                        mailRepository.save(rsvCancelMail);
-//                        result += 1;
-//                    }
-//                }
-//            }
+                if(!reserveList.isEmpty()) {
+                    for(Reserve list : reserveList) {
+                        System.out.println("예약 일정 삭제");
+                        result += reserveRepository.deleteByRsvNo(list.getRsvNo());
+
+                        System.out.println("예약자 예약 취소 메일 전송");
+                        Mail rsvCancelMail;
+                        if(list.getResources().getRscCategory().equals("회의실")) {
+                            rsvCancelMail = new Mail(
+                                    memberNo,
+                                    "회의실 예약 취소 안내",
+                                    "불가피한 사정으로 회의실의 사용이 불가하여 예약이 취소되었음을 안내드립니다.",
+                                    'N',
+                                    'N'
+                            );
+                        }else {
+                            rsvCancelMail = new Mail(
+                                     memberNo,
+                                     "차량 예약 취소 안내",
+                                     "불가피한 사정으로 차량의 사용이 불가하여 예약이 취소되었음을 안내드립니다.",
+                                     'N',
+                                     'N'
+                            );
+                        }
+
+                        Mail rscMail = mailRepository.save(rsvCancelMail);
+
+                        Receiver mailReceive = new Receiver(
+                                rscMail.getMailNo(),
+                                list.getMemberNo(),
+                                'N'
+                        );
+                        receiverRepository.save(mailReceive);
+
+                        result += 1;
+                    }
+                }
+            }
         }
 
         if(updateRsc.getRscDescr() != null) {
@@ -127,43 +135,50 @@ public class RscService {
     }
 
     @Transactional
-    public int deleteResource(int rscNo) {
-        // 삭제하려는 자원에 대한 예약 조회
-//        List<Reserve> reserveList = reserveRepository.findByRscNo(rscNo);
+    public int deleteResource(String memberNo, int rscNo) {
+        Resource rsc = rscRepository.findByRscNo(rscNo);
+        int result = 0;
+
+        List<Reserve> reserveList = reserveRepository.findByResources(rsc);
 
         // 예약 일정이 존재하는 경우
-//        if(reserveList.size() > 0) {
-//            for(int i = 0; i < reserveList.size(); i++) {
-//                System.out.println("예약 일정 삭제!!");
-//                reserveRepository.deleteByRsv(reserveList.get(i).getRsvNo());
-//
-//                System.out.println("예약자 예약 취소 메일 전송");
-//                Mail rsvCancelMail;
-//                if(/*회의실인 경우*/) {
-//                    rsvCancelMail = new Mail(
-//                        /*
-//                        * 작성자,
-//                        * "회의실 예약 취소 안내",
-//                        * "불가피한 사정으로 회의실의 사용이 불가하여 예약이 취소되었음을 안내드립니다.",
-//                        * 'N',
-//                        * 'N'
-//                        */
-//                    );
-//                }else {
-//                    rsvCancelMail = new Mail(
-//                        /*
-//                        * 작성자,
-//                        * "차량 예약 취소 안내",
-//                        * "불가피한 사정으로 차량의 사용이 불가하여 예약이 취소되었음을 안내드립니다.",
-//                        * 'N',
-//                        * 'N'
-//                        */
-//                    );
-//                }
-//
-//                mailRepository.save(rsvCancelMail);
-//            }
-//        }
+        if(!reserveList.isEmpty()) {
+            for(Reserve list : reserveList) {
+                System.out.println("예약 일정 삭제");
+                result += reserveRepository.deleteByRsvNo(list.getRsvNo());
+
+                System.out.println("예약자 예약 취소 메일 전송");
+                Mail rsvCancelMail;
+                if(list.getResources().getRscCategory().equals("회의실")) {
+                    rsvCancelMail = new Mail(
+                            memberNo,
+                            "회의실 예약 취소 안내",
+                            "불가피한 사정으로 회의실의 사용이 불가하여 예약이 취소되었음을 안내드립니다.",
+                            'N',
+                            'N'
+                    );
+                }else {
+                    rsvCancelMail = new Mail(
+                            memberNo,
+                            "차량 예약 취소 안내",
+                            "불가피한 사정으로 차량의 사용이 불가하여 예약이 취소되었음을 안내드립니다.",
+                            'N',
+                            'N'
+                    );
+                }
+
+                Mail rscMail = mailRepository.save(rsvCancelMail);
+
+                Receiver mailReceive = new Receiver(
+                        rscMail.getMailNo(),
+                        list.getMemberNo(),
+                        'N'
+                );
+                receiverRepository.save(mailReceive);
+
+                result += 1;
+            }
+        }
 
         return rscRepository.deleteByRscNo(rscNo);
     }

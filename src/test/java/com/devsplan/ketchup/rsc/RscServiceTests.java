@@ -1,8 +1,6 @@
 package com.devsplan.ketchup.rsc;
 
-import com.devsplan.ketchup.reserve.dto.ResourceDTO;
-import com.devsplan.ketchup.rsc.controller.RscController;
-import com.devsplan.ketchup.rsc.dto.RscDTO;
+import com.devsplan.ketchup.rsc.dto.ResourceDTO;
 import com.devsplan.ketchup.rsc.service.RscService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +11,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -66,7 +63,7 @@ public class RscServiceTests {
     @MethodSource("getReserveInfo")
     public void insertResourceTest(String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
         // given
-        RscDTO rscDTO = new RscDTO(rscCategory, rscName, rscInfo, rscCap, rscIsAvailable, rscDescr);
+        ResourceDTO rscDTO = new ResourceDTO(rscCategory, rscName, rscInfo, rscCap, rscIsAvailable, rscDescr);
 
         // when & then
         Assertions.assertDoesNotThrow(
@@ -82,7 +79,7 @@ public class RscServiceTests {
         String part = "회의실";
 
         // when
-        List<RscDTO> rscList = rscService.selectRscList(part);
+        List<ResourceDTO> rscList = rscService.selectRscList(part);
 
         // then
         Assertions.assertNotNull(rscList);
@@ -97,7 +94,7 @@ public class RscServiceTests {
         int rscNo = 15;
 
         // when
-        RscDTO rscDetail = rscService.selectResourceDetail(rscNo);
+        ResourceDTO rscDetail = rscService.selectResourceDetail(rscNo);
 
         // then
         Assertions.assertNotNull(rscDetail);
@@ -110,8 +107,9 @@ public class RscServiceTests {
     public void updateResource() {
         // given
         int rscNo = 2;
+        String memberNo = "2";
 
-        RscDTO updateRsc = new RscDTO(
+        ResourceDTO updateRsc = new ResourceDTO(
                 true,
                 "비고 수정했습니다."
         );
@@ -119,7 +117,7 @@ public class RscServiceTests {
         // when
 
         // then
-        Assertions.assertDoesNotThrow(() -> rscService.updateResource(rscNo, updateRsc));
+        Assertions.assertDoesNotThrow(() -> rscService.updateResource(memberNo, rscNo, updateRsc));
     }
 
     @DisplayName("자원 삭제")
@@ -127,9 +125,10 @@ public class RscServiceTests {
     public void deleteResource() {
         // given
         int rscNo = 16;
+        String memberNo = "2";
 
         // when
-        int result = rscService.deleteResource(rscNo);
+        int result = rscService.deleteResource(memberNo, rscNo);
 
         // then
         Assertions.assertEquals(1, result);

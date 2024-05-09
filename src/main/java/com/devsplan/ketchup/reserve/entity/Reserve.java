@@ -1,5 +1,6 @@
 package com.devsplan.ketchup.reserve.entity;
 
+import com.devsplan.ketchup.rsc.entity.Resource;
 import jakarta.persistence.*;
 import lombok.Getter;
 
