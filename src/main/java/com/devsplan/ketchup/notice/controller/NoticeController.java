@@ -3,20 +3,28 @@ package com.devsplan.ketchup.notice.controller;
 import com.devsplan.ketchup.common.*;
 import com.devsplan.ketchup.notice.dto.NoticeDTO;
 import com.devsplan.ketchup.notice.service.NoticeService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
+import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @RestController
 @RequestMapping("/notices")
+@Slf4j
 public class NoticeController {
 
     private final NoticeService noticeService;
@@ -35,6 +43,9 @@ public class NoticeController {
 
             Page<NoticeDTO> noticeList = noticeService.selectNoticeList(cri, title);
             pagingResponseDTO.setData(noticeList);
+
+            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) noticeList.getTotalElements()));
+
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "목록 조회 성공", pagingResponseDTO));
 
@@ -61,70 +72,33 @@ public class NoticeController {
     }
 
     /* 공지 등록 */
-    @PostMapping
-    public ResponseEntity<ResponseDTO> insertNotice(@ModelAttribute NoticeDTO noticeDTO
-                                                    , @RequestParam(required = false) List<MultipartFile> uploadfiles
-                                                    , @RequestHeader("Authorization") String token) {
+    @PostMapping(consumes = {"multipart/form-data"})
+    @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
+    public ResponseEntity<ResponseDTO> insertNotice(@RequestPart("noticeDTO") NoticeDTO noticeDTO
+                                                    , @RequestPart(value = "files", required = false) List<MultipartFile> files
+                                                    , @RequestHeader("Authorization") String token) throws HttpMediaTypeNotSupportedException {
         try{
             String memberNo = decryptToken(token).get("memberNo", String.class);
             String authority = decryptToken(token).get("role").toString();
-
             System.out.println("[ authority ] : " + authority);
 
-            // LV3 또는 LV2 권한을 가진 사원만 공지 등록 가능
-            if (!authority.equals("LV3") && !authority.equals("LV2")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseDTO(HttpStatus.FORBIDDEN, "LV3 또는 LV2 권한자만 공지를 등록할 수 있습니다.", null));
-            }
-
-            // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
-            if (uploadfiles != null && !uploadfiles.isEmpty()) {
-                noticeService.insertNoticeWithFile(noticeDTO, uploadfiles, memberNo);
-            } else {
-                noticeService.insertNotice(noticeDTO, memberNo);
-            }
-
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "공지 등록 성공", null));
-        } catch (ExpiredJwtException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
-        } catch (JwtException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("유효하지 않은 토큰입니다."));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
-        }
-    }
-
-    /*@PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<ResponseDTO> insertNotice(@ModelAttribute NoticeDTO noticeDTO
-            , @RequestParam(required = false) List<MultipartFile> files
-            , @RequestHeader("Authorization") String token) {
-        try{
-            String memberNo = decryptToken(token).get("memberNo", String.class);
-            String authority = decryptToken(token).get("role").toString();
-
-            System.out.println("[ authority ] : " + authority);
-
-            // LV3 또는 LV2 권한을 가진 사원만 공지 등록 가능
-            if (!authority.equals("LV3") && !authority.equals("LV2")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseDTO(HttpStatus.FORBIDDEN, "LV3 또는 LV2 권한자만 공지를 등록할 수 있습니다.", null));
-            }
-
-            // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
+            Object data;
             if (files != null && !files.isEmpty()) {
-                noticeService.insertNoticeWithFile(noticeDTO, files, memberNo);
+                data = noticeService.insertNoticeWithFile(noticeDTO, files, memberNo);
             } else {
-                noticeService.insertNotice(noticeDTO, memberNo);
+                data = noticeService.insertNotice(noticeDTO, memberNo);
             }
 
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "공지 등록 성공", null));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "공지 등록 성공", data));
         } catch (ExpiredJwtException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
         } catch (JwtException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("유효하지 않은 토큰입니다."));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
+            log.error("공지 등록 실패: {}", e.getMessage(), e);
+            throw new RuntimeException("공지 등록 중 오류가 발생했습니다: " + e.getMessage()); // 수정된 부분
         }
     }
-*/
 
     /* 공지 수정 */
     @PutMapping("/{noticeNo}")

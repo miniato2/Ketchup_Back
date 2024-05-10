@@ -34,4 +34,21 @@ public class NoticeDTO {
         this.noticeImgUrl = noticeImgUrl;
     }
 
+    public NoticeDTO(int noticeNo, String memberNo, char noticeFix, String noticeTitle, String noticeContent, String noticeImgUrl) {
+        this.noticeNo = noticeNo;
+        this.memberNo = memberNo;
+        this.noticeFix = noticeFix;
+        this.noticeTitle = noticeTitle;
+        this.noticeContent = noticeContent;
+        this.noticeImgUrl = noticeImgUrl;
+    }
+
+    public NoticeDTO(int noticeNo, String memberNo, char noticeFix, String noticeTitle, String noticeContent, Timestamp noticeCreateDttm) {
+        this.noticeNo = noticeNo;
+        this.memberNo = memberNo;
+        this.noticeFix = noticeFix;
+        this.noticeTitle = noticeTitle;
+        this.noticeContent = noticeContent;
+        this.noticeCreateDttm = noticeCreateDttm;
+    }
 }
