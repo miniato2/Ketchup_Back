@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-
     private final DepartmentRepository departmentRepository;
 
     public ScheduleService(ScheduleRepository scheduleRepository, DepartmentRepository departmentRepository) {
@@ -29,10 +28,9 @@ public class ScheduleService {
         this.departmentRepository = departmentRepository;
     }
 
-    public List<ScheduleDTO> selectScheduleList(int dptNo) {
+      public List<ScheduleDTO> selectScheduleListByDepartment(int dptNo) {
         Department department = departmentRepository.findById(dptNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 부서를 찾을 수 없습니다: " + dptNo));
-
         List<Schedule> scheduleList = scheduleRepository.findByDepartment(department);
         return scheduleList.stream()
                 .map(schedule -> {
@@ -48,23 +46,25 @@ public class ScheduleService {
                 }).collect(Collectors.toList());
     }
 
-    public List<ScheduleDTO> selectScheduleDetail(int dptNo, int skdNo) {
+    public ScheduleDTO selectScheduleDetail(int dptNo, int skdNo) {
         Department department = departmentRepository.findById(dptNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 부서를 찾을 수 없습니다: " + dptNo));
 
-        List<Schedule> scheduleDetail = scheduleRepository.findByDepartmentAndSkdNo(department, skdNo);
-        return scheduleDetail.stream()
-                .map(schedule -> {
-                    ScheduleDTO scheduleDTO = new ScheduleDTO();
-                    scheduleDTO.setSkdNo(schedule.getSkdNo());
-                    scheduleDTO.setDptNo(new DepartmentDTO(schedule.getDepartment().getDptNo()));
-                    scheduleDTO.setSkdName(schedule.getSkdName());
-                    scheduleDTO.setSkdStartDttm(schedule.getSkdStartDttm());
-                    scheduleDTO.setSkdEndDttm(schedule.getSkdEndDttm());
-                    scheduleDTO.setSkdLocation(schedule.getSkdLocation());
-                    scheduleDTO.setSkdMemo(schedule.getSkdMemo());
-                    return scheduleDTO;
-                }).collect(Collectors.toList());
+        Schedule scheduleDetail = scheduleRepository.findByDepartmentAndSkdNo(department, skdNo);
+
+        if (scheduleDetail != null) {
+            ScheduleDTO scheduleDTO = new ScheduleDTO();
+            scheduleDTO.setSkdNo(scheduleDetail.getSkdNo());
+            scheduleDTO.setDptNo(new DepartmentDTO(scheduleDetail.getDepartment().getDptNo()));
+            scheduleDTO.setSkdName(scheduleDetail.getSkdName());
+            scheduleDTO.setSkdStartDttm(scheduleDetail.getSkdStartDttm());
+            scheduleDTO.setSkdEndDttm(scheduleDetail.getSkdEndDttm());
+            scheduleDTO.setSkdLocation(scheduleDetail.getSkdLocation());
+            scheduleDTO.setSkdMemo(scheduleDetail.getSkdMemo());
+            return scheduleDTO;
+        } else {
+            return null;
+        }
     }
 
     @Transactional
