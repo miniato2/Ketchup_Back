@@ -1,22 +1,22 @@
 ### 부서별 일정 목록 조회
 GET http://localhost:8080/schedules/department/5
-Authorization: Bearer eyJkYXRlIjoxNzE1MTMwMjc4MjI4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE1MjE2Njc4fQ.4KtDg3lZ7bdgJWSpEY6tNkqB-cQYRcI8kwncwqYBKMc
+Authorization: Bearer eyJkYXRlIjoxNzE1MjE3MjQwMzE2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6Iuq5gO2YhOyngCIsInBvc2l0aW9uTm8iOjIsImV4cCI6MTcxNTMwMzY0MH0.x-7HprO_EN7FBXCBY0qtEbHk0qGpE35Og-gDvLJQaIA
 
 ### 부서별 일정 상세 조회
-GET http://localhost:8080/schedules/department/1/schedules/2
-Authorization: Bearer eyJkYXRlIjoxNzE1MTMwMjc4MjI4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE1MjE2Njc4fQ.4KtDg3lZ7bdgJWSpEY6tNkqB-cQYRcI8kwncwqYBKMc
+GET http://localhost:8080/schedules/department/5/schedules/12
+Authorization: Bearer eyJkYXRlIjoxNzE1MjE3MjQwMzE2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6Iuq5gO2YhOyngCIsInBvc2l0aW9uTm8iOjIsImV4cCI6MTcxNTMwMzY0MH0.x-7HprO_EN7FBXCBY0qtEbHk0qGpE35Og-gDvLJQaIA
 
 ### 부서별 일정 등록
 POST http://localhost:8080/schedules/schedules
 Content-Type: application/json
-Authorization: Bearer eyJkYXRlIjoxNzE1MTMwMjc4MjI4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE1MjE2Njc4fQ.4KtDg3lZ7bdgJWSpEY6tNkqB-cQYRcI8kwncwqYBKMc
+Authorization: Bearer eyJkYXRlIjoxNzE1MjE3MjQwMzE2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6Iuq5gO2YhOyngCIsInBvc2l0aW9uTm8iOjIsImV4cCI6MTcxNTMwMzY0MH0.x-7HprO_EN7FBXCBY0qtEbHk0qGpE35Og-gDvLJQaIA
 
 {
-  "skdNo": 5,
+  "skdNo": 13,
   "dptNo": 5,
-  "skdName": "과연 이번에도?",
-  "skdStartDttm": "2024-05-07 오후 08시 13분",
-  "skdEndDttm": "2024-05-07 오후 08시 13분",
+  "skdName": "새로 추가한 event",
+  "skdStartDttm": "2024-05-10 18:00",
+  "skdEndDttm": "2024-05-08 20:00",
   "skdLocation": "코스트코 광명점 5층 ㅇㅅㅇ 부장실",
   "skdMemo": "새로 등록한 일정이 정상적으로 반영되었습니다."
 }

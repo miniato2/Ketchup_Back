@@ -46,8 +46,8 @@ public class ScheduleServiceTests {
     @Test
     void selectScheduleDetail() {
         // given
-        int dptNo = 1;
-        int skdNo = 2;
+        int dptNo = 5;
+        int skdNo = 12;
 
         // when
         List<ScheduleDTO> foundSchedule = scheduleService.selectScheduleDetail(dptNo, skdNo);
@@ -57,16 +57,22 @@ public class ScheduleServiceTests {
         System.out.println("부서별 일정 상세 조회 = " + foundSchedule);
     }
 
+//    private static Stream<Arguments> getScheduleInfo() {
+//        return Stream.of(
+//                    Arguments.of(12, 5, "new event", LocalDateTime.of(2024, 5, 8, 10, 0), LocalDateTime.of(2024, 5, 10, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
+//        );
+//    }
+
     private static Stream<Arguments> getScheduleInfo() {
         return Stream.of(
-                Arguments.of(2, 5, "신규 등록한 일정3", LocalDateTime.of(2024, 6, 23, 10, 0), LocalDateTime.of(2024, 6, 23, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
+                Arguments.of(12, 5, "new event", "2024-05-08 10:00", "2024-05-08 12:00", "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
         );
     }
 
     @DisplayName("부서별 일정 등록")
     @ParameterizedTest
     @MethodSource("getScheduleInfo")
-    void insertSchedule(int skdNo, int dptNo, String skdName, LocalDateTime skdStartDttm, LocalDateTime skdEndDttm, String skdLocation, String skdMemo) {
+    void insertSchedule(int skdNo, int dptNo, String skdName, String skdStartDttm, String skdEndDttm, String skdLocation, String skdMemo) {
         // given
         ScheduleDTO newSchedule = new ScheduleDTO(
                 skdNo,
@@ -78,10 +84,7 @@ public class ScheduleServiceTests {
                 skdMemo
         );
 
-        // when
-
-
-        // then
+        // when, then
         Assertions.assertDoesNotThrow(
                 () -> scheduleService.insertSchedule(newSchedule)
         );
@@ -91,13 +94,14 @@ public class ScheduleServiceTests {
     @DisplayName("부서별 일정 수정")
     @ParameterizedTest
     @MethodSource("getScheduleInfo")
-    void updateSchedule(int skdNo, int dptNo, String skdName, LocalDateTime skdStartDttm, LocalDateTime skdEndDttm, String skdLocation, String skdMemo) {
+    void updateSchedule(int skdNo, int dptNo, String skdName, String skdStartDttm, String skdEndDttm, String skdLocation, String skdMemo) {
         // given
         ScheduleDTO updateSchedule = new ScheduleDTO(
-                2,
+                12,
                 new DepartmentDTO(dptNo),
                 "수정된 일정!!!!!!!!!!!!!!!!!!",
-                LocalDateTime.of(2025, 6, 23, 10, 0),
+                "2024-05-10 8:00",
+//                LocalDateTime.of(2025, 6, 23, 10, 0),
                 skdEndDttm,
                 "수정된 위치!!!!!!!!!!!",
                 "수정된 메모!!!!!!!!!!!!!"
