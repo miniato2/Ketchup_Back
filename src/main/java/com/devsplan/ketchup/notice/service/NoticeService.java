@@ -57,6 +57,7 @@ public class NoticeService {
         Pageable paging = PageRequest.of(index, count, Sort.by("noticeNo").descending());
 
         System.out.println("title : " + title);
+
         // 상단에 고정된 공지사항 조회
         Page<Notice> fixedNoticeList = noticeRepository.findByNoticeFix(paging, 'Y');
 
@@ -69,8 +70,7 @@ public class NoticeService {
 
         // 검색어가 있으면 해당 공지사항 조회
         if (title != null && !title.isEmpty()) {
-            String formattedTitle = "%" + title + "%"; // 검색어를 포함하는 제목을 찾기 위해 like 연산자 사용
-            Page<Notice> searchedNoticeList = noticeRepository.findByNoticeTitleContaining(formattedTitle, paging);
+            Page<Notice> searchedNoticeList = noticeRepository.findByNoticeTitleContaining(title, paging);
             mergedList.addAll(searchedNoticeList.stream().map(notice -> modelMapper.map(notice, NoticeDTO.class)).toList());
             log.info("searchedNoticeList : " + searchedNoticeList);
         } else {
@@ -116,8 +116,8 @@ public class NoticeService {
 
     /* 공지사항 등록 */
     @Transactional
-    @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
-    public void insertNotice(NoticeDTO noticeDTO, String memberNo) {
+    public Object insertNotice(NoticeDTO noticeDTO, String memberNo) {
+        int result = 0;
         try {
             noticeDTO.setNoticeCreateDttm(new Timestamp(System.currentTimeMillis()));
             noticeDTO.setMemberNo(memberNo);
@@ -127,15 +127,18 @@ public class NoticeService {
             noticeRepository.save(notice);
 
             log.info("공지 등록 성공");
+            result = 1;
         } catch (Exception e) {
             log.error("공지 등록 실패: {}", e.getMessage(), e);
         }
+        return (result > 0) ? "성공" : "실패";
     }
 
     /* 공지사항 등록(첨부파일) */
     @Transactional
     @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
-    public void insertNoticeWithFile(NoticeDTO noticeDTO, List<MultipartFile> files, String memberNo) {
+    public Object insertNoticeWithFile(NoticeDTO noticeDTO, List<MultipartFile> files, String memberNo) {
+        int result = 0;
         try {
             noticeDTO.setNoticeCreateDttm(new Timestamp(System.currentTimeMillis()));
             noticeDTO.setMemberNo(memberNo);
@@ -152,7 +155,7 @@ public class NoticeService {
                         break;
                     }
                     String fileName = UUID.randomUUID().toString().replace("-", "");
-                    String replaceFileName = FileUtils.saveFile(IMAGE_URL, fileName, file);
+                    String replaceFileName = FileUtils.saveFile(IMAGE_DIR, fileName, file);
 
                     NoticeFileDTO noticeFileDTO = new NoticeFileDTO(savedNotice.getNoticeNo(), replaceFileName);
                     noticeFileDTOList.add(noticeFileDTO);
@@ -169,6 +172,7 @@ public class NoticeService {
                 noticeRepository.save(savedNotice);
                 noticeFileRepository.saveAll(noticeFileList);
                 log.info("공지 등록 성공");
+                result = 1;
 
             } else {
                 log.info("첨부 파일이 없습니다.");
@@ -179,6 +183,7 @@ public class NoticeService {
         } catch (Exception e) {
             log.error("공지 등록 실패: {}", e.getMessage(), e);
         }
+        return (result > 0) ? "성공" : "실패";
     }
 
     /* 공지사항 수정 */
