@@ -46,7 +46,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        List<String> roleLessList = Arrays.asList("/signup","/signupDep","/signupPosition","/notices","/calendar"); //
+        List<String> roleLessList = Arrays.asList("/signup","/signupDep","/signupPosition"); //
 
 
         if (roleLessList.contains((request.getRequestURI()))) {

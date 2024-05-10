@@ -131,6 +131,7 @@ public class MemberService {
 
         Optional<MemberDTO> memberDTO = Optional.ofNullable(modelMapper.map(member, MemberDTO.class));
 
+
         /*
          * 별도의 검증 로직 작성
          * */
@@ -180,9 +181,9 @@ public class MemberService {
 
         Page<MemberDTO> memberList = result.map(member -> modelMapper.map(member, MemberDTO.class));
 
-        for(int i =0; i< memberList.toList().size(); i++){
-            memberList.toList().get(i).setImgUrl(IMAGE_URL+memberList.toList().get(i).getImgUrl());
-        }
+//        for(int i =0; i< memberList.toList().size(); i++){
+//            memberList.toList().get(i).setImgUrl(IMAGE_URL+memberList.toList().get(i).getImgUrl());
+//        }
 
         return memberList;
     }
