@@ -35,7 +35,7 @@ public class ScheduleServiceTests {
         int dptNo = 5;
 
         // when
-        List<ScheduleDTO> foundSchedule = scheduleService.selectScheduleList(dptNo);
+        List<ScheduleDTO> foundSchedule = scheduleService.selectScheduleListByDepartment(dptNo);
 
         // then
         Assertions.assertNotNull(foundSchedule);
@@ -50,7 +50,7 @@ public class ScheduleServiceTests {
         int skdNo = 12;
 
         // when
-        List<ScheduleDTO> foundSchedule = scheduleService.selectScheduleDetail(dptNo, skdNo);
+        ScheduleDTO foundSchedule = scheduleService.selectScheduleDetail(dptNo, skdNo);
 
         // then
         Assertions.assertNotNull(foundSchedule);
@@ -65,7 +65,7 @@ public class ScheduleServiceTests {
 
     private static Stream<Arguments> getScheduleInfo() {
         return Stream.of(
-                Arguments.of(12, 5, "new event", "2024-05-08 10:00", "2024-05-08 12:00", "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
+                Arguments.of(999, 5, "백ServiceTests에서 보내는 일정", "2024-05-22 10:00", "2024-05-22 12:00", "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
         );
     }
 
