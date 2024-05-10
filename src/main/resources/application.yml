@@ -40,7 +40,8 @@ image:
   add-resource-locations: classpath:/static/uploadfiles/
   add-resource-handler: /uploadfiles/**
 
-#  image-dir: C:\Users\YIHOOYOUNG\Desktop\Ketchup_front-end\public\img
+
+
   image-dir: ..\Ketchup_front-end\public\img
   image-url: http://localhost:8080/uploadfiles/
 
