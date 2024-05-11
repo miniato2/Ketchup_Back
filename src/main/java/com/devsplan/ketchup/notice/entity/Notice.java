@@ -85,4 +85,12 @@ public class Notice {
     public String getMemberNo() {
         return memberNo;
     }
+
+    public char getNoticeFix() {
+        return noticeFix;
+    }
+
+    public String getNoticeTitle() {
+        return noticeTitle;
+    }
 }

@@ -5,10 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface NoticeRepository extends JpaRepository <Notice, Integer> {
+    Page<Notice> findByNoticeTitleContainingIgnoreCase(String title, Pageable paging);
 
-    Page<Notice> findByNoticeFix(Pageable pageable, char y);
-    Page<Notice> findByNoticeTitleLikeIgnoreCase(String formattedTitle, Pageable pageable);
-
-    Page<Notice> findByNoticeTitleContaining(String formattedTitle, Pageable pageable);
 }

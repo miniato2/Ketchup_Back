@@ -102,6 +102,7 @@ public class NoticeController {
 
     /* 공지 수정 */
     @PutMapping("/{noticeNo}")
+    @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
     public ResponseEntity<ResponseDTO> updateNotice(@PathVariable int noticeNo
                                                     , @RequestPart("noticeDTO")NoticeDTO noticeDTO
                                                     , @RequestPart(required = false, name = "files")List<MultipartFile> files
@@ -136,29 +137,19 @@ public class NoticeController {
 
     /* 공지 삭제 */
     @DeleteMapping("/{noticeNo}")
+    @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
     public ResponseEntity<ResponseDTO> deleteNotice(@PathVariable int noticeNo
                                                     , @RequestHeader("Authorization") String token) {
         try{
             String memberNo = decryptToken(token).get("memberNo", String.class);
-            String authority = decryptToken(token).get("role").toString();
 
-            // 권한이 LV3 또는 LV2이거나 작성자와 일치하는 경우에만 삭제 시도
-            if ("LV3".equals(authority) || "LV2".equals(authority)) {
-                // 공지 삭제 시도
-                boolean isDeleted = noticeService.deleteNotice(noticeNo, memberNo);
+            System.out.println("controller memberNo : " + memberNo);
+            System.out.println("controller noticeNo : " + noticeNo);
+            // 공지 삭제 시도
+            Object data = noticeService.deleteNotice(noticeNo, memberNo);
 
-                // 삭제가 성공한 경우
-                if (isDeleted) {
-                    return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "공지 삭제 성공", null));
-                } else {
-                    // 공지를 찾을 수 없는 경우
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(HttpStatus.NOT_FOUND, "공지를 찾을 수 없습니다.", null));
-                }
-            } else {
-                // 권한이 없는 경우
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new ResponseDTO(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다.", null));
-            }
+            // 삭제가 성공한 경우
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "공지 삭제 성공", data));
 
         } catch (ExpiredJwtException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
