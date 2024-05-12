@@ -109,23 +109,17 @@ public class NoticeController {
                                                     , @RequestHeader("Authorization") String token) {
         try {
             String memberNo = decryptToken(token).get("memberNo", String.class);
-            String authority = decryptToken(token).get("role").toString();
 
-            // LV3 또는 LV2 권한을 가진 권한자 또는 해당 공지의 등록자만 공지 수정 가능
-            if ("LV3".equals(authority) || "LV2".equals(authority)) {
-                // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
-                if (files != null && !files.isEmpty()) {
-                    noticeService.updateNoticeWithFile(noticeNo, noticeDTO, files, memberNo);
-                } else {
-                    noticeService.updateNotice(noticeNo, noticeDTO, memberNo);
-                }
-
-                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "공지 수정 성공", null));
+            Object data;
+            // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
+            if (files != null && !files.isEmpty()) {
+                data = noticeService.updateNoticeWithFile(noticeNo, noticeDTO, files, memberNo);
             } else {
-                // 권한이 없는 경우
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new ResponseDTO(HttpStatus.FORBIDDEN, "LV3 또는 LV2 권한자 또는 공지 등록자만 공지를 수정할 수 있습니다.", null));
+                data = noticeService.updateNotice(noticeNo, noticeDTO, memberNo);
             }
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "공지 수정 성공", data));
+
         } catch (ExpiredJwtException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
         } catch (JwtException e) {

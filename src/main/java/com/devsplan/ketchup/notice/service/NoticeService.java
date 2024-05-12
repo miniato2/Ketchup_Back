@@ -205,7 +205,6 @@ public class NoticeService {
 
     /* 공지사항 수정 */
     @Transactional
-    @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
     public String updateNotice(int noticeNo, NoticeDTO noticeDTO, String memberNo) {
         try {
             Notice foundNotice = noticeRepository.findById(noticeNo).orElseThrow(IllegalArgumentException::new);
@@ -235,7 +234,6 @@ public class NoticeService {
 
     /* 공지사항 수정(첨부파일) */
     @Transactional
-    @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
     public String updateNoticeWithFile(int noticeNo, NoticeDTO noticeDTO, List<MultipartFile> files, String memberNo) {
         try {
             Notice foundNotice = noticeRepository.findById(noticeNo).orElseThrow(IllegalArgumentException::new);
@@ -256,7 +254,7 @@ public class NoticeService {
                             break;
                         }
                         String fileName = UUID.randomUUID().toString().replace("-", "");
-                        String replaceFileName = FileUtils.saveFile(IMAGE_URL, fileName, file);
+                        String replaceFileName = FileUtils.saveFile(IMAGE_DIR, fileName, file);
 
                         NoticeFileDTO noticeFileDTO = new NoticeFileDTO(savedNotice.getNoticeNo(), replaceFileName);
                         noticeFileDTOList.add(noticeFileDTO);
@@ -290,37 +288,55 @@ public class NoticeService {
     /* 공지사항 삭제 */
     @Transactional
     public Object deleteNotice(int noticeNo, String memberNo) throws NoSuchFileException {
-        // 현재 사용자의 Authentication 객체를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try {
 
-        System.out.println("authentication : " + authentication.toString());
-        // 현재 사용자의 권한을 확인하여 LV2 또는 LV3 권한이 있는지 확인
-        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("LV2") || a.getAuthority().equals("LV3"))) {
+            // 공지사항 조회
             Notice notice = noticeRepository.findById(noticeNo).orElseThrow();
 
-            // 사용자의 직급이 LV2 또는 LV3이거나 작성자인 경우에만 삭제 권한 부여
-            if (!notice.getMemberNo().equals(authentication.getName())) {
-                throw new IllegalArgumentException("삭제 권한이 없습니다.");
-            }
+            System.out.println("service noticeNo : " + noticeNo);
+            System.out.println("service memberNo : " + memberNo);
 
-            // 삭제 권한이 있을 경우 공지 삭제 진행
-            List<NoticeFile> noticeFiles = noticeFileRepository.findByNoticeNo(noticeNo);
-            for (NoticeFile noticeFile : noticeFiles) {
-                String imgUrl = noticeFile.getNoticeFileImgUrl();
+            // 현재 사용자의 Authentication 객체를 가져옴
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-                // 파일이 이미 삭제된 경우에 대한 예외처리 추가
-                boolean isFileDeleted = FileUtils.deleteFile(IMAGE_DIR, FilenameUtils.getName(imgUrl));
-                if (!isFileDeleted) {
-                    log.error(imgUrl, "파일 삭제에 실패했습니다.");
+// 현재 사용자의 권한을 확인하여 LV2 또는 LV3 권한이 있는지 확인
+            boolean hasPermission = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("LV2") || a.getAuthority().equals("LV3"));
+
+// 작성자인 경우에도 삭제 권한 부여
+            hasPermission = hasPermission || notice.getMemberNo().equals(memberNo);
+
+            if (hasPermission) {
+                // 공지사항과 연관된 파일 조회
+                List<NoticeFile> noticeFiles = noticeFileRepository.findByNoticeNo(noticeNo);
+                for (NoticeFile noticeFile : noticeFiles) {
+                    // 파일 삭제 시도
+                    String imgUrl = noticeFile.getNoticeFileImgUrl();
+                    boolean isFileDeleted = FileUtils.deleteFile(IMAGE_DIR, FilenameUtils.getName(imgUrl));
+
+                    // 파일 삭제 실패 시 로그 기록
+                    if (!isFileDeleted) {
+                        log.error(imgUrl + " 파일 삭제에 실패했습니다.");
+                    }
+
+                    // 파일 삭제
+                    noticeFileRepository.delete(noticeFile);
                 }
-                noticeFileRepository.delete(noticeFile);
+
+                // 공지사항 삭제
+                noticeRepository.delete(notice);
+
+                return true; // 성공적으로 삭제됨
+
+            } else {
+                throw new IllegalArgumentException("권한이 없습니다.");
             }
-            noticeRepository.delete(notice);
-            return true;
-        } else {
-            throw new IllegalArgumentException("권한이 없습니다.");
+        } catch (Exception e) {
+            log.error("공지 삭제 중 오류 발생: " + e.getMessage(), e);
+            return false; // 삭제 중 오류 발생
         }
     }
+
     /* 수정, 삭제 여부 test 확인용 */
     public void getNoticeById(int noticeNo) throws ChangeSetPersister.NotFoundException {
         noticeRepository.findById(noticeNo).orElseThrow(ChangeSetPersister.NotFoundException::new);
