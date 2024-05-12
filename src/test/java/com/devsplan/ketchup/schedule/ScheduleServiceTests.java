@@ -46,8 +46,8 @@ public class ScheduleServiceTests {
     @Test
     void selectScheduleDetail() {
         // given
-        int dptNo = 5;
-        int skdNo = 12;
+        int dptNo = 3;
+        int skdNo = 222;
 
         // when
         ScheduleDTO foundSchedule = scheduleService.selectScheduleDetail(dptNo, skdNo);
@@ -97,18 +97,17 @@ public class ScheduleServiceTests {
     void updateSchedule(int skdNo, int dptNo, String skdName, String skdStartDttm, String skdEndDttm, String skdLocation, String skdMemo) {
         // given
         ScheduleDTO updateSchedule = new ScheduleDTO(
-                12,
+                222,
                 new DepartmentDTO(dptNo),
-                "수정된 일정!!!!!!!!!!!!!!!!!!",
-                "2024-05-10 8:00",
-//                LocalDateTime.of(2025, 6, 23, 10, 0),
-                skdEndDttm,
-                "수정된 위치!!!!!!!!!!!",
-                "수정된 메모!!!!!!!!!!!!!"
+                "다시 수정됨?",
+                "2024-05-13 8:00",
+                "2024-05-13 9:00",
+                "서비스 테스트에서 수정",
+                "서비스 테스트에서 수정"
         );
 
         // then
-        Assertions.assertDoesNotThrow(() -> scheduleService.updateSchedule(updateSchedule));
+        Assertions.assertDoesNotThrow(() -> scheduleService.updateSchedule(updateSchedule.getSkdNo(), updateSchedule));
     }
 
     @DisplayName("부서별 일정 삭제")
