@@ -117,8 +117,8 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void updateSchedule(ScheduleDTO updateSchedule) {
-        Schedule foundSchedule = scheduleRepository.findById((long) updateSchedule.getSkdNo()).orElseThrow(IllegalArgumentException::new);
+    public void updateSchedule(int skdNo, ScheduleDTO updateSchedule) {
+        Schedule foundSchedule = scheduleRepository.findById((long) skdNo).orElseThrow(IllegalArgumentException::new);
 
         // 새로운 Schedule 객체를 생성하여 수정된 값만 적용
         Schedule updatedSchedule = new Schedule.Builder()
