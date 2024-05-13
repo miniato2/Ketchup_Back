@@ -35,7 +35,7 @@ public class ReserveControllerTests {
     @Autowired
     private ReserveService reserveService;
 
-    private final String token = "Bearer eyJkYXRlIjoxNzE1MTMwMjc4MjI4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE1MjE2Njc4fQ.4KtDg3lZ7bdgJWSpEY6tNkqB-cQYRcI8kwncwqYBKMc";
+    private final String token = "Bearer eyJkYXRlIjoxNzE1NTg4MzQ5ODE4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywiaW1nVXJsIjoiNTdiMzMzYzRhZTg5NGM2ZGFhODIxODkwZWQ4OTdkNDkucG5nIiwibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6IuydtOynhOyasCIsInBvc2l0aW9uTm8iOjMsImV4cCI6MTcxNTY3NDc0OSwiZGVwTmFtZSI6Iuq4sO2aje2MgCJ9.vx1AWduRhZDYUN3YdbnmS6N8HMHYruqBhxmnTXaArIM";
 
     private RequestBuilder request;
 
@@ -44,11 +44,11 @@ public class ReserveControllerTests {
     void selectReserveList() throws Exception {
         // given
         String rscCategory = "회의실";
-        LocalDate rsvDate = LocalDate.of(2024, 5, 4);
+        LocalDate rsvDate = LocalDate.of(2024, 5, 10);
         String formattedDate = rsvDate.toString();
 
         // when
-        request = get("/reserves?category=" + rscCategory + "&rsvDate=" + formattedDate).header("Authorization", token);
+        request = get("/reserves?category=" + rscCategory + "&date=" + formattedDate).header("Authorization", token);
 
         // then
         mvc.perform(request)
@@ -60,7 +60,7 @@ public class ReserveControllerTests {
     @Test
     void selectReserveDetail() throws Exception {
         // given
-        int rsvNo = 6;
+        int rsvNo = 23;
 
         // when
         request = get("/reserves/" + rsvNo).header("Authorization", token);
@@ -76,18 +76,18 @@ public class ReserveControllerTests {
     void insertReserve() throws Exception {
         // given
         String jsonbody = "{ " +
-                "\"rsvStartDttm\": \"2024-05-05 오후 3시 0분\", " +
-                "\"rsvEndDttm\": \"2024-05-05 오후 4시 30분\", " +
+                "\"rsvStartDttm\": \"2024-05-10 오후 3시 0분\", " +
+                "\"rsvEndDttm\": \"2024-05-10 오후 4시 30분\", " +
                 "\"rsvDescr\": \"ReserveControllerTests에서 등록한 예약건\", " +
-                "\"reserver\": \"3\", " +
+                "\"reserver\": \"5\", " +
                 "\"resources\": { " +
-                "\"rscNo\": 3, " +
-                "\"rscCategory\": \"회의실\", " +
-                "\"rscName\": \"회의실 B\", " +
-                "\"rscInfo\": \"본관 4층 401호\", " +
-                "\"rscCap\": 20, " +
+                "\"rscNo\": 2, " +
+                "\"rscCategory\": \"법인차량\", " +
+                "\"rscName\": \"황금마티즈\", " +
+                "\"rscInfo\": \"본관 지하 1층 주차장 B20 영역\", " +
+                "\"rscCap\": 4, " +
                 "\"rscIsAvailable\": true, " +
-                "\"rscDescr\": \"Smart TV, HDMI, 마이크, 스피커, 빔프로젝터, 의자 비치\" " +
+                "\"rscDescr\": \"4인용 소형 차량\" " +
                 "}" +
                 "}";
 
