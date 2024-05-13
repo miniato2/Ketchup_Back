@@ -33,8 +33,8 @@ public class ReserveServiceTests {
     @Test
     void selectReserveList() {
         // given
-        String rscCategory = "법인차량";
-        LocalDate rsvDate = LocalDate.of(2024, 5, 2);
+        String rscCategory = "회의실";
+        LocalDate rsvDate = LocalDate.of(2024, 5, 10);
 
         // when
         List<ReserveDTO> foundReserve = reserveService.selectReserveList(rscCategory, rsvDate);
@@ -94,9 +94,9 @@ public class ReserveServiceTests {
         return Stream.of(
                 Arguments.of(
                         "3",
-                        LocalDateTime.of(2024, 5, 1, 13, 30),
-                        LocalDateTime.of(2024, 5, 1, 18, 0),
-                        1,
+                        LocalDateTime.of(2024, 5, 10, 13, 30),
+                        LocalDateTime.of(2024, 5, 10, 18, 0),
+                        5,
                         "위클리 미팅",
                         "회의실",
                         "회의실 A",
@@ -108,9 +108,9 @@ public class ReserveServiceTests {
                 ,
                 Arguments.of(
                         "3",
-                        LocalDateTime.of(2024, 5, 2, 10, 0),
-                        LocalDateTime.of(2024, 5, 2, 12, 0),
-                        2,
+                        LocalDateTime.of(2024, 5, 20, 10, 0),
+                        LocalDateTime.of(2024, 5, 20, 12, 0),
+                        5,
                         "물류 창고 방문",
                         "법인차량",
                         "황금마티즈",
@@ -121,9 +121,9 @@ public class ReserveServiceTests {
                 ),
                 Arguments.of(
                         "3",
-                        LocalDateTime.of(2024, 5, 3, 15, 0),
-                        LocalDateTime.of(2024, 5, 3, 17, 0),
-                        3,
+                        LocalDateTime.of(2024, 5, 30, 15, 0),
+                        LocalDateTime.of(2024, 5, 30, 17, 0),
+                        5,
                         "진급식",
                         "회의실",
                         "회의실 B",
@@ -135,9 +135,9 @@ public class ReserveServiceTests {
                 ,
                 Arguments.of(
                         "2",
-                        LocalDateTime.of(2024, 5, 3, 17, 0),
-                        LocalDateTime.of(2024, 5, 3, 17, 30),
-                        3,
+                        LocalDateTime.of(2024, 5, 30, 17, 0),
+                        LocalDateTime.of(2024, 5, 30, 17, 30),
+                        5,
                         "미국 바이어와 화상 미팅",
                         "회의실",
                         "회의실 B",
