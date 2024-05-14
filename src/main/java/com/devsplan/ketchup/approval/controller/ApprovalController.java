@@ -4,7 +4,6 @@ import com.devsplan.ketchup.approval.dto.*;
 import com.devsplan.ketchup.approval.service.ApprovalService;
 import com.devsplan.ketchup.common.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -52,8 +51,7 @@ public class ApprovalController {
                                                           @RequestParam(defaultValue = "1") int category,
                                                           @RequestParam(defaultValue = "전체") String status,
                                                           @RequestParam(defaultValue = "") String search,
-                                                          @RequestParam(name = "offset", defaultValue = "1")String offset,
-                                                          @RequestHeader("Authorization") String token){
+                                                          @RequestParam(name = "page", defaultValue = "1")String offset){
 
         Criteria cri = new Criteria(Integer.valueOf(offset), 10);
         PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
