@@ -8,37 +8,66 @@ import lombok.Builder;
 @Builder(toBuilder = true)
 public class NoticeFile {
 
+//    @Id
+//    @Column(name = "notice_file_no")
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int noticeFileNo;            // 공지 파일 번호
+//
+//    @Column(name = "notice_no", nullable = false)
+//    private int noticeNo;                  // 공지 번호
+//
+//    @Column(name = "notice_file_imgurl", nullable = false)
+//    private String noticeFileImgUrl;       // 공지 파일 경로
+
     @Id
     @Column(name = "notice_file_no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int noticeFileNo;            // 공지 파일 번호
+    private int noticeFileNo;                // 공지 파일 번호
 
     @Column(name = "notice_no", nullable = false)
-    private int noticeNo;                  // 공지 번호
+    private int noticeNo;            // 공지 번호
 
-    @Column(name = "notice_file_imgurl", nullable = false)
-    private String noticeFileImgUrl;       // 공지 파일 경로
+    @Column(name = "notice_file_path", nullable = false)
+    private String noticeFilePath;        // 공지 파일 경로
+
+    @Column(name = "notice_file_name", nullable = false)
+    private String noticeFileName;        // 공지 파일 이름
+
+    @Column(name = "notice_file_ori_name", nullable = false)
+    private String noticeFileOriName;     // 공지 원본 파일 이름
 
     protected NoticeFile(){}
+
+    public NoticeFile(int noticeFileNo, int noticeNo, String noticeFilePath, String noticeFileName, String noticeFileOriName) {
+        this.noticeFileNo = noticeFileNo;
+        this.noticeNo = noticeNo;
+        this.noticeFilePath = noticeFilePath;
+        this.noticeFileName = noticeFileName;
+        this.noticeFileOriName = noticeFileOriName;
+    }
 
     public NoticeFile noticeNo(int val) {
         this.noticeNo = val;
         return this;
     }
 
-    public NoticeFile noticeFileImgUrl(String val) {
-        this.noticeFileImgUrl = val;
-        return this;
+    public String getNoticeFileName() {
+        return noticeFileName;
     }
 
-    public NoticeFile(int noticeFileNo, int noticeNo, String noticeFileImgUrl) {
-        this.noticeFileNo = noticeFileNo;
-        this.noticeNo = noticeNo;
-        this.noticeFileImgUrl = noticeFileImgUrl;
-    }
-
-    public String getNoticeFileImgUrl() {
-        return noticeFileImgUrl;
-    }
+    //    public NoticeFile noticeFileImgUrl(String val) {
+//        this.noticeFileImgUrl = val;
+//        return this;
+//    }
+//
+//    public NoticeFile(int noticeFileNo, int noticeNo, String noticeFileImgUrl) {
+//        this.noticeFileNo = noticeFileNo;
+//        this.noticeNo = noticeNo;
+//        this.noticeFileImgUrl = noticeFileImgUrl;
+//    }
+//
+//    public String getNoticeFileImgUrl() {
+//        return noticeFileImgUrl;
+//    }
 
 }

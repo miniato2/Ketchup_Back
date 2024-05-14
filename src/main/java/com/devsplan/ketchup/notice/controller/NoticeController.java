@@ -3,14 +3,11 @@ package com.devsplan.ketchup.notice.controller;
 import com.devsplan.ketchup.common.*;
 import com.devsplan.ketchup.notice.dto.NoticeDTO;
 import com.devsplan.ketchup.notice.service.NoticeService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -20,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
-import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @RestController
 @RequestMapping("/notices")

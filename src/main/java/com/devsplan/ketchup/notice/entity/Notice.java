@@ -32,8 +32,8 @@ public class Notice {
     @Column(name = "notice_update_dttm")
     private Timestamp noticeUpdateDttm;          // 공지 수정일시
 
-    @Column(name = "notice_imgurl")
-    private String noticeImgUrl;               // 공지 파일 경로
+//    @Column(name = "notice_imgurl")
+//    private String noticeImgUrl;               // 공지 파일 경로
 
     protected Notice() {}
 
@@ -62,12 +62,12 @@ public class Notice {
         return this;
     }
 
-    public Notice noticeImgUrl(String val) {
-        this.noticeImgUrl = val;
-        return this;
-    }
+//    public Notice noticeImgUrl(String val) {
+//        this.noticeImgUrl = val;
+//        return this;
+//    }
 
-    public Notice(int noticeNo, String memberNo, char noticeFix, String noticeTitle, String noticeContent, Timestamp noticeCreateDttm, Timestamp noticeUpdateDttm, String noticeImgUrl) {
+    public Notice(int noticeNo, String memberNo, char noticeFix, String noticeTitle, String noticeContent, Timestamp noticeCreateDttm, Timestamp noticeUpdateDttm/*, String noticeImgUrl*/) {
         this.noticeNo = noticeNo;
         this.memberNo = memberNo;
         this.noticeFix = noticeFix;
@@ -75,7 +75,7 @@ public class Notice {
         this.noticeContent = noticeContent;
         this.noticeCreateDttm = noticeCreateDttm;
         this.noticeUpdateDttm = noticeUpdateDttm;
-        this.noticeImgUrl = noticeImgUrl;
+//        this.noticeImgUrl = noticeImgUrl;
     }
 
     public int getNoticeNo() {
