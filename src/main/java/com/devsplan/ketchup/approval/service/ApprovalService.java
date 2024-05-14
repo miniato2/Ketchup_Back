@@ -22,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -64,6 +63,7 @@ public class ApprovalService {
     public Object insertApproval(AppInputDTO appInputDTO,
                                  List<MultipartFile> multipartFileList) {
         int result = 0;
+        String newFileURL = IMAGE_DIR + "/approvals";
 
         ApprovalDTO approvalDTO = appInputDTO.getApproval();
         List<AppLineDTO> appLineDTOList = appInputDTO.getAppLineDTOList();
@@ -114,7 +114,7 @@ public class ApprovalService {
                     String fileName = UUID.randomUUID().toString().replace("-", "");
                     String replaceFileName = null;
 
-                    replaceFileName = FileUtils.saveFile(IMAGE_DIR, fileName, multipartFile);
+                    replaceFileName = FileUtils.saveFile(newFileURL, fileName, multipartFile);
 
                     AppFileDTO appFileDTO = new AppFileDTO(approvalNo, replaceFileName);
                     fileDTOList.add(appFileDTO);
@@ -131,7 +131,7 @@ public class ApprovalService {
             result = 1;
 
         } catch (IOException e) {
-            fileDTOList.forEach(file -> FileUtils.deleteFile(IMAGE_DIR, file.getFileUrl()));
+            fileDTOList.forEach(file -> FileUtils.deleteFile(newFileURL, file.getFileUrl()));
             throw new RuntimeException(e);
         }
 
