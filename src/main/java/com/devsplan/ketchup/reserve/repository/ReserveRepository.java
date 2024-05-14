@@ -10,9 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ReserveRepository extends JpaRepository<Reserve, Long> {
-//    List<Reserve> findByResourcesRscCategoryAndRsvStartDttm(String rscCategory, LocalDateTime rsvStartDttm);
-
-    List<Reserve> findByResourcesRscCategoryAndRsvStartDttmBetween(String rscCategory, LocalDateTime startOfDay, LocalDateTime endOfDay);
+    List<Reserve> findByResourcesRscCategoryAndRsvStartDttmBetween(String rscCategory, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
     List<Reserve> findByResources(Resource resources);
 

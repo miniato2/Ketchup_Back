@@ -96,6 +96,10 @@ public class ReserveService {
         resourceRepository.save(resource);
     }
 
+    public Resource findResourceById(int rscNo) {
+        return resourceRepository.findById((long) rscNo).orElse(null);
+    }
+
     // 자원 예약 등록
     @Transactional
     public void insertReserve(ReserveDTO newReserve, Resource resource) {
@@ -152,4 +156,6 @@ public class ReserveService {
 
         reserveRepository.delete(reserve);
     }
+
+
 }
