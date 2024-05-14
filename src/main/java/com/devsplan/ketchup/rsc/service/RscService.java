@@ -92,24 +92,18 @@ public class RscService {
                         result += reserveRepository.deleteByRsvNo(list.getRsvNo());
 
                         System.out.println("예약자 예약 취소 메일 전송");
-                        Mail rsvCancelMail;
-                        if(list.getResources().getRscCategory().equals("회의실")) {
-                            rsvCancelMail = new Mail(
-                                    memberNo,
-                                    "회의실 예약 취소 안내",
-                                    "불가피한 사정으로 회의실의 사용이 불가하여 예약이 취소되었음을 안내드립니다.",
-                                    'N',
-                                    'N'
-                            );
-                        }else {
-                            rsvCancelMail = new Mail(
-                                     memberNo,
-                                     "차량 예약 취소 안내",
-                                     "불가피한 사정으로 차량의 사용이 불가하여 예약이 취소되었음을 안내드립니다.",
-                                     'N',
-                                     'N'
-                            );
-                        }
+
+                        String emailSubject = list.getResources().getRscCategory().equals("회의실") ? "회의실 예약 취소 안내" : "차량 예약 취소 안내";
+                        String emailContent = list.getResources().getRscCategory().equals("회의실") ?
+                                "불가피한 사정으로 회의실의 사용이 불가하여 예약이 취소되었음을 안내드립니다." : "불가피한 사정으로 차량의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
+
+                        Mail rsvCancelMail = new Mail(
+                                memberNo,
+                                emailSubject,
+                                emailContent,
+                                'N',
+                                'N'
+                        );
 
                         Mail rscMail = mailRepository.save(rsvCancelMail);
 
@@ -148,24 +142,18 @@ public class RscService {
                 result += reserveRepository.deleteByRsvNo(list.getRsvNo());
 
                 System.out.println("예약자 예약 취소 메일 전송");
-                Mail rsvCancelMail;
-                if(list.getResources().getRscCategory().equals("회의실")) {
-                    rsvCancelMail = new Mail(
-                            memberNo,
-                            "회의실 예약 취소 안내",
-                            "불가피한 사정으로 회의실의 사용이 불가하여 예약이 취소되었음을 안내드립니다.",
-                            'N',
-                            'N'
-                    );
-                }else {
-                    rsvCancelMail = new Mail(
-                            memberNo,
-                            "차량 예약 취소 안내",
-                            "불가피한 사정으로 차량의 사용이 불가하여 예약이 취소되었음을 안내드립니다.",
-                            'N',
-                            'N'
-                    );
-                }
+
+                String emailSubject = list.getResources().getRscCategory().equals("회의실") ? "회의실 예약 취소 안내" : "차량 예약 취소 안내";
+                String emailContent = list.getResources().getRscCategory().equals("회의실") ?
+                        "불가피한 사정으로 회의실의 사용이 불가하여 예약이 취소되었음을 안내드립니다." : "불가피한 사정으로 차량의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
+
+                Mail rsvCancelMail = new Mail(
+                        memberNo,
+                        emailSubject,
+                        emailContent,
+                        'N',
+                        'N'
+                );
 
                 Mail rscMail = mailRepository.save(rsvCancelMail);
 
