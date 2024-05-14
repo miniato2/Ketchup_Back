@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberService {
@@ -182,9 +183,7 @@ public class MemberService {
 
         Page<MemberDTO> memberList = result.map(member -> modelMapper.map(member, MemberDTO.class));
 
-//        for(int i =0; i< memberList.toList().size(); i++){
-//            memberList.toList().get(i).setImgUrl(IMAGE_URL+memberList.toList().get(i).getImgUrl());
-//        }
+
 
         return memberList;
     }
@@ -225,4 +224,15 @@ public class MemberService {
     }
 
 
+    public List<MemberDTO> findAllMembersWithNoPaging() {
+        List<Member> members = memberRepository.findByStatus("재직중"); // 모든 회원 조회
+
+
+        List<MemberDTO> memberList = members.stream()
+                .map(member -> modelMapper.map(member, MemberDTO.class))
+                .collect(Collectors.toList());
+
+        return memberList;
+
+    }
 }
