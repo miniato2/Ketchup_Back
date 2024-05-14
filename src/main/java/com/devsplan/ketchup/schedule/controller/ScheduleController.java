@@ -72,7 +72,7 @@ public class ScheduleController {
     @PutMapping("/schedules/{skdNo}")
     public ResponseEntity<?> updateSchedule(@PathVariable int skdNo, @RequestBody ScheduleDTO updateSchedule) {
         try {
-            scheduleService.updateSchedule(updateSchedule);
+            scheduleService.updateSchedule(skdNo, updateSchedule);
             String uri = "/schedules/" + skdNo;
             return ResponseEntity.ok().header(HttpHeaders.LOCATION, uri).body("일정이 성공적으로 수정되었습니다. URI: " + uri);
         } catch (IllegalArgumentException e) {
