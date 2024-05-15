@@ -20,6 +20,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 public class MemberController {
 
@@ -126,6 +128,15 @@ public class MemberController {
 
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공",pagingResponseDTO));
+
+    }
+
+    @GetMapping("/noPageMembers")
+    public ResponseEntity<ResponseDTO> findAllMembersWithNoPage(){
+
+        List<MemberDTO> memberList = memberService.findAllMembersWithNoPaging();
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공",memberList));
 
     }
 

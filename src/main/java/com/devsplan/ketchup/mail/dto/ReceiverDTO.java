@@ -15,6 +15,10 @@ public class ReceiverDTO {
     private Timestamp readTime;         // 메일 읽은 시간
     private char receiverDelStatus;     // 수신 메일 삭제 여부
 
+    public ReceiverDTO(Timestamp readTime) {
+        this.readTime = readTime;
+    }
+
     public ReceiverDTO(int mailNo, String receiverMem, char receiverDelStatus) {
         this.mailNo = mailNo;
         this.receiverMem = receiverMem;
