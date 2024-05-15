@@ -35,7 +35,7 @@ public class BoardController {
                                                         , @RequestParam(required = false) String title
                                                         , @RequestHeader("Authorization") String token) {
         try {
-            Criteria cri = new Criteria(Integer.valueOf(offset),10);
+            Criteria cri = new Criteria(Integer.parseInt(offset),10);
             PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
 
             // 클레임에서 depNo 추출
@@ -78,6 +78,7 @@ public class BoardController {
 
             // 게시물 상세 정보 조회
             BoardDTO boardDTO = boardService.selectBoardDetail(boardNo);
+
             if (boardDTO == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ResponseDTO(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다.", null));
@@ -100,8 +101,8 @@ public class BoardController {
 
     /* 게시물 등록 */
     @PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<ResponseDTO> insertBoard(@RequestPart("boardInfo") BoardDTO boardDTO
-                                                   , @RequestPart(required = false, name="files") List<MultipartFile> files
+    public ResponseEntity<ResponseDTO> insertBoard(@RequestPart("boardDTO") BoardDTO boardDTO
+                                                   , @RequestPart(required = false, value="files") List<MultipartFile> files
                                                    , @RequestHeader("Authorization") String token) {
         try {
             String memberNo = decryptToken(token).get("memberNo", String.class);
@@ -109,53 +110,73 @@ public class BoardController {
 
             System.out.println("memberNo : " + memberNo);
             System.out.println("depNo : " + depNo);
-            System.out.println("File Content: " + new String(files.toString().getBytes(), StandardCharsets.UTF_8));
+//            System.out.println("File Content: " + new String(files.toString().getBytes(), StandardCharsets.UTF_8));
 
-            boardDTO.setMemberNo(memberNo);
-            boardDTO.setDepartmentNo(depNo);
+//            boardDTO.setMemberNo(memberNo);
+//            boardDTO.setDepartmentNo(depNo);
 
             // 게시물 등록 요청한 회원의 부서 번호와 게시물에 등록하려는 부서 번호가 일치하는지 확인
-            if (boardDTO.getDepartmentNo() != depNo) {
+            if (!depNo.equals(boardDTO.getDepartmentNo())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new ResponseDTO(HttpStatus.FORBIDDEN, "해당 부서의 게시물만 등록할 수 있습니다.", null));
             }
 
-            if (!files.isEmpty()) {
-                boardService.insertBoardWithFile(boardDTO, files);
+            Object data;
+            if (files != null && !files.isEmpty()) {
+                data = boardService.insertBoardWithFile(boardDTO, files, memberNo, depNo);
             } else {
-                boardService.insertBoard(boardDTO);
+                data = boardService.insertBoard(boardDTO, memberNo, depNo);
             }
 
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시물 등록 성공", null));
-
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시물 등록 성공", data));
         } catch (ExpiredJwtException e) {
+            log.error("토큰이 만료되었습니다.", e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
         } catch (JwtException e) {
+            log.error("유효하지 않은 토큰입니다.", e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("유효하지 않은 토큰입니다."));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
+            log.error("서버 오류", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
         }
     }
 
     /* 게시물 수정 */
     @PutMapping("/{boardNo}")
     public ResponseEntity<ResponseDTO> updateBoard(@PathVariable int boardNo
-                                                    , @RequestPart("boardInfo") BoardDTO boardInfo
+                                                    , @RequestPart("boardDTO") BoardDTO boardDTO
                                                     , @RequestPart("files") List<MultipartFile> files
                                                     , @RequestHeader("Authorization") String token) {
+        try {
+            String memberNo = decryptToken(token).get("memberNo", String.class);
+            int positionNo = decryptToken(token).get("positionNo", Integer.class);
 
-        String memberNo = decryptToken(token).get("memberNo", String.class);
-        System.out.println("memberNo : " + memberNo);
+            System.out.println("memberNo : " + memberNo);
 
-        // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
-        if (files != null && !files.isEmpty()) {
-            boardService.updateBoardWithFile(boardNo, boardInfo, files, memberNo);
-        } else {
-            boardService.updateBoard(boardNo, boardInfo, memberNo);
+            // 작성자인 경우 또는 LV2 또는 LV3 권한을 가진 부서원인 경우에만 삭제 가능하도록 제한
+            if (!memberNo.equals(boardDTO.getMemberNo()) &&
+                    positionNo != 2 &&
+                    positionNo != 3) {
+                log.error("수정 권한이 없습니다.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseDTO(HttpStatus.FORBIDDEN, "수정 권한이 없습니다.", null));
+            }
+
+            Object data;
+            // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
+            if (files != null && !files.isEmpty()) {
+                data = boardService.updateBoardWithFile(boardNo, boardDTO, files, memberNo);
+            } else {
+                data = boardService.updateBoard(boardNo, boardDTO, memberNo);
+            }
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시물 수정 성공", data));
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
+        } catch (JwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("유효하지 않은 토큰입니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
         }
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시물 수정 성공", null));
     }
 
 
@@ -165,18 +186,33 @@ public class BoardController {
 
         try {
             String memberNo = decryptToken(token).get("memberNo", String.class);
+            int positionNo = decryptToken(token).get("positionNo", Integer.class);
 
-            // 게시물 삭제 시도
-            boolean isDeleted = boardService.deleteBoard(boardNo, memberNo);
+            BoardDTO boardDTO = boardService.getBoardById(boardNo);
 
-            if(isDeleted) {
-                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "삭제 성공", isDeleted));
+            // 작성자인 경우 또는 LV2 또는 LV3 권한을 가진 부서원인 경우에만 삭제 가능하도록 제한
+            if (boardDTO != null) {
+                String writerMemberNo = boardDTO.getMemberNo();
+
+                // 작성자인 경우 또는 LV2 또는 LV3 권한을 가진 부서원인 경우에만 삭제 가능
+                if (writerMemberNo.equals(memberNo) || positionNo == 2 || positionNo == 3) {
+                    Object data = boardService.deleteBoard(boardNo, memberNo);
+                    return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시물 삭제 성공", data));
+                } else {
+                    log.error("삭제 권한이 없습니다.");
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseDTO(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다.", null));
+                }
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("서버 오류"));
+                log.error("게시물을 찾을 수 없습니다.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다.", null));
             }
+
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
+        } catch (JwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("유효하지 않은 토큰입니다."));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "게시물을 찾을 수 없습니다.", null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
         }
     }
 }
