@@ -246,12 +246,14 @@ public class MailController {
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 답장 성공", null));
         }
+    }
 
+    @PutMapping("/times/{mailNo}")
+    public ResponseEntity<ResponseDTO> updateReadMailTime(@RequestHeader("Authorization") String token, @PathVariable int mailNo) {
+        String memberNo = decryptToken(token).get("memberNo", String.class);
 
+        Object data = mailService.updateReadMailTime(memberNo, mailNo);
 
-
-
-
-
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "받은 메일 읽음", data));
     }
 }
