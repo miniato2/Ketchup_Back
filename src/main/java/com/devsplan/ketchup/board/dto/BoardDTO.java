@@ -1,6 +1,7 @@
 package com.devsplan.ketchup.board.dto;
 
 
+import com.devsplan.ketchup.notice.dto.NoticeFileDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +25,9 @@ public class BoardDTO {
     private String boardContent;                // 게시물 내용
     private Timestamp boardCreateDttm;      // 게시글 등록일시
     private Timestamp boardUpdateDttm;      // 게시글 수정일시
-    private String boardImgUrl;
+//    private String boardImgUrl;
+    private List<BoardFileDTO> boardFileList;  // 공지 파일
+
 
     public void setBoardCreateDttm(Timestamp timestamp) {
         this.boardCreateDttm = timestamp;

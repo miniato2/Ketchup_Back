@@ -313,10 +313,8 @@ public class NoticeService {
             if (hasPermission) {
                 // 공지사항과 연관된 파일 조회
                 List<NoticeFile> noticeFiles = noticeFileRepository.findByNoticeNo(noticeNo);
-                for (NoticeFile noticeFile : noticeFiles) {
-                    // 파일 삭제
-                    noticeFileRepository.delete(noticeFile);
-                }
+                // 파일 삭제
+                noticeFileRepository.deleteAll(noticeFiles);
 
                 // 공지사항 삭제
                 noticeRepository.delete(notice);
