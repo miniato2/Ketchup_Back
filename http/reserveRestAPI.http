@@ -1,6 +1,6 @@
 ### 자원 예약 목록 조회
-GET http://localhost:8080/reserves?category=회의실&rsvDate=2024-05-10
-Authorization: Bearer eyJkYXRlIjoxNzE1NTg4MzQ5ODE4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywiaW1nVXJsIjoiNTdiMzMzYzRhZTg5NGM2ZGFhODIxODkwZWQ4OTdkNDkucG5nIiwibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6IuydtOynhOyasCIsInBvc2l0aW9uTm8iOjMsImV4cCI6MTcxNTY3NDc0OSwiZGVwTmFtZSI6Iuq4sO2aje2MgCJ9.vx1AWduRhZDYUN3YdbnmS6N8HMHYruqBhxmnTXaArIM
+GET http://localhost:8080/reserves?category=회의실&date=2024-05-10
+Authorization: Bearer eyJkYXRlIjoxNzE1Njc0ODYxNTk2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywiaW1nVXJsIjoiNTdiMzMzYzRhZTg5NGM2ZGFhODIxODkwZWQ4OTdkNDkucG5nIiwibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6IuydtOynhOyasCIsInBvc2l0aW9uTm8iOjMsImV4cCI6MTcxNTc2MTI2MSwiZGVwTmFtZSI6Iuq4sO2aje2MgCJ9.ugapZj1K-b6Z8Cp6-6n9dr1DcTDFppLbTdyhAh8Buz8
 
 ### 자원 예약 상세 조회
 GET http://localhost:8080/reserves/1
@@ -9,21 +9,21 @@ Authorization: Bearer eyJkYXRlIjoxNzE1NTg4MzQ5ODE4LCJ0eXBlIjoiand0IiwiYWxnIjoiSF
 ### 자원 예약 등록
 POST http://localhost:8080/reserves
 Content-Type: application/json
-Authorization: Bearer eyJkYXRlIjoxNzE1NTg4MzQ5ODE4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywiaW1nVXJsIjoiNTdiMzMzYzRhZTg5NGM2ZGFhODIxODkwZWQ4OTdkNDkucG5nIiwibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6IuydtOynhOyasCIsInBvc2l0aW9uTm8iOjMsImV4cCI6MTcxNTY3NDc0OSwiZGVwTmFtZSI6Iuq4sO2aje2MgCJ9.vx1AWduRhZDYUN3YdbnmS6N8HMHYruqBhxmnTXaArIM
+Authorization: Bearer eyJkYXRlIjoxNzE1Njc0ODYxNTk2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywiaW1nVXJsIjoiNTdiMzMzYzRhZTg5NGM2ZGFhODIxODkwZWQ4OTdkNDkucG5nIiwibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6IuydtOynhOyasCIsInBvc2l0aW9uTm8iOjMsImV4cCI6MTcxNTc2MTI2MSwiZGVwTmFtZSI6Iuq4sO2aje2MgCJ9.ugapZj1K-b6Z8Cp6-6n9dr1DcTDFppLbTdyhAh8Buz8
 
 {
-  "rsvStartDttm": "2024-05-10 오후 3시 0분",
-  "rsvEndDttm": "2024-05-18 오후 4시 30분",
-  "rsvDescr": "Worst is yet to come.",
+  "rsvStartDttm": "2024-05-10 오후 5시 0분",
+  "rsvEndDttm": "2024-05-10 오후 8시 30분",
+  "rsvDescr": "세무조사",
   "reserver": "5",
   "resources": {
-    "rscNo": 3,
+    "rscNo": 4,
     "rscCategory": "회의실",
-    "rscName": "회의실 B",
-    "rscInfo": "본관 4층 401호",
-    "rscCap": 20,
+    "rscName": "회의실 C",
+    "rscInfo": "3층 303호",
+    "rscCap": 8,
     "rscIsAvailable": true,
-    "rscDescr": "Smart TV, HDMI, 마이크, 스피커, 빔프로젝터, 의자 비치"
+    "rscDescr": "Smart TV, 빔프로젝터, 책상, 의자, 단상 비치, 경복궁 뷰, 이곳은 천국"
   }
 }
 
