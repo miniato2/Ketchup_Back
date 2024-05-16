@@ -53,21 +53,6 @@ public class ReserveController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
-//        try {
-//            List<ReserveDTO> foundReserve = reserveService.selectReserveList(rscCategory, rsvDate);
-//
-//            if (!foundReserve.isEmpty()) {
-//                Map<String, Object> responseMap = new HashMap<>();
-//                responseMap.put("reserve", foundReserve);
-//                return ResponseEntity.ok().headers(headers).body(new ResponseMessage(200, "조회 성공", responseMap));
-//            } else {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(404, "검색 조건과 일치하는 예약건을 찾을 수 없습니다.", null));
-//            }
-//        } catch (Exception e) {
-//            log.error("예약 정보를 조회해오면서 오류가 발생하였습니다.", e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage(500, "서버 오류", null));
-//        }
-
         try {
             List<ReserveDTO> foundReserve = reserveService.selectReserveList(rscCategory, rsvDate);
 

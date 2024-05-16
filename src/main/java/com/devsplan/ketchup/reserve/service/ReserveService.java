@@ -6,6 +6,8 @@ import com.devsplan.ketchup.reserve.repository.ReserveRepository;
 import com.devsplan.ketchup.rsc.dto.ResourceDTO;
 import com.devsplan.ketchup.rsc.entity.Resource;
 import com.devsplan.ketchup.reserve.repository.ResourceRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,7 +38,72 @@ public class ReserveService {
         LocalDateTime startOfDay = rsvDate.atStartOfDay();
         LocalDateTime endOfDay = rsvDate.atTime(23, 59, 59);
 
-        List<Reserve> reserveList = reserveRepository.findByResourcesRscCategoryAndRsvStartDttmBetween(rscCategory, startOfDay, endOfDay);
+//        // 예약 조회건만 가져오고, 빈 달력을 조회해오지 못함.
+//        List<Reserve> reserveList = reserveRepository.findByResourcesRscCategoryAndRsvStartDttmBetween(rscCategory, startOfDay, endOfDay);
+//
+//        return reserveList.stream()
+//                .map(reserve -> {
+//                    ReserveDTO reserveDTO = new ReserveDTO();
+//                    reserveDTO.setReserver(reserve.getMemberNo());
+//                    reserveDTO.setRsvNo(reserve.getRsvNo());
+//                    reserveDTO.setRsvDescr(reserve.getRsvDescr());
+//                    reserveDTO.setRsvStartDttm(reserve.getRsvStartDttm());
+//                    reserveDTO.setRsvEndDttm(reserve.getRsvEndDttm());
+//                    reserveDTO.setResources(convertToResourceDTO(reserve.getResources()));
+//                    return reserveDTO;
+//                }).collect(Collectors.toList());
+
+        // 예약이 없는 날짜도 자원별로 달력을 생성하지만, 예약 정보를 조회해오지 않기때문에 모두 빈 달력으로 출력됨.
+//        List<Resource> resources = resourceRepository.findByRscCategory(rscCategory);
+//
+//        List<ReserveDTO> reserveDTOs = new ArrayList<>();
+//
+//        for (Resource resource : resources) {
+//            ReserveDTO reserveDTO = new ReserveDTO();
+//            reserveDTO.setResources(convertToResourceDTO(resource));
+//            reserveDTOs.add(reserveDTO);
+//        }
+//
+//        return reserveDTOs;
+
+        // rscNo별 달력에 모든 일정이 출력되고, 예약이 없는 날짜는 아예 달력이 출력되지 않음.
+//        List<Resource> resources = resourceRepository.findByRscCategory(rscCategory);
+//
+//        List<ReserveDTO> reserveDTOs = new ArrayList<>();
+//
+//        for (Resource resource : resources) {
+//            List<Reserve> reserveList = reserveRepository.findByResourcesRscCategoryAndRsvStartDttmBetween(rscCategory, startOfDay, endOfDay);
+//
+//            for (Reserve reserve : reserveList) {
+//                ReserveDTO reserveDTO = new ReserveDTO();
+//                reserveDTO.setReserver(reserve.getMemberNo());
+//                reserveDTO.setRsvNo(reserve.getRsvNo());
+//                reserveDTO.setRsvDescr(reserve.getRsvDescr());
+//                reserveDTO.setRsvStartDttm(reserve.getRsvStartDttm());
+//                reserveDTO.setRsvEndDttm(reserve.getRsvEndDttm());
+//                reserveDTO.setResources(convertToResourceDTO(resource));
+//                reserveDTOs.add(reserveDTO);
+//            }
+//        }
+//
+//        return reserveDTOs;
+
+        // 아우터 조인 메소드 작성
+        EntityManager entityManager = null;
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Reserve> query = builder.createQuery(Reserve.class);
+        Root<Reserve> root = query.from(Reserve.class);
+
+        // 아우터 조인 설정
+        root.fetch("resources", JoinType.LEFT);
+
+        Predicate categoryPredicate = builder.equal(root.get("resources").get("rscCategory"), rscCategory);
+        Predicate datePredicate = builder.between(root.get("rsvStartDttm"), startOfDay, endOfDay);
+        Predicate finalPredicate = builder.and(categoryPredicate, datePredicate);
+
+        query.select(root).where(finalPredicate);
+
+        List<Reserve> reserveList = entityManager.createQuery(query).getResultList();
 
         return reserveList.stream()
                 .map(reserve -> {
@@ -50,9 +118,12 @@ public class ReserveService {
                 }).collect(Collectors.toList());
     }
 
+    
+
+
     // 자원 예약 목록 조회
     private ResourceDTO convertToResourceDTO(Resource resource) {
-        if (resource != null) {
+            if (resource != null) {
             return new ResourceDTO(
                     resource.getRscNo(),
                     resource.getRscCategory(),

@@ -6,7 +6,6 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-
 @Getter
 @Entity
 @Table(name = "TBL_RESERVE")
