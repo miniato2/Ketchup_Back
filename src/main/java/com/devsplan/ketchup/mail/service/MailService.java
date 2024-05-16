@@ -1,6 +1,5 @@
 package com.devsplan.ketchup.mail.service;
 
-import com.devsplan.ketchup.common.Criteria;
 import com.devsplan.ketchup.common.ResponseDTO;
 import com.devsplan.ketchup.mail.dto.MailDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
@@ -13,13 +12,13 @@ import com.devsplan.ketchup.mail.repository.ReceiverRepository;
 import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -65,7 +64,7 @@ public class MailService {
                 Receiver receiver = new Receiver(
                         sendMailNo,
                         list.getReceiverMem(),
-                        list.getReceiverDelStatus()
+                        'N'
                 );
 
                 receiverRepository.save(receiver);
@@ -93,63 +92,6 @@ public class MailService {
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드 중 오류가 발생했습니다.", null);
         }
     }
-
-
-
-
-//    @Transactional
-//    public int insertMail(MailDTO mailInfo) {
-//        Mail mail = new Mail(
-//                mailInfo.getSenderMem(),
-//                mailInfo.getMailTitle(),
-//                mailInfo.getMailContent(),
-//                mailInfo.getSendCancelStatus(),
-//                mailInfo.getSendDelStatus()
-//        );
-//
-//        Mail saveMail = mailRepository.save(mail);
-//
-//        return saveMail.getMailNo();
-//    }
-//
-//    // 수신자 등록
-//    @Transactional
-//    public Object insertReceiver(List<ReceiverDTO> receivers) {
-//        Receiver receiveList = null;
-//        for(ReceiverDTO list : receivers) {
-//            Receiver receiver = new Receiver(
-//                list.getMailNo(),
-//                list.getReceiverMem(),
-//                list.getReceiverDelStatus()
-//            );
-//
-//            receiveList = receiverRepository.save(receiver);
-//        }
-//
-//        return receiveList;
-//    }
-//
-//    // 파일 업로드
-//    @Transactional
-//    public Object insertMailFile(int sendMailNo, MultipartFile mailFile) {
-//        String mailFileName = UUID.randomUUID().toString().replace("-", "");
-//        String replaceFileName = "";
-//
-//        try {
-//            replaceFileName = FileUtils.saveFile(IMAGE_DIR, mailFileName, mailFile);
-//
-//            MailFile mailFiles = new MailFile(
-//                    sendMailNo,
-//                    replaceFileName,
-//                    mailFileName,
-//                    mailFile.getOriginalFilename()
-//            );
-//
-//            return mailFileRepository.save(mailFiles);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     // 보낸 메일 목록 조회
     public List<MailDTO> selectSendMailList(String senderMem, String search, String searchValue) {
@@ -338,5 +280,20 @@ public class MailService {
         mailRepository.save(mail);
 
         return mail.getMailNo();
+    }
+
+    @Transactional
+    public Object updateReadMailTime(String memberNo, int mailNo) {
+        Receiver updateMail = receiverRepository.findByMailNoAndReceiverMem(mailNo, memberNo);
+
+//        if(updateMail.getReadTime() == null) {
+            Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+            updateMail.readTime(now);
+
+            receiverRepository.save(updateMail);
+//        }
+        System.out.println(updateMail);
+
+        return updateMail;
     }
 }

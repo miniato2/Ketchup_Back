@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,9 +41,7 @@ public class NoticeController {
 
             pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) noticeList.getTotalElements()));
 
-
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "목록 조회 성공", pagingResponseDTO));
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
         }
@@ -72,7 +69,7 @@ public class NoticeController {
     @PreAuthorize("hasAnyAuthority('LV3', 'LV2')")
     public ResponseEntity<ResponseDTO> insertNotice(@RequestPart("noticeDTO") NoticeDTO noticeDTO
                                                     , @RequestPart(value = "files", required = false) List<MultipartFile> files
-                                                    , @RequestHeader("Authorization") String token) throws HttpMediaTypeNotSupportedException {
+                                                    , @RequestHeader("Authorization") String token) {
         try{
             String memberNo = decryptToken(token).get("memberNo", String.class);
             String authority = decryptToken(token).get("role").toString();

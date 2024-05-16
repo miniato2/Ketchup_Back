@@ -36,6 +36,11 @@ public class Receiver {
         return this;
     }
 
+    public Receiver readTime(Timestamp val) {
+        this.readTime = val;
+        return this;
+    }
+
     public Receiver receiverDelStatus(char val) {
         this.receiverDelStatus = val;
         return this;
