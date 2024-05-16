@@ -166,6 +166,13 @@ public class ApprovalServiceTests {
         Assertions.assertNotNull(service.selectForm(formNo));
     }
 
+    @DisplayName("기안개수 조회")
+    @Test
+    public void selectApprovalCount(){
+        String memberNo = "3";
+        Assertions.assertNotNull(service.selectApprovalCount(memberNo));
+    }
+
 
 
 

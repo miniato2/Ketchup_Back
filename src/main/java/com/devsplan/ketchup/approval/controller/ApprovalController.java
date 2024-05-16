@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
@@ -32,6 +33,9 @@ public class ApprovalController {
     @PostMapping("/approvals")
     public ResponseEntity<ResponseDTO> insertApproval(@ModelAttribute AppInputDTO appInputDTO,
                                                       List<MultipartFile> multipartFileList){
+        if (multipartFileList == null) {
+            multipartFileList = Collections.emptyList();
+        }
 
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "기안상신 완료",
@@ -44,6 +48,7 @@ public class ApprovalController {
     public ResponseEntity<ResponseDTO> selectApprovalDetail(@PathVariable int approvalNo){
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "성공", approvalService.selectApproval(approvalNo)));
     }
+
 
     //기안 목록 조회
     @GetMapping("/approvals")
@@ -130,5 +135,11 @@ public class ApprovalController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "성공", result));
     }
 
+    //기안 카테고리 개수 조회
+    @GetMapping("/approvals/count")
+    public ResponseEntity<ResponseDTO> selectApprovalsCount(@RequestParam String memberNo){
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "성공", approvalService.selectApprovalCount(memberNo)));
+    }
 
 }
