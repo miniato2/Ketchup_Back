@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -137,8 +138,6 @@ public class ApprovalService {
 
         return (result > 0) ? "성공" : "실패";
     }
-
-
 
     //내가 작성한 기안 조회
     @Transactional
@@ -277,5 +276,27 @@ public class ApprovalService {
         FormDTO formDTO = modelMapper.map(form, FormDTO.class);
 
         return formDTO;
+    }
+
+    //카테고리별 기안 개수 조회
+    public Object selectApprovalCount(String memberNo) {
+        int myApp = 0;
+        int doneApp = 0;
+        int receiveApp = 0;
+        int refApp = 0;
+
+        List<String> status1 = Arrays.asList("대기", "진행");
+        List<String> status2 = Arrays.asList("완료", "회수", "반려");
+        List<String> status3 = Arrays.asList("대기", "진행");
+        String status4 = "완료";
+
+        myApp = approvalRepository.countApprovalByMemberNoAndAppStatusIn(memberNo, status1);
+        doneApp = approvalRepository.countApprovalByMemberNoAndAppStatusIn(memberNo, status2);
+        receiveApp = approvalRepository.countReceiveAppByMemberNoAndStatusIn(memberNo, status3);
+        refApp = approvalRepository.countRefAppByMemberNoAndAppStatusIn(memberNo, status4);
+
+        ApprovalCountDTO approvalCountDTO = new ApprovalCountDTO(myApp, doneApp, receiveApp, refApp);
+
+        return approvalCountDTO;
     }
 }
