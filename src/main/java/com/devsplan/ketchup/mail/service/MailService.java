@@ -41,53 +41,6 @@ public class MailService {
     @Value("${image.image-url}")
     private String IMAGE_URL;
 
-    // 원본
-//    @Transactional
-//    public Object insertMail(MailDTO mailInfo, List<MultipartFile> mailFiles) {
-//        // Mail 객체 생성 및 등록
-//        Mail mail = new Mail(
-//                mailInfo.getSenderMem(),
-//                mailInfo.getMailTitle(),
-//                mailInfo.getMailContent(),
-//                mailInfo.getSendCancelStatus(),
-//                mailInfo.getSendDelStatus()
-//        );
-//
-//        Mail saveMail = mailRepository.save(mail);
-//        int sendMailNo = saveMail.getMailNo();
-//
-//        // 수신자 등록
-//        for (ReceiverDTO list : mailInfo.getReceivers()) {
-//            Receiver receiver = new Receiver(
-//                    sendMailNo,
-//                    list.getReceiverMem(),
-//                    'N'
-//            );
-//
-//            receiverRepository.save(receiver);
-//        }
-//        try {
-//            // 파일 업로드
-//            for (MultipartFile file : mailFiles) {
-//                String mailFileName = UUID.randomUUID().toString().replace("-", "");
-//                String replaceFileName = FileUtils.saveFile(IMAGE_DIR, mailFileName, file);
-//
-//                MailFile mailFileEntity = new MailFile(
-//                        sendMailNo,
-//                        replaceFileName,
-//                        mailFileName,
-//                        file.getOriginalFilename()
-//                );
-//
-//                mailFileRepository.save(mailFileEntity);
-//            }
-//
-//            return new ResponseDTO(HttpStatus.OK, "메일 전송 성공", sendMailNo);
-//        } catch (IOException e) {
-//            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드 중 오류가 발생했습니다.", null);
-//        }
-//    }
-
     @Transactional
     public int insertMail(MailDTO mailInfo, List<MultipartFile> mailFiles) throws IOException {
         // 메일 내용 등록(수신자 제외)

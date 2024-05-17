@@ -27,39 +27,11 @@ import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
 @RestController
 @RequestMapping("/mails")
 public class MailController {
-//    @Value("${jwt.key}")
-//    private String jwtSecret;
-
     private final MailService mailService;
 
     public MailController(MailService mailService) {
         this.mailService = mailService;
     }
-
-    // 원본
-//    @PostMapping
-//    public ResponseEntity<ResponseDTO> insertMail(@RequestHeader("Authorization") String token,
-//                                                  @RequestPart("mailDto") MailDTO mailDto,
-//                                                  @RequestPart(required = false, name = "mailFile") List<MultipartFile> mailFile) throws IOException {
-//        // 사원 번호
-//        String memberNo = decryptToken(token).get("memberNo", String.class);
-//
-//        // 메일 정보
-//        mailDto.setSenderMem(memberNo);
-//        mailDto.setSendCancelStatus('N');
-//        mailDto.setSendDelStatus('N');
-//
-//        // 메일 및 파일 등록
-//        Object data = mailService.insertMail(mailDto, mailFile);
-//        System.out.println(data);
-//
-//        if (data instanceof ResponseDTO) {
-//            return ResponseEntity.status(((ResponseDTO) data).getStatus())
-//                    .body((ResponseDTO) data);
-//        } else {
-//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 전송 성공", data));
-//        }
-//    }
 
     @PostMapping
     public ResponseEntity<ResponseDTO> insertMail(@RequestHeader("Authorization") String token,
