@@ -33,8 +33,13 @@ public class ApprovalController {
     @PostMapping("/approvals")
     public ResponseEntity<ResponseDTO> insertApproval(@ModelAttribute AppInputDTO appInputDTO,
                                                       List<MultipartFile> multipartFileList){
+
         if (multipartFileList == null) {
             multipartFileList = Collections.emptyList();
+        }
+
+        if (appInputDTO.getRefLineDTOList() == null){
+            appInputDTO.setRefLineDTOList(Collections.emptyList());
         }
 
         return ResponseEntity.ok().body(
