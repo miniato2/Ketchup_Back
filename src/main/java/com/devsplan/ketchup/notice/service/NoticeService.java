@@ -176,9 +176,8 @@ public class NoticeService {
                         break;
                     }
                     String fileName = file.getOriginalFilename();
-                    String newFileName = UUID.randomUUID().toString().replace("-", "") + "." + fileName ;
+                    String newFileName = UUID.randomUUID().toString().replace("-", "");
                     String savedFilePath = fileUtils.saveFile(IMAGE_DIR, newFileName, file);
-                    String filePath = savedFilePath + "//" + fileName;
 
                     // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
                     File newFile = new File(savedFilePath);
@@ -187,7 +186,7 @@ public class NoticeService {
                     NoticeFileDTO noticeFileDTO = new NoticeFileDTO();
                     noticeFileDTO.setNoticeNo(savedNotice.getNoticeNo());
                     noticeFileDTO.setNoticeFileName(newFileName);
-                    noticeFileDTO.setNoticeFilePath(filePath);
+                    noticeFileDTO.setNoticeFilePath(savedFilePath);
                     noticeFileDTO.setNoticeFileOriName(fileName);
 
                     NoticeFile noticeFile = modelMapper.map(noticeFileDTO, NoticeFile.class);

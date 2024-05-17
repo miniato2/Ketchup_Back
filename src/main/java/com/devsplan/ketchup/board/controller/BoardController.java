@@ -31,20 +31,23 @@ public class BoardController {
 
     /* 게시물 목록 조회(부서, 페이징, 검색) */
     @GetMapping
-    public ResponseEntity<ResponseDTO> selectBoardList(@RequestParam(name = "offset", defaultValue = "1") String offset
-                                                        , @RequestParam(required = false) String title
-                                                        , @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ResponseDTO> selectBoardList(  @RequestParam(required = false) Integer depNo,
+                                                         @RequestParam(required = false) String title,
+                                                         @RequestParam(defaultValue = "1") int page,
+                                                         @RequestHeader("Authorization") String token) {
         try {
-            Criteria cri = new Criteria(Integer.parseInt(offset),10);
+            Criteria cri = new Criteria(page, 10);
             PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
 
             // 클레임에서 depNo 추출
-            Integer depNo = decryptToken(token).get("depNo", Integer.class);
+            String role = decryptToken(token).get("role", String.class);
+            System.out.println("==================================================");
+            System.out.println("role : " + role);
             System.out.println("depNo : " + depNo);
 
             Page<BoardDTO> boardList;
 
-            if (depNo == null) {
+            if (role != null && role.equals("LV3") || depNo == null) {
                 // 부서 번호가 없는 경우 모든 부서의 자료실 정보를 조회합니다.
                 boardList = boardService.selectAllBoards(cri, title);
                 pagingResponseDTO.setData(boardList);
@@ -52,10 +55,11 @@ public class BoardController {
                 // 특정 부서의 자료실 정보를 조회합니다.
                 boardList = boardService.selectBoardList(depNo, cri, title);
                 pagingResponseDTO.setData(boardList);
-                System.out.println("depNo : " + depNo);
+                System.out.println("departmentNo : " + depNo);
             }
 
-            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) boardList.getTotalElements()));
+            pagingResponseDTO.setData(boardList.getContent()); // 페이지의 실제 데이터 설정
+            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int)boardList.getTotalElements())); // 페이지 정보 설정
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "목록 조회 성공", pagingResponseDTO));
 
         } catch (ExpiredJwtException e) {

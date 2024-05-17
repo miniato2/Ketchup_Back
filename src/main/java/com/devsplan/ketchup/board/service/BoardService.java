@@ -7,7 +7,9 @@ import com.devsplan.ketchup.board.entity.BoardFile;
 import com.devsplan.ketchup.board.repository.BoardFileRepository;
 import com.devsplan.ketchup.board.repository.BoardRepository;
 import com.devsplan.ketchup.common.Criteria;
+import com.devsplan.ketchup.notice.dto.NoticeDTO;
 import com.devsplan.ketchup.notice.dto.NoticeFileDTO;
+import com.devsplan.ketchup.notice.entity.Notice;
 import com.devsplan.ketchup.notice.entity.NoticeFile;
 import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;
@@ -16,10 +18,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -138,10 +137,9 @@ public class BoardService {
     /* 부서별 자료실 게시물 목록조회 & 페이징 & 목록 제목검색 조회 */
     public Page<BoardDTO> selectBoardList(int departmentNo, Criteria cri, String title) {
 
-        int index = cri.getPageNum() -1;
-        int count = cri.getAmount();
-
-        Pageable paging = PageRequest.of(index, count, Sort.by("boardNo").descending());
+        int page = cri.getPageNum() - 1;
+        int size = cri.getAmount();
+        Pageable paging = PageRequest.of(page, size, Sort.by("boardNo").descending());
 
         Page<Board> boardList;
         if (title != null && !title.isEmpty()) {
@@ -150,14 +148,10 @@ public class BoardService {
             boardList = boardRepository.findByDepartmentNo(departmentNo, paging);
         }
 
-        return boardList.map(board -> {
-            BoardDTO boardDTO = new BoardDTO();
-            boardDTO.setBoardNo(board.getBoardNo());
-            boardDTO.setBoardTitle(board.getBoardTitle());
-            boardDTO.setMemberNo(board.getMemberNo());
-            boardDTO.setBoardCreateDttm(board.getBoardCreateDttm());
-            return boardDTO;
-        });
+//        Page<BoardDTO> boardDTOList = boardList.map(board -> modelMapper.map(board, BoardDTO.class));
+
+        return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
+//        return new PageImpl<>(boardDTOList, paging, boardList.getTotalElements());}
     }
 
     /* 부서 전체 게시물 목록조회(권한자-대표) */
@@ -178,6 +172,7 @@ public class BoardService {
             }
 
             return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
+
         } catch (Exception e) {
             log.error("목록 조회 실패: ", e);
             throw new RuntimeException("목록 조회 실패");
