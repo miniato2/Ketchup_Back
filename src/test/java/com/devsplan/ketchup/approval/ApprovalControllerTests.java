@@ -21,7 +21,7 @@ public class ApprovalControllerTests {
     @Autowired
     private MockMvc mvc;
 
-    private final String token = "Bearer eyJkYXRlIjoxNzE1NjQ2NzMxNzYwLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NCwiaW1nVXJsIjoiZWVhYTZkYzljZTc4NDAwMGE2NWQ5MmUyMDY0OWU3ZmEucG5nIiwibWVtYmVyTm8iOiI0IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDQiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6Iuy1nOyKueyasSIsInBvc2l0aW9uTm8iOjIsImV4cCI6MTcxNTczMzEzMSwiZGVwTmFtZSI6Iu2ajOqzhO2MgCJ9.Ie-96zewqEdOeW63K985B2NFjyNjB-T9D04WoRmLhKs";
+    private final String token = "Bearer eyJkYXRlIjoxNzE1NzYxMTkzOTA0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywiaW1nVXJsIjoiNTdiMzMzYzRhZTg5NGM2ZGFhODIxODkwZWQ4OTdkNDkucG5nIiwibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6IuydtOynhOyasCIsInBvc2l0aW9uTm8iOjMsImV4cCI6MTcxNTg0NzU5MywiZGVwTmFtZSI6Iuq4sO2aje2MgCJ9.p57gNOyQ-tczkd9xsc1Z9rIcxaZeJ5bjgFkx64YvRLc";
     private RequestBuilder request;
 
     @DisplayName("기안상신 컨트롤러 테스트")
@@ -97,10 +97,10 @@ public class ApprovalControllerTests {
         String memberNo = "4";
         int categoryNo = 1;
         String status = "전체";
-        String search = "제";
+        String search = "";
 
         request = MockMvcRequestBuilders.get("/approvals?memberNo=" + memberNo +
-                "&category=" + categoryNo + "&status=" + status + "&search=" + search)
+                "&category=" + categoryNo + "&status=" + status + "&search=" + search + "&page=2")
                 .header("Authorization", token);
         mvc.perform(request)
                 .andExpect(status().isOk())
@@ -134,6 +134,20 @@ public class ApprovalControllerTests {
 
         request = MockMvcRequestBuilders.get("/approvals?memberNo=" + memberNo +
                         "&category=" + categoryNo + "&status=" + status + "&search=" + search)
+                .header("Authorization", token);
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print());
+
+    }
+
+    @DisplayName("기안개수 조회")
+    @Test
+    public void selectApprovalCount() throws Exception {
+
+        String memberNo = "3";
+
+        request = MockMvcRequestBuilders.get("/approvals/count?memberNo=" + memberNo)
                 .header("Authorization", token);
         mvc.perform(request)
                 .andExpect(status().isOk())

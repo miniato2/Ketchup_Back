@@ -12,15 +12,20 @@ import com.devsplan.ketchup.member.dto.MemberDTO;
 import com.devsplan.ketchup.member.dto.PositionDTO;
 import com.devsplan.ketchup.member.repository.MemberRepository;
 import com.devsplan.ketchup.member.service.MemberService;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class MemberController {
@@ -38,30 +43,37 @@ public class MemberController {
 
 
     @PostMapping("/signup")
-    public String signup(@RequestPart("memberInfo") MemberDTO newMemberDTO, @RequestPart("memberImage") MultipartFile memberImage){
+    public ResponseEntity<Object> signup(@RequestPart("memberInfo") @Valid MemberDTO newMemberDTO,
+                                         @RequestPart("memberImage") MultipartFile memberImage,
+                                         BindingResult bindingResult) {
+        // 검증 결과 확인
+        if (bindingResult.hasErrors()) {
+            // 필드 오류를 매핑하기 위한 맵 생성
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
 
+            // 콘솔에 오류 메시지 출력
+            System.out.println("Validation failed:");
+            errors.forEach((field, message) -> System.out.println(field + ": " + message));
 
-        System.out.println("memberImage:   " + memberImage);
+            // 클라이언트에게 오류 응답 반환
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
 
+        // 유효성 검사 통과 시 사원 등록 로직 실행
         int rPositionNo = newMemberDTO.getPosition().getPositionNo();
-
-        System.out.println(rPositionNo);
-
         PositionDTO positionDTO = memberService.findPositionByPositionNo(rPositionNo);
-
         newMemberDTO.setPosition(positionDTO);
 
         int rDepNo = newMemberDTO.getDepartment().getDepNo();
-
         DepDTO depDTO = memberService.findDepByDepNo(rDepNo);
-
         newMemberDTO.setDepartment(depDTO);
 
+        memberService.insertMember(newMemberDTO, memberImage);
 
-        memberService.insertMember(newMemberDTO,memberImage);
-        return "Member save!";
-
-
+        return ResponseEntity.ok("Member saved!");
     }
 
     @PostMapping("/signupDep")
@@ -154,6 +166,27 @@ public class MemberController {
     }
 
 
+    @GetMapping("/noPageDeps")
+    public ResponseEntity<ResponseDTO> findAllDepsWithNoPage(){
+
+        List<DepDTO> depList = memberService.findAllDepsWithNoPaging();
+
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공",depList));
+
+    }
+
+    @GetMapping("/noPagePositions")
+    public ResponseEntity<ResponseDTO> findAllPositionsWithNoPage(){
+
+        List<PositionDTO> positionList = memberService.findAllPositionWithNoPaging();
+
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공",positionList));
+
+    }
 
 
 
