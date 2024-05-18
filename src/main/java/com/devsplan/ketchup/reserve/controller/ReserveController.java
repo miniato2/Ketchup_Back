@@ -1,11 +1,11 @@
 package com.devsplan.ketchup.reserve.controller;
 
 import com.devsplan.ketchup.reserve.dto.ReserveDTO;
+import com.devsplan.ketchup.reserve.service.ReserveService;
 import com.devsplan.ketchup.rsc.dto.ResourceDTO;
 import com.devsplan.ketchup.rsc.entity.Resource;
-import com.devsplan.ketchup.reserve.repository.ResourceRepository;
-import com.devsplan.ketchup.reserve.service.ReserveService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -27,12 +28,10 @@ import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
 public class ReserveController {
 
     private final ReserveService reserveService;
-    private final ResourceRepository resourceRepository;
     List<ReserveDTO> reserve;
 
-    public ReserveController(ReserveService reserveService, ResourceRepository resourceRepository) {
+    public ReserveController(ReserveService reserveService) {
         this.reserveService = reserveService;
-        this.resourceRepository = resourceRepository;
         reserve = new ArrayList<>();
 
         // LocalDateTime 파싱을 위한 DateTimeFormatter 생성
@@ -45,54 +44,44 @@ public class ReserveController {
         reserve.add(new ReserveDTO(6, "ReserveController에서 생성하는 사용 목적", rsvStartDttm, rsvEndDttm, "3", new ResourceDTO(1, "회의실", "회의실 B", "본관 4층 401호", 20, true, "Smart TV, 빔프로젝터, 책상, 의자, 단상 비치, 경복궁 뷰")));
     }
 
-    // 자원 예약 목록 조회
     @GetMapping
-    public ResponseEntity<ResponseMessage> selectReserveList(@RequestParam("category") String rscCategory,
-                                                             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate rsvDate) {
+    public ResponseEntity<List<ReserveDTO>> getReserves(@RequestParam("category") String rscCategory,
+                                                        @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate rsvDate) {
+        LocalDateTime startOfDay = rsvDate.atStartOfDay();
+        LocalDateTime endOfDay = rsvDate.atTime(LocalTime.MAX);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
-        try {
-            List<ReserveDTO> foundReserve = reserveService.selectReserveList(rscCategory, rsvDate);
-
-            Map<String, Object> responseMap = new HashMap<>();
-            responseMap.put("reserve", foundReserve);
-            return ResponseEntity.ok().headers(headers).body(new ResponseMessage(200, "조회 성공", responseMap));
-
-        } catch (Exception e) {
-            log.error("예약 정보를 조회해오면서 오류가 발생하였습니다.", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage(500, "서버 오류", null));
-        }
+        List<ReserveDTO> reserves = reserveService.getReserveWithResources(rscCategory, startOfDay, endOfDay);
+        return ResponseEntity.ok(reserves);
     }
 
-    // 자원 예약 상세 조회
-    @GetMapping("/{rsvNo}")
-    public ResponseEntity<ResponseMessage> selectReserveDetail(@PathVariable int rsvNo) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
-        ReserveDTO selectedReserve = reserveService.selectReserveDetail(rsvNo);
-        for (ReserveDTO reserveDTO : reserve) {
-            if (reserveDTO.getRsvNo() == rsvNo) {
-                selectedReserve = reserveDTO;
-                break;
-            }
-        }
-
-        if (selectedReserve != null) {
-            // ReserveDTO를 Map으로 변환
-            Map<String, Object> responseData = new HashMap<>();
-            responseData.put("rsvStartDttm", selectedReserve.getRsvStartDttm());
-            responseData.put("rsvEndDttm", selectedReserve.getRsvEndDttm());
-            responseData.put("rsvDescr", selectedReserve.getRsvDescr());
-
-            // ResponseEntity에 Map을 설정하여 반환
-            return ResponseEntity.ok().headers(headers).body(new ResponseMessage(200, "조회 성공", responseData));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(404, "해당 자원 예약건을 찾을 수 없습니다.", null));
-        }
-    }
+//    // 자원 예약 상세 조회
+//    @GetMapping("/{rsvNo}")
+//    public ResponseEntity<ResponseMessage> selectReserveDetail(@PathVariable int rsvNo) {
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+//
+//        ReserveDTO selectedReserve = reserveService.selectReserveDetail(rsvNo);
+//        for (ReserveDTO reserveDTO : reserve) {
+//            if (reserveDTO.getRsvNo() == rsvNo) {
+//                selectedReserve = reserveDTO;
+//                break;
+//            }
+//        }
+//
+//        if (selectedReserve != null) {
+//            // ReserveDTO를 Map으로 변환
+//            Map<String, Object> responseData = new HashMap<>();
+//            responseData.put("rsvStartDttm", selectedReserve.getRsvStartDttm());
+//            responseData.put("rsvEndDttm", selectedReserve.getRsvEndDttm());
+//            responseData.put("rsvDescr", selectedReserve.getRsvDescr());
+//
+//            // ResponseEntity에 Map을 설정하여 반환
+//            return ResponseEntity.ok().headers(headers).body(new ResponseMessage(200, "조회 성공", responseData));
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(404, "해당 자원 예약건을 찾을 수 없습니다.", null));
+//        }
+//    }
 
     // 자원 예약 등록
     @PostMapping()

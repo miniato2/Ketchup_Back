@@ -9,6 +9,4 @@ import java.util.List;
 @Repository
 public interface ResourceRepository extends JpaRepository<Resource, Long> {
 
-    List<Resource> findByRscCategory(String rscCategory);
 }
-
