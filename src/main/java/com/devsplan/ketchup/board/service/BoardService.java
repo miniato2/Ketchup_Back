@@ -7,26 +7,21 @@ import com.devsplan.ketchup.board.entity.BoardFile;
 import com.devsplan.ketchup.board.repository.BoardFileRepository;
 import com.devsplan.ketchup.board.repository.BoardRepository;
 import com.devsplan.ketchup.common.Criteria;
-import com.devsplan.ketchup.notice.dto.NoticeDTO;
-import com.devsplan.ketchup.notice.dto.NoticeFileDTO;
-import com.devsplan.ketchup.notice.entity.Notice;
-import com.devsplan.ketchup.notice.entity.NoticeFile;
 import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -35,7 +30,6 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardFileRepository boardFileRepository;
     private final ModelMapper modelMapper;
-    private final FileUtils fileUtils;
 
     /* 이미지 저장 할 위치 및 응답 할 이미지 주소 */
     @Value("${image.image-dir}")
@@ -45,8 +39,7 @@ public class BoardService {
     private String IMAGE_URL;
 
     @Autowired
-    public BoardService(FileUtils fileUtils, BoardRepository boardRepository, ModelMapper modelMapper, BoardFileRepository boardFileRepository) {
-        this.fileUtils = fileUtils;
+    public BoardService(BoardRepository boardRepository, ModelMapper modelMapper, BoardFileRepository boardFileRepository) {
         this.boardRepository = boardRepository;
         this.boardFileRepository = boardFileRepository;
         this.modelMapper = modelMapper;
@@ -54,14 +47,14 @@ public class BoardService {
 
     /* 부서별 자료실 게시물 등록 */
     @Transactional
-    public Object insertBoard(BoardDTO boardDTO, String memberNo, int depNo) {
+    public Object insertBoard(BoardDTO boardDTO/*, String memberNo, int depNo*/) {
         log.info("[BoardService] insertBoard Start ===================");
 
         try {
             // 게시글 엔티티 생성
             boardDTO.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
-            boardDTO.setMemberNo(memberNo);
-            boardDTO.setDepartmentNo(depNo);
+//            boardDTO.setMemberNo(memberNo);
+//            boardDTO.setDepartmentNo(depNo);
 
             Board board = modelMapper.map(boardDTO, Board.class);
 
@@ -73,20 +66,22 @@ public class BoardService {
             return savedBoard.getBoardNo();
         } catch (Exception e) {
             log.error("게시물 등록 실패: {}", e.getMessage(), e);
+            // 예외 발생 시 롤백 요청
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         }
     }
 
     /* 부서별 자료실 게시물 등록(첨부파일) */
     @Transactional
-    public Object insertBoardWithFile(BoardDTO boardDTO, List<MultipartFile> files, String memberNo, int depNo) {
+    public Object insertBoardWithFile(BoardDTO boardDTO, List<MultipartFile> files/*, String memberNo, int depNo*/) {
 
         Map<String, Object> result = new HashMap<>();
-        boardDTO.setDepartmentNo(depNo);
+//        boardDTO.setDepartmentNo(depNo);
 
         try {
             boardDTO.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
-            boardDTO.setMemberNo(memberNo);
+//            boardDTO.setMemberNo(memberNo);
 
             Board savedBoard = modelMapper.map(boardDTO, Board.class);
             boardRepository.save(savedBoard);
@@ -101,7 +96,7 @@ public class BoardService {
                     String fileName = file.getOriginalFilename();
                     String newFileName = UUID.randomUUID().toString().replace("-", "");
 //                    String newFileName = UUID.randomUUID().toString().replace("-", "")+ "." + FilenameUtils.getExtension(fileName);;
-                    String savedFilePath = fileUtils.saveFile(IMAGE_DIR, newFileName, file);
+                    String savedFilePath = FileUtils.saveFile(IMAGE_DIR, newFileName, file);
                     String filePath = savedFilePath + "/" + fileName;
 
                     // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
@@ -130,6 +125,7 @@ public class BoardService {
 
         } catch (Exception e) {
             log.error("공지 등록 실패: {}", e.getMessage(), e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return result;
     }
@@ -141,16 +137,16 @@ public class BoardService {
         int size = cri.getAmount();
         Pageable paging = PageRequest.of(page, size, Sort.by("boardNo").descending());
 
-        Page<Board> boardList;
+        Page<Board> boardList = null;
         if (title != null && !title.isEmpty()) {
             boardList = boardRepository.findByDepartmentNoAndBoardTitleContainingIgnoreCase(departmentNo, paging, title);
         } else {
             boardList = boardRepository.findByDepartmentNo(departmentNo, paging);
         }
 
-//        Page<BoardDTO> boardDTOList = boardList.map(board -> modelMapper.map(board, BoardDTO.class));
+        Page<BoardDTO> boardDTOList = boardList.map(board -> modelMapper.map(board, BoardDTO.class));
 
-        return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
+        return boardDTOList;
 //        return new PageImpl<>(boardDTOList, paging, boardList.getTotalElements());}
     }
 
@@ -233,6 +229,7 @@ public class BoardService {
             }
         } catch (Exception e) {
             log.error("게시물 수정 중 오류 발생: " + e.getMessage(), e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return "게시물 수정 중 오류가 발생했습니다.";
         }
     }
@@ -257,7 +254,7 @@ public class BoardService {
                         }
                         String fileName = file.getOriginalFilename();
                         String newFileName = UUID.randomUUID().toString().replace("-", "") + "." + fileName;
-                        String savedFilePath = fileUtils.saveFile(IMAGE_DIR, newFileName, file);
+                        String savedFilePath = FileUtils.saveFile(IMAGE_DIR, newFileName, file);
                         String filePath = savedFilePath + "//" + fileName;
 
                         // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
@@ -284,6 +281,7 @@ public class BoardService {
             }
         } catch (Exception e) {
             log.error("게시물 수정 중 오류 발생: " + e.getMessage(), e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return "게시물 수정 중 오류가 발생했습니다.";
         }
     }
@@ -309,6 +307,7 @@ public class BoardService {
             return true;
         } catch (Exception e) {
             log.error("게시물 삭제 중 오류 발생: " + e.getMessage(), e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false; // 삭제 중 오류 발생
         }
     }
