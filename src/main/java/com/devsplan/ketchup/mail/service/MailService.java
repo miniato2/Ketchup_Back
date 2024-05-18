@@ -41,36 +41,37 @@ public class MailService {
     @Value("${image.image-url}")
     private String IMAGE_URL;
 
-    // 메일 등록
     @Transactional
-    public Object insertMail(MailDTO mailInfo, List<MultipartFile> mailFiles) {
-        try {
-            System.out.println("메일 내용 등록!!!!!!!!!!");
-            // Mail 객체 생성 및 등록
-            Mail mail = new Mail(
-                    mailInfo.getSenderMem(),
-                    mailInfo.getMailTitle(),
-                    mailInfo.getMailContent(),
-                    mailInfo.getSendCancelStatus(),
-                    mailInfo.getSendDelStatus()
+    public int insertMail(MailDTO mailInfo, List<MultipartFile> mailFiles) throws IOException {
+        // 메일 내용 등록(수신자 제외)
+        Mail mail = new Mail(
+                mailInfo.getSenderMem(),
+                mailInfo.getMailTitle(),
+                mailInfo.getMailContent(),
+                mailInfo.getSendCancelStatus(),
+                mailInfo.getSendDelStatus()
+        );
+
+        Mail saveMail = mailRepository.save(mail);
+        // 등록 메일 번호
+        int sendMailNo = saveMail.getMailNo();
+
+        // 반환할 결과값
+        int result = 0;
+
+        // 수신자 등록
+        for (ReceiverDTO list : mailInfo.getReceivers()) {
+            Receiver receiver = new Receiver(
+                    sendMailNo,
+                    list.getReceiverMem(),
+                    'N'
             );
 
-            Mail saveMail = mailRepository.save(mail);
-            System.out.println("메일 등록 성공?????????!!!!!!!!!!");
-            int sendMailNo = saveMail.getMailNo();
+            receiverRepository.save(receiver);
+            result = sendMailNo;
+        }
 
-            // 수신자 등록
-            for(ReceiverDTO list : mailInfo.getReceivers()) {
-                Receiver receiver = new Receiver(
-                        sendMailNo,
-                        list.getReceiverMem(),
-                        'N'
-                );
-
-                receiverRepository.save(receiver);
-                System.out.println("수신자 등록...!!!!!!!!!!!!!!!!!!1");
-            }
-
+        if (mailFiles != null) {
             // 파일 업로드
             for (MultipartFile file : mailFiles) {
                 String mailFileName = UUID.randomUUID().toString().replace("-", "");
@@ -84,32 +85,31 @@ public class MailService {
                 );
 
                 mailFileRepository.save(mailFileEntity);
-                System.out.println("파일 업로드,,,,,,,,,,,,,,,,,,,,우우우우우우우");
             }
 
-            return new ResponseDTO(HttpStatus.OK, "메일 전송 성공", sendMailNo);
-        } catch (IOException e) {
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드 중 오류가 발생했습니다.", null);
+            result = sendMailNo;
         }
+
+        return result;
     }
 
     // 보낸 메일 목록 조회
     public List<MailDTO> selectSendMailList(String senderMem, String search, String searchValue) {
         List<Mail> mailList = new ArrayList<>();
-        if(search != null) {
-            if(search.equals("mailtitle") && !searchValue.isEmpty()) {
+        if (search != null) {
+            if (search.equals("mailtitle") && !searchValue.isEmpty()) {
                 mailList = mailRepository.findBySenderMemAndSendDelStatusAndMailTitleContaining(senderMem, 'N', searchValue);
-            }else if(search.equals("sendermem") && !searchValue.isEmpty()) {
+            } else if (search.equals("sendermem") && !searchValue.isEmpty()) {
 //                mailList = mailRepository.findBySenderMemAndSendDelStatusAndReceiverMemContaining(senderMem, 'N', searchValue);
             }
-        }else {
+        } else {
             mailList = mailRepository.findBySenderMemAndSendDelStatus(senderMem, 'N');
         }
 
         List<ReceiverDTO> mailReceiverList;
         List<MailDTO> mailDtoList = new ArrayList<>();
 
-        for(Mail list : mailList) {
+        for (Mail list : mailList) {
             List<Receiver> mailReceivers = receiverRepository.findByMailNo(list.getMailNo());
             mailReceiverList =
                     mailReceivers.stream()
@@ -142,20 +142,20 @@ public class MailService {
 
         List<Mail> mailAllList = new ArrayList<>();
 
-        if(search != null) {
-            if(search.equals("mailtitle") && !searchValue.isEmpty()) {
+        if (search != null) {
+            if (search.equals("mailtitle") && !searchValue.isEmpty()) {
                 mailAllList = mailRepository.findByMailTitleContaining(searchValue);
-            }else if(search.equals("sendermem") && !searchValue.isEmpty()) {
+            } else if (search.equals("sendermem") && !searchValue.isEmpty()) {
                 mailAllList = mailRepository.findBySenderMemContaining(searchValue);
             }
-        }else {
+        } else {
             mailAllList = mailRepository.findAll();
         }
 
         List<MailDTO> receiverMail = new ArrayList<>();
-        for(Receiver list : receivers) {
-            for(Mail mailList : mailAllList) {
-                if(list.getMailNo() == mailList.getMailNo() && list.getReceiverDelStatus() == 'N') {
+        for (Receiver list : receivers) {
+            for (Mail mailList : mailAllList) {
+                if (list.getMailNo() == mailList.getMailNo() && list.getReceiverDelStatus() == 'N') {
                     Timestamp readTime = list.getReadTime();
 
                     // ReceiveDTO 객체 생성 및 수신자가 메일을 읽은 시간 설정
@@ -201,12 +201,12 @@ public class MailService {
                 , mailDetail.getSendCancelStatus()
                 , mailDetail.getSendDelStatus()
                 , mailReceiver.stream()
-                    .map(receiver -> new ReceiverDTO(
-                            receiver.getMailNo(),
-                            receiver.getReceiverMem(),
-                            receiver.getReadTime(),
-                            receiver.getReceiverDelStatus()
-                    )).toList()
+                .map(receiver -> new ReceiverDTO(
+                        receiver.getMailNo(),
+                        receiver.getReceiverMem(),
+                        receiver.getReadTime(),
+                        receiver.getReceiverDelStatus()
+                )).toList()
         );
     }
 
@@ -215,20 +215,21 @@ public class MailService {
         List<Receiver> mailRead = receiverRepository.findByMailNo(mailNo);
 
         int result = 0;
-        for(Receiver list : mailRead) {
-            if(list.getReadTime() != null) {
-                result = 0; break;
+        for (Receiver list : mailRead) {
+            if (list.getReadTime() != null) {
+                result = 0;
+                break;
             }
 
             result = 1;
         }
 
-        if(result == 1) {
+        if (result == 1) {
             Mail oneMail = mailRepository.findByMailNo(mailNo);
             oneMail.sendCancelStatus('Y');
             mailRepository.save(oneMail);
 
-            for(Receiver read : mailRead) {
+            for (Receiver read : mailRead) {
                 read.receiverDelStatus('Y');
             }
         }
@@ -239,7 +240,7 @@ public class MailService {
     @Transactional
     public int deleteSendMail(List<Integer> mailNo) {
         int result = 0;
-        for(Integer list : mailNo) {
+        for (Integer list : mailNo) {
             Mail oneMail = mailRepository.findByMailNo(list);
             oneMail.sendDelStatus('Y');
             mailRepository.save(oneMail);
@@ -252,10 +253,10 @@ public class MailService {
     @Transactional
     public int deleteReceiveMail(List<Integer> mailNo) {
         int result = 0;
-        for(Integer list : mailNo) {
+        for (Integer list : mailNo) {
             List<Receiver> Receivers = receiverRepository.findByMailNo(list);
 
-            for(Receiver receiver : Receivers) {
+            for (Receiver receiver : Receivers) {
                 receiver.receiverDelStatus('Y');
 
                 receiverRepository.save(receiver);
@@ -287,10 +288,10 @@ public class MailService {
         Receiver updateMail = receiverRepository.findByMailNoAndReceiverMem(mailNo, memberNo);
 
 //        if(updateMail.getReadTime() == null) {
-            Timestamp now = Timestamp.valueOf(LocalDateTime.now());
-            updateMail.readTime(now);
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+        updateMail.readTime(now);
 
-            receiverRepository.save(updateMail);
+        receiverRepository.save(updateMail);
 //        }
         System.out.println(updateMail);
 
