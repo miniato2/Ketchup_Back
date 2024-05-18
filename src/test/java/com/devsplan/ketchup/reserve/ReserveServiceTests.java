@@ -1,23 +1,29 @@
 package com.devsplan.ketchup.reserve;
 
 import com.devsplan.ketchup.reserve.dto.ReserveDTO;
-import com.devsplan.ketchup.rsc.dto.ResourceDTO;
-import com.devsplan.ketchup.rsc.entity.Resource;
+import com.devsplan.ketchup.reserve.entity.Reserve;
 import com.devsplan.ketchup.reserve.repository.ReserveRepository;
 import com.devsplan.ketchup.reserve.service.ReserveService;
+import com.devsplan.ketchup.rsc.dto.ResourceDTO;
+import com.devsplan.ketchup.rsc.entity.Resource;
+import com.devsplan.ketchup.rsc.repository.RscRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDate;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @SpringBootTest
@@ -29,34 +35,29 @@ public class ReserveServiceTests {
     @Autowired
     private ReserveRepository reserveRepository;
 
+    @Autowired
+    private RscRepository resourceRepository;
+
+    @PersistenceContext
+    private EntityManager manager;
+
     @DisplayName("자원 예약 목록 조회")
     @Test
     void selectReserveList() {
         // given
         String rscCategory = "회의실";
-        LocalDate rsvDate = LocalDate.of(2024, 5, 10);
+        LocalDateTime startOfDay = LocalDateTime.of(2024, 5, 10, 0, 0);
+        LocalDateTime endOfDay = LocalDateTime.of(2024, 5, 10, 23, 59);
 
         // when
-        List<ReserveDTO> foundReserve = reserveService.selectReserveList(rscCategory, rsvDate);
+        List<ReserveDTO> foundReserve = reserveService.getReserveWithResources(rscCategory, startOfDay, endOfDay);
 
         // then
         Assertions.assertNotNull(foundReserve);
         System.out.println("자원 예약 목록 조회 = " + foundReserve);
     }
 
-    @DisplayName("자원 예약 상세 조회")
-    @Test
-    void selectReserveDetail() {
-        // given
-        int rsvNo = 17;
 
-        // when
-        ReserveDTO foundReserve = reserveService.selectReserveDetail(rsvNo);
-
-        // then
-        Assertions.assertNotNull(foundReserve);
-        System.out.println("자원 예약 상세 조회 = " + foundReserve);
-    }
 
     private static Stream<Arguments> getResourceInfo() {
         return Stream.of(
@@ -94,22 +95,21 @@ public class ReserveServiceTests {
         return Stream.of(
                 Arguments.of(
                         "3",
-                        LocalDateTime.of(2024, 5, 10, 13, 30),
-                        LocalDateTime.of(2024, 5, 10, 18, 0),
+                        LocalDateTime.of(2024, 6, 23, 13, 30),
+                        LocalDateTime.of(2024, 6, 23, 18, 0),
                         5,
-                        "위클리 미팅",
+                        "회의실A 자원 예약",
                         "회의실",
                         "회의실 A",
                         "별관 3층 301호",
                         10,
                         true,
                         "5월 첫째주 위클리 미팅"
-                )
-                ,
+                ),
                 Arguments.of(
                         "3",
-                        LocalDateTime.of(2024, 5, 20, 10, 0),
-                        LocalDateTime.of(2024, 5, 20, 12, 0),
+                        LocalDateTime.of(2024, 6, 23, 10, 0),
+                        LocalDateTime.of(2024, 6, 23, 12, 0),
                         5,
                         "물류 창고 방문",
                         "법인차량",
@@ -121,8 +121,8 @@ public class ReserveServiceTests {
                 ),
                 Arguments.of(
                         "3",
-                        LocalDateTime.of(2024, 5, 30, 15, 0),
-                        LocalDateTime.of(2024, 5, 30, 17, 0),
+                        LocalDateTime.of(2024, 6, 23, 15, 0),
+                        LocalDateTime.of(2024, 6, 23, 17, 0),
                         5,
                         "진급식",
                         "회의실",
@@ -131,12 +131,11 @@ public class ReserveServiceTests {
                         8,
                         true,
                         "이대리 등 30명 진급 축하식을 위한 진급식 진행"
-                )
-                ,
+                ),
                 Arguments.of(
                         "2",
-                        LocalDateTime.of(2024, 5, 30, 17, 0),
-                        LocalDateTime.of(2024, 5, 30, 17, 30),
+                        LocalDateTime.of(2024, 6, 23, 17, 0),
+                        LocalDateTime.of(2024, 6, 23, 17, 30),
                         5,
                         "미국 바이어와 화상 미팅",
                         "회의실",
@@ -157,9 +156,7 @@ public class ReserveServiceTests {
         ResourceDTO resourceDTO = new ResourceDTO(rscNo, rscCategory, rscName, rscInfo, rscCap, rscIsAvailable, rscDescr);
 
         // when & then
-        Assertions.assertDoesNotThrow(
-                () -> reserveService.insertResource(resourceDTO)
-        );
+        Assertions.assertDoesNotThrow(() -> reserveService.insertResource(resourceDTO));
     }
 
     @DisplayName("자원 예약 등록 테스트")
@@ -177,12 +174,10 @@ public class ReserveServiceTests {
         );
 
         // when, then
-        Assertions.assertDoesNotThrow(
-                () -> {
-                    Resource resource = reserveService.getResourceFromDatabase(rscNo);
-                    reserveService.insertReserve(newReserve, resource);
-                }
-        );
+        Assertions.assertDoesNotThrow(() -> {
+            Resource resource = reserveService.getResourceFromDatabase(rscNo);
+            reserveService.insertReserve(newReserve, resource);
+        });
     }
 
     @DisplayName("자원 예약 수정 서비스 테스트")
@@ -198,7 +193,8 @@ public class ReserveServiceTests {
                 rsvNo,
                 updatedDescr,
                 updatedStartDttm,
-                updatedEndDttm
+                updatedEndDttm,
+                null
         );
 
         String memberNo = "3";
@@ -207,7 +203,7 @@ public class ReserveServiceTests {
         Assertions.assertDoesNotThrow(() -> reserveService.updateReserve(rsvNo, memberNo, updateReserve));
 
         // then
-        ReserveDTO updatedReserve = reserveService.selectReserveDetail(rsvNo);
+        Reserve updatedReserve = reserveRepository.findById((long) rsvNo).orElseThrow();
         Assertions.assertNotNull(updatedReserve);
         Assertions.assertEquals(updatedStartDttm, updatedReserve.getRsvStartDttm());
         Assertions.assertEquals(updatedEndDttm, updatedReserve.getRsvEndDttm());
@@ -222,7 +218,7 @@ public class ReserveServiceTests {
         String memberNo = "3";
 
         // when, then
-        reserveService.deleteById(rsvNo, memberNo);
+        Assertions.assertDoesNotThrow(() -> reserveService.deleteById(rsvNo, memberNo));
         Assertions.assertThrows(NoSuchElementException.class, () -> reserveRepository.findById((long) rsvNo).orElseThrow());
     }
 }
