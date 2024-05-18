@@ -1,16 +1,23 @@
 package com.devsplan.ketchup.member.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 import java.time.LocalDateTime;
 
 public class MemberDTO {
 
     private String memberNo;
+    @NotBlank(message = "이름은 필수 입력값입니다.")
     private String memberName;
     private String memberPW;
     private String phone;
     private String birthDate;
     private char gender;
     private String address;
+
+    @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
+    @NotBlank(message = "이메일은 필수 입력값입니다.")
     private String privateEmail;
     private String companyEmail;
     private DepDTO department;

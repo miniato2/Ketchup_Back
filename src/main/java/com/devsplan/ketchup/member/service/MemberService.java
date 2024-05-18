@@ -235,4 +235,26 @@ public class MemberService {
         return memberList;
 
     }
+
+    public List<DepDTO> findAllDepsWithNoPaging() {
+        List<Dep> deps = depRepository.findByStatus('y');
+
+        List<DepDTO> depList = deps.stream()
+                .map(dep -> modelMapper.map(dep, DepDTO.class))
+                .collect(Collectors.toList());
+
+        return depList;
+
+    }
+
+    public List<PositionDTO> findAllPositionWithNoPaging() {
+
+        List<Position> positions = positionRepository.findByPositionStatus('y');
+
+        List<PositionDTO> positionList = positions.stream()
+                .map(position -> modelMapper.map(position,PositionDTO.class))
+                .collect(Collectors.toList());
+
+        return positionList;
+    }
 }

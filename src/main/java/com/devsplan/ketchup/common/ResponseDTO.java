@@ -18,6 +18,11 @@ public class ResponseDTO {
     public ResponseDTO() {
     }
 
+    public ResponseDTO(HttpStatus status, String message) {
+        this.status = status.value();
+        this.message = message;
+    }
+
     public ResponseDTO(HttpStatus status, String message, Object data) {
         this.status = status.value(); // HttpStatus enum 타입에서 value라는 int형 상태 코드 값만 추출
         this.message = message;
@@ -26,5 +31,4 @@ public class ResponseDTO {
     public ResponseDTO(String message) {
         this.message = message;
     }
-
 }

@@ -94,7 +94,7 @@ public class ApprovalService {
             approvalDTO.setApprovalNo(approvalNo);
 
             java.util.Date now = new java.util.Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String appDate = sdf.format(now);
 
             approvalDTO.setAppDate(appDate);    //등록일자
@@ -236,7 +236,7 @@ public class ApprovalService {
         AppLine appLine = appLineRepository.findByMemberNoAndApprovalNo(memberNo, approvalNo);
 
         java.util.Date now = new java.util.Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String appDate = sdf.format(now);
 
         switch(appUpdateDTO.getAction()){

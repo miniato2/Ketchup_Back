@@ -18,10 +18,10 @@ public enum Authority {
 
 
 
-    @Override
-    public String toString() {
-        return "Authority{" +
-                "role='" + role + '\'' +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Authority{" +
+//                "role='" + role + '\'' +
+//                '}';
+//    }
 }
