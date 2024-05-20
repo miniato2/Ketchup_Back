@@ -3,11 +3,13 @@ package com.devsplan.ketchup.reserve.entity;
 import com.devsplan.ketchup.rsc.entity.Resource;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 
 @Getter
+@ToString
 @Entity
 @Table(name = "TBL_RESERVE")
 public class Reserve {
@@ -97,4 +99,3 @@ public class Reserve {
     }
 
 }
-

@@ -2,8 +2,10 @@ package com.devsplan.ketchup.rsc.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.ToString;
 
 @Entity
+@ToString
 @Table(name = "tbl_resource")
 @Getter
 public class Resource {

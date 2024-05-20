@@ -37,9 +37,12 @@ public class Mail {
 
     @Column(name = "SEND_DEL_STATUS", nullable = false)
     private char sendDelStatus;
+
+    @Column(name = "REPLY_MAIL_NO")
+    private int replyMailNo;
     
     protected Mail() {}
-    
+
     public Mail mailNo(int val) {
         this.mailNo = val;
         return this;
@@ -81,5 +84,14 @@ public class Mail {
         this.mailContent = mailContent;
         this.sendCancelStatus = sendCancelStatus;
         this.sendDelStatus = sendDelStatus;
+    }
+
+    public Mail(String senderMem, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus, int replyMailNo) {
+        this.senderMem = senderMem;
+        this.mailTitle = mailTitle;
+        this.mailContent = mailContent;
+        this.sendCancelStatus = sendCancelStatus;
+        this.sendDelStatus = sendDelStatus;
+        this.replyMailNo = replyMailNo;
     }
 }
