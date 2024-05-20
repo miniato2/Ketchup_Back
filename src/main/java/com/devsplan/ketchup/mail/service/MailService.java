@@ -2,6 +2,7 @@ package com.devsplan.ketchup.mail.service;
 
 import com.devsplan.ketchup.common.ResponseDTO;
 import com.devsplan.ketchup.mail.dto.MailDTO;
+import com.devsplan.ketchup.mail.dto.MailFileDTO;
 import com.devsplan.ketchup.mail.dto.ReceiverDTO;
 import com.devsplan.ketchup.mail.entity.Mail;
 import com.devsplan.ketchup.mail.entity.MailFile;
@@ -49,7 +50,8 @@ public class MailService {
                 mailInfo.getMailTitle(),
                 mailInfo.getMailContent(),
                 mailInfo.getSendCancelStatus(),
-                mailInfo.getSendDelStatus()
+                mailInfo.getSendDelStatus(),
+                mailInfo.getReplyMailNo()
         );
 
         Mail saveMail = mailRepository.save(mail);
@@ -97,17 +99,17 @@ public class MailService {
     public List<MailDTO> selectSendMailList(String senderMem, String search, String searchValue) {
         List<Mail> mailList = new ArrayList<>();
         if (search != null) {
-            if (search.equals("mailtitle") && !searchValue.isEmpty()) {
+            if (search.equals("mailTitle") && !searchValue.isEmpty()) {
                 mailList = mailRepository.findBySenderMemAndSendDelStatusAndMailTitleContaining(senderMem, 'N', searchValue);
-            } else if (search.equals("sendermem") && !searchValue.isEmpty()) {
+            } else if (search.equals("senderMem") && !searchValue.isEmpty()) {
 //                mailList = mailRepository.findBySenderMemAndSendDelStatusAndReceiverMemContaining(senderMem, 'N', searchValue);
             }
         } else {
             mailList = mailRepository.findBySenderMemAndSendDelStatus(senderMem, 'N');
         }
 
-        List<ReceiverDTO> mailReceiverList;
         List<MailDTO> mailDtoList = new ArrayList<>();
+        List<ReceiverDTO> mailReceiverList;
 
         for (Mail list : mailList) {
             List<Receiver> mailReceivers = receiverRepository.findByMailNo(list.getMailNo());
@@ -129,6 +131,7 @@ public class MailService {
                     list.getSendMailTime(),
                     list.getSendCancelStatus(),
                     list.getSendDelStatus(),
+                    list.getReplyMailNo(),
                     mailReceiverList
             ));
         }
@@ -143,9 +146,9 @@ public class MailService {
         List<Mail> mailAllList = new ArrayList<>();
 
         if (search != null) {
-            if (search.equals("mailtitle") && !searchValue.isEmpty()) {
+            if (search.equals("mailTitle") && !searchValue.isEmpty()) {
                 mailAllList = mailRepository.findByMailTitleContaining(searchValue);
-            } else if (search.equals("sendermem") && !searchValue.isEmpty()) {
+            } else if (search.equals("senderMem") && !searchValue.isEmpty()) {
                 mailAllList = mailRepository.findBySenderMemContaining(searchValue);
             }
         } else {
@@ -173,6 +176,7 @@ public class MailService {
                             mailList.getSendMailTime(),
                             mailList.getSendCancelStatus(),
                             mailList.getSendDelStatus(),
+                            mailList.getReplyMailNo(),
                             receiverReadTime
                     );
 
@@ -188,9 +192,11 @@ public class MailService {
         return receiverMail;
     }
 
+    // 메일 상세 조회
     public MailDTO selectMailDetail(int mailNo) {
         Mail mailDetail = mailRepository.findByMailNoAndSendDelStatus(mailNo, 'N');
         List<Receiver> mailReceiver = receiverRepository.findByMailNo(mailNo);
+        List<MailFile> mailFileList = mailFileRepository.findByMailNo(mailNo);
 
         return new MailDTO(
                 mailDetail.getMailNo()
@@ -200,13 +206,21 @@ public class MailService {
                 , mailDetail.getSendMailTime()
                 , mailDetail.getSendCancelStatus()
                 , mailDetail.getSendDelStatus()
+                , mailDetail.getReplyMailNo()
                 , mailReceiver.stream()
-                .map(receiver -> new ReceiverDTO(
+                    .map(receiver -> new ReceiverDTO(
                         receiver.getMailNo(),
                         receiver.getReceiverMem(),
                         receiver.getReadTime(),
                         receiver.getReceiverDelStatus()
-                )).toList()
+                    )).toList()
+                , mailFileList.stream()
+                    .map(mailFile -> new MailFileDTO(
+                        mailFile.getMailFileNo(),
+                        mailFile.getMailFilePath(),
+                        mailFile.getMailFileName(),
+                        mailFile.getMailFileOriName()
+                    )).toList()
         );
     }
 
@@ -268,20 +282,20 @@ public class MailService {
         return result;
     }
 
-    @Transactional
-    public int replyMail(MailDTO replyMail) {
-        Mail mail = new Mail(
-                replyMail.getSenderMem(),
-                replyMail.getMailTitle(),
-                replyMail.getMailContent(),
-                replyMail.getSendCancelStatus(),
-                replyMail.getSendDelStatus()
-        );
-
-        mailRepository.save(mail);
-
-        return mail.getMailNo();
-    }
+//    @Transactional
+//    public int replyMail(MailDTO replyMail) {
+//        Mail mail = new Mail(
+//                replyMail.getSenderMem(),
+//                replyMail.getMailTitle(),
+//                replyMail.getMailContent(),
+//                replyMail.getSendCancelStatus(),
+//                replyMail.getSendDelStatus()
+//        );
+//
+//        mailRepository.save(mail);
+//
+//        return mail.getMailNo();
+//    }
 
     @Transactional
     public Object updateReadMailTime(String memberNo, int mailNo) {
