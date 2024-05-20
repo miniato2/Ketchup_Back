@@ -134,48 +134,48 @@ public class MailController {
         }
     }
 
-    @PostMapping("/{mailNo}/reply")
-    public ResponseEntity<ResponseDTO> replyMail(@RequestHeader("Authorization") String token,
-                                                 @PathVariable int mailNo,
-                                                 @RequestPart("mailInfo") MailDTO mailDto,
-                                                 @RequestPart("mailFile") MultipartFile mailFile){
-        // 사원 번호
-        String memberNo = decryptToken(token).get("memberNo", String.class);
-
-        // 이전 메일 가져오기
-        MailDTO prevMail = mailService.selectMailDetail(mailNo);
-
-        MailDTO replyMail = new MailDTO(
-                memberNo,
-                "RE:" + prevMail.getMailTitle(),
-                mailDto.getMailContent() + prevMail.getMailContent(),
-                'N',
-                'N'
-        );
-
-        int replyMailNo = mailService.replyMail(replyMail);
-
-        if(replyMailNo == 0) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("메일 답장 실패"));
-        }else {
-            List<ReceiverDTO> replyReceivers = new ArrayList<>();
-            ReceiverDTO replyReceiver = new ReceiverDTO(
-                    replyMailNo,
-                    prevMail.getSenderMem(),
-                    'N'
-            );
-
-            replyReceivers.add(replyReceiver);
-
-//            mailService.insertReceiver(replyReceivers);
-
-            if(mailFile != null) {
-//                mailService.insertMailFile(replyMailNo, mailFile);
-            }
-
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 답장 성공", null));
-        }
-    }
+//    @PostMapping("/{mailNo}/reply")
+//    public ResponseEntity<ResponseDTO> replyMail(@RequestHeader("Authorization") String token,
+//                                                 @PathVariable int mailNo,
+//                                                 @RequestPart("mailInfo") MailDTO mailDto,
+//                                                 @RequestPart("mailFile") MultipartFile mailFile){
+//        // 사원 번호
+//        String memberNo = decryptToken(token).get("memberNo", String.class);
+//
+//        // 이전 메일 가져오기
+//        MailDTO prevMail = mailService.selectMailDetail(mailNo);
+//
+//        MailDTO replyMail = new MailDTO(
+//                memberNo,
+//                "RE:" + prevMail.getMailTitle(),
+//                mailDto.getMailContent() + prevMail.getMailContent(),
+//                'N',
+//                'N'
+//        );
+//
+//        int replyMailNo = mailService.replyMail(replyMail);
+//
+//        if(replyMailNo == 0) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("메일 답장 실패"));
+//        }else {
+//            List<ReceiverDTO> replyReceivers = new ArrayList<>();
+//            ReceiverDTO replyReceiver = new ReceiverDTO(
+//                    replyMailNo,
+//                    prevMail.getSenderMem(),
+//                    'N'
+//            );
+//
+//            replyReceivers.add(replyReceiver);
+//
+////            mailService.insertReceiver(replyReceivers);
+//
+//            if(mailFile != null) {
+////                mailService.insertMailFile(replyMailNo, mailFile);
+//            }
+//
+//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 답장 성공", null));
+//        }
+//    }
 
     @PutMapping("/times/{mailNo}")
     public ResponseEntity<ResponseDTO> updateReadMailTime(@RequestHeader("Authorization") String token, @PathVariable int mailNo) {
