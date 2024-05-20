@@ -30,7 +30,7 @@ public class NoticeController {
 
     /* 공지 목록 조회(페이징, 제목검색) */
     @GetMapping
-    public ResponseEntity<ResponseDTO> selectNoticeList(@RequestParam(name = "offset", defaultValue = "1") String offset
+    public ResponseEntity<ResponseDTO> selectNoticeList(@RequestParam(name = "page", defaultValue = "1") String offset
                                                         , @RequestParam(required = false) String title) {
         try {
             Criteria cri = new Criteria(Integer.parseInt(offset),10);
