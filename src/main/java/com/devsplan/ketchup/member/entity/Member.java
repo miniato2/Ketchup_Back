@@ -68,6 +68,11 @@ public class Member {
         return this;
     }
 
+    public Member memberName(String memberName){
+        this.memberName = memberName;
+        return this;
+    }
+
     public Member phone(String phone){
         this.phone = phone;
         return this;
