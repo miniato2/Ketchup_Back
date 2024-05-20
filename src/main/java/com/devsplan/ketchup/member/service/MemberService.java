@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -256,5 +257,108 @@ public class MemberService {
                 .collect(Collectors.toList());
 
         return positionList;
+    }
+
+    public String updateMemberWithImage(MemberDTO updateMemberDTO, MultipartFile updateMemberImage) {
+        System.out.println("[ProductService] updateProduct Start ===================================");
+        System.out.println("updateMemberDTO : " + updateMemberDTO);
+        Member member = memberRepository.findByMemberNo(updateMemberDTO.getMemberNo()).get();
+
+        String replaceFileName = null;
+        int result = 0;
+
+        try {
+
+            /* update 할 엔티티 조회 */
+
+            String oriImage = member.getImgUrl();
+            System.out.println("[updateMember] oriImage : " + oriImage);
+            DepDTO updateDepDTO = findDepByDepNo(updateMemberDTO.getDepartment().getDepNo());
+            Dep updateDep =modelMapper.map(updateDepDTO,Dep.class);
+            PositionDTO updatePositionDTO = findPositionByPositionNo(updateMemberDTO.getPosition().getPositionNo());
+            Position updatePosition =modelMapper.map(updatePositionDTO,Position.class);
+
+            /* update를 위한 엔티티 값 수정 */
+
+
+                member = member.memberName(updateMemberDTO.getMemberName()).build();
+                member = member.phone(updateMemberDTO.getPhone()).build();
+                member = member.birthDate(updateMemberDTO.getBirthDate()).build();
+                member = member.address(updateMemberDTO.getAddress()).build();
+                member = member.privateEmail(updateMemberDTO.getPrivateEmail()).build();
+                member = member.companyEmail(updateMemberDTO.getCompanyEmail()).build();
+                member = member.department(updateDep).build();
+                member = member.position(updatePosition).build();
+                member = member.account(updateMemberDTO.getAccount()).build();
+
+
+//
+
+            if(updateMemberImage != null){
+                String imageName = UUID.randomUUID().toString().replace("-", "");
+                replaceFileName = FileUtils.saveFile(IMAGE_DIR, imageName, updateMemberImage);
+
+                member = member.imgUrl(replaceFileName).build();	// 새로운 파일 이름으로 update
+
+
+                boolean isDelete = FileUtils.deleteFile(IMAGE_DIR, oriImage);
+                System.out.println("[update] isDelete : " + isDelete);
+
+            } else {
+
+                /* 이미지 변경 없을 시 */
+                member = member.imgUrl(oriImage).build();
+            }
+
+            result = 1;
+
+        } catch (IOException e) {
+            System.out.println("[updateMember] Exception!!");
+            FileUtils.deleteFile(IMAGE_DIR, replaceFileName);
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("[MemberService] updateMember End ===================================" + member);
+        memberRepository.save(member);
+        return  "사원 업데이트 성공" ;
+    }
+
+
+    public Object updateMember(MemberDTO updateMemberDTO) {
+        System.out.println("[ProductService] updateProduct Start ===================================");
+        System.out.println("updateMemberDTO : " + updateMemberDTO);
+        Member member = memberRepository.findByMemberNo(updateMemberDTO.getMemberNo()).get();
+
+        String replaceFileName = null;
+        int result = 0;
+
+
+            /* update 할 엔티티 조회 */
+
+            String oriImage = member.getImgUrl();
+            System.out.println("[updateMember] oriImage : " + oriImage);
+            DepDTO updateDepDTO = findDepByDepNo(updateMemberDTO.getDepartment().getDepNo());
+            Dep updateDep =modelMapper.map(updateDepDTO,Dep.class);
+            PositionDTO updatePositionDTO = findPositionByPositionNo(updateMemberDTO.getPosition().getPositionNo());
+            Position updatePosition =modelMapper.map(updatePositionDTO,Position.class);
+
+            /* update를 위한 엔티티 값 수정 */
+
+
+            member = member.memberName(updateMemberDTO.getMemberName()).build();
+            member = member.phone(updateMemberDTO.getPhone()).build();
+            member = member.birthDate(updateMemberDTO.getBirthDate()).build();
+            member = member.address(updateMemberDTO.getAddress()).build();
+            member = member.privateEmail(updateMemberDTO.getPrivateEmail()).build();
+            member = member.companyEmail(updateMemberDTO.getCompanyEmail()).build();
+            member = member.department(updateDep).build();
+            member = member.position(updatePosition).build();
+            member = member.account(updateMemberDTO.getAccount()).build();
+
+
+
+        System.out.println("[MemberService] updateMember End ===================================" + member);
+        memberRepository.save(member);
+        return  "사원 업데이트 성공";
     }
 }

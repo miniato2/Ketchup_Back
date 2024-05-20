@@ -33,6 +33,18 @@ public class MemberDTO {
 
     }
 
+    public MemberDTO(String memberNo, String memberName, String phone, String address, String privateEmail, String companyEmail, DepDTO department, PositionDTO position, String account) {
+        this.memberNo = memberNo;
+        this.memberName = memberName;
+        this.phone = phone;
+        this.address = address;
+        this.privateEmail = privateEmail;
+        this.companyEmail = companyEmail;
+        this.department = department;
+        this.position = position;
+        this.account = account;
+    }
+
     public MemberDTO(String memberName, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, DepDTO department, PositionDTO position, String account, String status, String imgUrl) {
         this.memberName = memberName;
         this.memberPW = memberPW;
