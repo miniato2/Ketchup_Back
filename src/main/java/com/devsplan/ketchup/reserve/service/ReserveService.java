@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -137,9 +139,9 @@ public class ReserveService {
 
         Reserve updatedReserve = new Reserve(
                 foundReserve.getRsvNo(),
-                updateReserve.getRsvStartDttm() != null ? updateReserve.getRsvStartDttm() : foundReserve.getRsvStartDttm(),
-                updateReserve.getRsvEndDttm() != null ? updateReserve.getRsvEndDttm() : foundReserve.getRsvEndDttm(),
-                updateReserve.getRsvDescr() != null ? updateReserve.getRsvDescr() : foundReserve.getRsvDescr(),
+                updateReserve.getRsvStartDttm(),
+                updateReserve.getRsvEndDttm(),
+                updateReserve.getRsvDescr(),
                 foundReserve.getMemberNo(),
                 foundReserve.getResources()
         );

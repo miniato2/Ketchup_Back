@@ -14,9 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -33,15 +31,6 @@ public class ReserveController {
     public ReserveController(ReserveService reserveService) {
         this.reserveService = reserveService;
         reserve = new ArrayList<>();
-
-        // LocalDateTime 파싱을 위한 DateTimeFormatter 생성
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd a h시 m분", Locale.KOREAN);
-
-        // 날짜 및 시간 정보를 문자열에서 LocalDateTime으로 변환하여 ScheduleDTO 객체를 생성
-        LocalDateTime rsvStartDttm = LocalDateTime.parse("2024-05-20 오후 4시 30분", formatter);
-        LocalDateTime rsvEndDttm = LocalDateTime.parse("2024-05-20 오후 7시 30분", formatter);
-
-        reserve.add(new ReserveDTO(6, "ReserveController에서 생성하는 사용 목적", rsvStartDttm, rsvEndDttm, "3", new ResourceDTO(1, "회의실", "회의실 B", "본관 4층 401호", 20, true, "Smart TV, 빔프로젝터, 책상, 의자, 단상 비치, 경복궁 뷰")));
     }
 
     @GetMapping
@@ -87,18 +76,14 @@ public class ReserveController {
     @PostMapping()
     public ResponseEntity<?> insertReserve(@RequestBody ReserveDTO newReserve) {
         log.debug("newReserve: {}", newReserve);
-
         if (newReserve.getResources() == null) {
             return ResponseEntity.badRequest().body("자원 정보가 비어있습니다.");
         }
-
         Resource resource = reserveService.findResourceById(newReserve.getResources().getRscNo());
         if (resource == null) {
             return ResponseEntity.badRequest().body("해당 자원을 찾을 수 없습니다.");
         }
-
         reserveService.insertReserve(newReserve, resource);
-
         return ResponseEntity.created(URI.create("/reserves/" + newReserve.getRsvNo())).build();
     }
 
@@ -112,9 +97,7 @@ public class ReserveController {
 
         try {
             reserveService.updateReserve(rsvNo, memberNo, updateReserve);
-            String uri = "/reserves/" + rsvNo;
-
-            return ResponseEntity.ok().header(HttpHeaders.LOCATION, uri).body("예약이 성공적으로 수정되었습니다. URI: " + uri);
+            return ResponseEntity.ok().header(HttpHeaders.LOCATION).body("예약이 성공적으로 수정되었습니다. ");
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }

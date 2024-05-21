@@ -190,6 +190,24 @@ public class MemberController {
 
 
 
+    @PutMapping ("/membersNoImage")
+    public ResponseEntity<ResponseDTO> updateMemberNoImage(@RequestBody MemberDTO updateMemberDTO){
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "사원 수정 성공", memberService.updateMember(updateMemberDTO)));
+
+    }
+
+
+    @PutMapping ("/members")
+    public ResponseEntity<ResponseDTO> updateMember(@RequestPart("memberInfo") @Valid MemberDTO updateMemberDTO,
+                                                    @RequestPart("memberImage") MultipartFile updateMemberImage){
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "사원 수정 성공", memberService.updateMemberWithImage(updateMemberDTO, updateMemberImage)));
+
+    }
+
+
+
 
 
 

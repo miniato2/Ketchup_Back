@@ -153,16 +153,15 @@ public class BoardService {
     /* 부서 전체 게시물 목록조회(권한자-대표) */
     public Page<BoardDTO> selectAllBoards(Criteria cri, String title) {
 
-        int index = cri.getPageNum() -1;
-        int count = cri.getAmount();
-
-        Pageable paging = PageRequest.of(index, count, Sort.by("boardNo").descending());
+        int page = cri.getPageNum() -1;
+        int size = cri.getAmount();
+        Pageable paging = PageRequest.of(page, size, Sort.by("boardNo").descending());
 
 
         try {
             Page<Board> boardList;
             if (title != null && !title.isEmpty()) {
-                boardList = boardRepository.findByBoardTitleContaining(paging, title);
+                boardList = boardRepository.findByBoardTitleContainingIgnoreCase(paging, title);
             } else {
                 boardList = boardRepository.findAll(paging);
             }
