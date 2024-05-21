@@ -53,8 +53,6 @@ public class BoardService {
         try {
             // 게시글 엔티티 생성
             boardDTO.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
-//            boardDTO.setMemberNo(memberNo);
-//            boardDTO.setDepartmentNo(depNo);
 
             Board board = modelMapper.map(boardDTO, Board.class);
 
@@ -77,12 +75,8 @@ public class BoardService {
     public Object insertBoardWithFile(BoardDTO boardDTO, List<MultipartFile> files/*, String memberNo, int depNo*/) {
 
         Map<String, Object> result = new HashMap<>();
-//        boardDTO.setDepartmentNo(depNo);
-
         try {
             boardDTO.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
-//            boardDTO.setMemberNo(memberNo);
-
             Board savedBoard = modelMapper.map(boardDTO, Board.class);
             boardRepository.save(savedBoard);
 
@@ -95,7 +89,6 @@ public class BoardService {
                     }
                     String fileName = file.getOriginalFilename();
                     String newFileName = UUID.randomUUID().toString().replace("-", "");
-//                    String newFileName = UUID.randomUUID().toString().replace("-", "")+ "." + FilenameUtils.getExtension(fileName);;
                     String savedFilePath = FileUtils.saveFile(IMAGE_DIR, newFileName, file);
                     String filePath = savedFilePath + "/" + fileName;
 
@@ -147,24 +140,21 @@ public class BoardService {
         Page<BoardDTO> boardDTOList = boardList.map(board -> modelMapper.map(board, BoardDTO.class));
 
         return boardDTOList;
-//        return new PageImpl<>(boardDTOList, paging, boardList.getTotalElements());}
     }
 
     /* 부서 전체 게시물 목록조회(권한자-대표) */
-    public Page<BoardDTO> selectAllBoards(Criteria cri, String title) {
+    public Page<BoardDTO> selectAllBoards(int depNo, Criteria cri, String title) {
 
-        int index = cri.getPageNum() -1;
-        int count = cri.getAmount();
-
-        Pageable paging = PageRequest.of(index, count, Sort.by("boardNo").descending());
-
+        int page = cri.getPageNum() -1;
+        int size = cri.getAmount();
+        Pageable paging = PageRequest.of(page, size, Sort.by("boardNo").descending());
 
         try {
             Page<Board> boardList;
             if (title != null && !title.isEmpty()) {
-                boardList = boardRepository.findByBoardTitleContaining(paging, title);
+                boardList = boardRepository.findByDepartmentNoAndBoardTitleContainingIgnoreCase(depNo, paging, title);
             } else {
-                boardList = boardRepository.findAll(paging);
+                boardList = boardRepository.findByDepartmentNo(depNo, paging);
             }
 
             return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
@@ -216,7 +206,6 @@ public class BoardService {
                 foundBoard.boardContent(boardInfo.getBoardContent());
                 foundBoard.boardUpdateDttm(new Timestamp(System.currentTimeMillis()));
 
-                // 변경된 엔티티를 저장하고 결과를 확인합니다.
                 Board savedBoard = boardRepository.save(foundBoard);
                 if (savedBoard.getBoardNo() == boardNo) {
                     return "게시물 수정 성공";
@@ -271,7 +260,6 @@ public class BoardService {
                         boardFileRepository.save(boardFile);
                         fileCount++;
                     }
-
                     return "게시물 수정 성공";
                 } else {
                     return "첨부파일이 없음";

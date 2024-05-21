@@ -33,34 +33,34 @@ public class BoardController {
     @GetMapping
     public ResponseEntity<ResponseDTO> selectBoardList(  @RequestParam(required = false) Integer depNo,
                                                          @RequestParam(required = false) String title,
-                                                         @RequestParam(defaultValue = "1") int page,
+                                                         @RequestParam(name = "page", defaultValue = "1") String offset,
                                                          @RequestHeader("Authorization") String token) {
         try {
-            Criteria cri = new Criteria(page, 10);
+            Criteria cri = new Criteria(Integer.parseInt(offset),10);
             PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
 
             // 클레임에서 depNo 추출
             String role = decryptToken(token).get("role", String.class);
-            log.debug("Received request: role={}, depNo={}, title={}, page={}", role, depNo, title, page);
+            log.debug("Received request: role={}, depNo={}, title={}, page={}", role, depNo, title, offset);
             System.out.println("==================================================");
             System.out.println("role : " + role);
             System.out.println("depNo : " + depNo);
 
             Page<BoardDTO> boardList;
 
-            if (role != null && role.equals("LV3") || depNo == null) {
+            if (role.equals("LV3")) {
                 // 부서 번호가 없는 경우 모든 부서의 자료실 정보를 조회합니다.
-                boardList = boardService.selectAllBoards(cri, title);
-//                pagingResponseDTO.setData(boardList);
+                boardList = boardService.selectAllBoards(depNo, cri, title);
             } else {
                 // 특정 부서의 자료실 정보를 조회합니다.
                 boardList = boardService.selectBoardList(depNo, cri, title);
-//                pagingResponseDTO.setData(boardList);
-                System.out.println("departmentNo : " + depNo);
             }
 
             pagingResponseDTO.setData(boardList); // 페이지의 실제 데이터 설정
+            System.out.println("===========================================");
+            System.out.println("[ boardList ] : " + boardList);
             pagingResponseDTO.setPageInfo(new PageDTO(cri, (int)boardList.getTotalElements())); // 페이지 정보 설정
+            System.out.println("pagingResponseDTO : " + pagingResponseDTO);
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "목록 조회 성공", pagingResponseDTO));
 
         } catch (ExpiredJwtException e) {
@@ -80,13 +80,19 @@ public class BoardController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
             Integer depNo = decryptToken(token).get("depNo", Integer.class);
-
+            String role = decryptToken(token).get("role", String.class);
             // 게시물 상세 정보 조회
             BoardDTO boardDTO = boardService.selectBoardDetail(boardNo);
 
             if (boardDTO == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ResponseDTO(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다.", null));
+            }
+            // LV3 권한이면 모든 게시물에 대한 접근을 허용
+            if (role.equals("LV3")) {
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .body(new ResponseDTO(HttpStatus.OK, "상세 조회 성공", boardDTO));
             }
 
             // 해당 게시물을 볼 수 있는지 확인

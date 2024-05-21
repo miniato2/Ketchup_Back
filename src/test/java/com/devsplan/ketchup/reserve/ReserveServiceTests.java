@@ -21,6 +21,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -184,9 +186,9 @@ public class ReserveServiceTests {
     @Test
     void updateReserve() {
         // given
-        int rsvNo = 16;
-        LocalDateTime updatedStartDttm = LocalDateTime.of(2025, 5, 3, 14, 30);
-        LocalDateTime updatedEndDttm = LocalDateTime.of(2025, 5, 3, 16, 30);
+        int rsvNo = 13;
+        LocalDateTime updatedStartDttm = LocalDateTime.of(2024, 5, 9, 12, 30);
+        LocalDateTime updatedEndDttm = LocalDateTime.of(2025, 5, 9, 13, 30);
         String updatedDescr = "자원 예약 수정";
 
         ReserveDTO updateReserve = new ReserveDTO(
@@ -197,7 +199,7 @@ public class ReserveServiceTests {
                 null
         );
 
-        String memberNo = "3";
+        String memberNo = "5";
 
         // when
         Assertions.assertDoesNotThrow(() -> reserveService.updateReserve(rsvNo, memberNo, updateReserve));
