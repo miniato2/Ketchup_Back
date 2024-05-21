@@ -29,15 +29,20 @@ public class RscService {
     }
 
     @Transactional
-    public Object insertResource(ResourceDTO rscDTO) {
+    public int insertResource(ResourceDTO rscDTO) {
+        String checkDescr = rscDTO.getRscDescr() == null ? null : rscDTO.getRscDescr() ;
         Resource resource = new Resource(
                 rscDTO.getRscCategory(),
                 rscDTO.getRscName(),
                 rscDTO.getRscInfo(),
-                rscDTO.getRscCap()
+                rscDTO.getRscCap(),
+                rscDTO.isRscIsAvailable(),
+                checkDescr
         );
 
-        return rscRepository.save(resource);
+        Resource insertRsc = rscRepository.save(resource);
+
+        return insertRsc.getRscNo();
     }
 
     public List<ResourceDTO> selectRscList(String part) {

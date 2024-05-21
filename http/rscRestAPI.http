@@ -1,14 +1,15 @@
 ### 자원 등록
 POST http://localhost:8080/resources
 Content-Type: application/json
-Authorization: Bearer eyJkYXRlIjoxNzE1MDQ0NDEyNTc5LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6MiwibWVtYmVyTm8iOiIyIiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDIiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE1MTMwODEyfQ.s4Dtb_mt4D0PNMKFbMrj386TWpZNavgOml0-pciMvz4
+Authorization: Bearer eyJkYXRlIjoxNzE2MTgyOTk0NDg2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6MiwiaW1nVXJsIjoiNTVhN2NlM2I0MTk1NGY5MmI2ODYzMWU5MDQ0ZTM1NDAucG5nIiwibWVtYmVyTm8iOiIyIiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDIiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6IuuwleuLpOydgCIsInBvc2l0aW9uTm8iOjIsImV4cCI6MTcxNjI2OTM5NCwiZGVwTmFtZSI6IuyduOyCrO2MgCJ9.nA3T4UWg4xUFDuUEyl49BQgdlorhs-_JMXmbhhxsu60
 
 {
-  "rscCategory" : "회의실",
-  "rscName" : "회의실A",
-  "rscInfo" : "3층 303호",
+  "rscCategory" : "차량",
+  "rscName" : "차량D",
+  "rscInfo" : "11다1111",
   "rscCap" : 8,
-  "rscIsAvailable" : false
+  "rscIsAvailable" : true,
+  "rscDescr": "추가 정보"
 }
 
 ### 자원 목록 조회
