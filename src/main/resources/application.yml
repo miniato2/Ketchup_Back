@@ -34,6 +34,12 @@ spring:
         show_sql: true
         format_sql: true
 
+  # Jackson config
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+
 ## 이미지 저장할 위치와 응답할 때 이미지 주소 세팅
 image:
   ## WebConfig에 세팅

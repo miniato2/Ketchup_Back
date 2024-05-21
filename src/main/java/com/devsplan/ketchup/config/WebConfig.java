@@ -70,33 +70,33 @@ public class WebConfig implements WebMvcConfigurer {
 
 
     // LocalDateTime을 ObjectMapper를 사용하여 JSON 직렬화 및 역직렬화를 수행하기 위함
-    @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-
-        // LocalDateTime 직렬화 설정
-        javaTimeModule.addSerializer(
-                LocalDateTime.class,
-                new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd a h시 m분"))
-        );
-
-        // LocalDateTime 역직렬화 설정
-        javaTimeModule.addDeserializer(
-                LocalDateTime.class,
-                new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd a h시 m분"))
-        );
-
-        mapper.registerModule(javaTimeModule);
-        return mapper;
-    }
-
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setObjectMapper(objectMapper());
-        converters.add(converter);
-    }
+//    @Bean
+//    public ObjectMapper objectMapper() {
+//        ObjectMapper mapper = new ObjectMapper();
+//        JavaTimeModule javaTimeModule = new JavaTimeModule();
+//
+//        // LocalDateTime 직렬화 설정
+//        javaTimeModule.addSerializer(
+//                LocalDateTime.class,
+//                new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd a h시 m분"))
+//        );
+//
+//        // LocalDateTime 역직렬화 설정
+//        javaTimeModule.addDeserializer(
+//                LocalDateTime.class,
+//                new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd a h시 m분"))
+//        );
+//
+//        mapper.registerModule(javaTimeModule);
+//        return mapper;
+//    }
+//
+//    @Override
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+//        converter.setObjectMapper(objectMapper());
+//        converters.add(converter);
+//    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {

@@ -1,17 +1,18 @@
 ### 메일 작성
 POST http://localhost:8080/mails
 Content-Type: multipart/form-data; boundary=WebAppBoundary
-Authorization: Bearer eyJkYXRlIjoxNzE1MDUxNDU2Mjc2LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6MiwibWVtYmVyTm8iOiIyIiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDIiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE1MTM3ODU2fQ.dSstImx7tZqujLDOUX5sPIHG_IuikZBwrrbNjLoivPs
+Authorization: Bearer eyJkYXRlIjoxNzE2MTc0MTU3NTIwLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6MiwiaW1nVXJsIjoiYzExNDc3MzJkNmMxNDk2OThmOGI0ZGM2NjVmMzlmZTcucG5nIiwibWVtYmVyTm8iOiIyIiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDIiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6IuuwleuLpOydgCIsInBvc2l0aW9uTm8iOjIsImV4cCI6MTcxNjI2MDU1NywiZGVwTmFtZSI6IuyduOyCrO2MgCJ9.NBWk8hm2pijWxZjy6Grk4PCIa3hzR2MY1unY3zKXVRY
 
 --WebAppBoundary
-Content-Disposition: form-data; name="mailInfo"
+Content-Disposition: form-data; name="mailDto"
 Content-Type: application/json
 
 {
-  "mailTitle": " 테스트바나나 메일",
-  "mailContent": "테스트 메일 내용",
+  "mailTitle": "메일 테스트1",
+  "mailContent": "테스트1",
+  "replyMailNo": 0,
   "receivers": [
-    {"receiverMem":  "1"}, {"receiverMem":  "4"}
+     {"receiverMem":  "2"}
   ]
 }
 
