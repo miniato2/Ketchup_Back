@@ -90,6 +90,8 @@ public class MemberController {
     @PostMapping("/signupPosition")
     public String signupPosition(@RequestBody PositionDTO positionDTO){
 
+
+
         memberService.insertPosition(positionDTO);
 
 
@@ -184,7 +186,7 @@ public class MemberController {
 
 
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공",positionList));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공", positionList));
 
     }
 
@@ -205,6 +207,18 @@ public class MemberController {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "사원 수정 성공", memberService.updateMemberWithImage(updateMemberDTO, updateMemberImage)));
 
     }
+
+    @DeleteMapping("/positions/{positionNo}")
+    public ResponseEntity<ResponseDTO> deletePosition(@PathVariable int positionNo){
+
+        System.out.println("삭제할 직급 번호 : " + positionNo);
+
+        memberService.deletePosition(positionNo);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "삭제완료"));
+
+    }
+
 
 
 

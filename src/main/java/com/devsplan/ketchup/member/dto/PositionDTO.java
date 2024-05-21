@@ -21,6 +21,13 @@ public class PositionDTO {
         this.positionNo = positionNo;
     }
 
+    public PositionDTO(String positionName, int positionLevel, Authority authority, char positionStatus) {
+        this.positionName = positionName;
+        this.positionLevel = positionLevel;
+        this.authority = authority;
+        this.positionStatus = positionStatus;
+    }
+
     public PositionDTO(int positionNo, String positionName, int positionLevel, Authority authority, char positionStatus) {
         this.positionNo = positionNo;
         this.positionName = positionName;
