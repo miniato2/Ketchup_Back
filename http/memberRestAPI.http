@@ -127,9 +127,9 @@ Content-Type: application/json
 {
   "memberNo": "1",
   "memberName": "이후영",
-  "memberPW" : "3158",
-  "phone": "010-3228-3158",
-  "birthDate": "1994-05-17",
+  "memberPW" : "1111",
+  "phone": "010-1111-1111",
+  "birthDate": "1111-11-11",
   "gender": "M",
   "address" : "서울시 강동구 암사동",
   "privateEmail" : "gndud3158@naver.com",
@@ -415,3 +415,31 @@ Accept: */*
 Authorization: Bearer eyJkYXRlIjoxNzE0NzA5MTMzNDY5LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE0Nzk1NTMzfQ.9aO1Urz4cX4Jure7E10loGTo1heEqUcih2_4xs6fWXI
 
 
+###사원정보 수정
+PUT http://localhost:8080/members
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Accept: */*
+Authorization: Bearer eyJkYXRlIjoxNzE2MTcyOTE5OTI3LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywiaW1nVXJsIjoiMmZlZDJiYzMyZWZiNDlkYWE1OTM5NTNmZTk0YjM4ZTgucG5nIiwibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6IuydtOynhOyasCIsInBvc2l0aW9uTm8iOjMsImV4cCI6MTcxNjI1OTMxOSwiZGVwTmFtZSI6Iuq4sO2aje2MgCJ9.ggEAYs2tTgTrT4q54vRgsigqsp2lkKF8IvUVqgfGprE
+
+
+--WebAppBoundary
+Content-Disposition: form-data; name="memberInfo"
+Content-Type: application/json
+
+{
+  "memberNo": "1",
+  "memberName": "수정두번한이후영",
+  "phone": "010-3228-3158",
+  "address" : "지구어딘가",
+  "privateEmail" : "66666666@naver.com",
+  "companyEmail" : "66666666@ketchup.com",
+  "department" : 2,
+  "position" : 2,
+  "account" : "29345876239485"
+}
+
+--WebAppBoundary
+Content-Disposition: form-data; name="memberImage"; filename="pikachu.png"
+
+< ./pikachu.png
+--WebAppBoundary--
