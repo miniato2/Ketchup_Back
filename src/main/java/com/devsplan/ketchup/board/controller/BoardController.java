@@ -50,7 +50,7 @@ public class BoardController {
 
             if (role.equals("LV3")) {
                 // 부서 번호가 없는 경우 모든 부서의 자료실 정보를 조회합니다.
-                boardList = boardService.selectAllBoards(cri, title);
+                boardList = boardService.selectAllBoards(depNo, cri, title);
             } else {
                 // 특정 부서의 자료실 정보를 조회합니다.
                 boardList = boardService.selectBoardList(depNo, cri, title);
@@ -80,13 +80,19 @@ public class BoardController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
             Integer depNo = decryptToken(token).get("depNo", Integer.class);
-
+            String role = decryptToken(token).get("role", String.class);
             // 게시물 상세 정보 조회
             BoardDTO boardDTO = boardService.selectBoardDetail(boardNo);
 
             if (boardDTO == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ResponseDTO(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다.", null));
+            }
+            // LV3 권한이면 모든 게시물에 대한 접근을 허용
+            if (role.equals("LV3")) {
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .body(new ResponseDTO(HttpStatus.OK, "상세 조회 성공", boardDTO));
             }
 
             // 해당 게시물을 볼 수 있는지 확인
