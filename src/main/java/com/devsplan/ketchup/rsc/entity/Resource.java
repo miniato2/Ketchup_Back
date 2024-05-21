@@ -44,11 +44,13 @@ public class Resource {
         return this;
     }
 
-    public Resource(String rscCategory, String rscName, String rscInfo, int rscCap) {
+    public Resource(String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
         this.rscCategory = rscCategory;
         this.rscName = rscName;
         this.rscInfo = rscInfo;
         this.rscCap = rscCap;
+        this.rscIsAvailable = rscIsAvailable;
+        this.rscDescr = rscDescr;
     }
 
     public Resource(int rscNo, String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {

@@ -28,7 +28,8 @@ public class RscController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO> insertResource(@RequestBody ResourceDTO rscDto) {
-
+        System.out.println("🌸🌸🌸🌸🌸🌸");
+        System.out.println(rscDto);
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "자원 등록 성공",
                         rscService.insertResource(rscDto))
