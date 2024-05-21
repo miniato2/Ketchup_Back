@@ -1,8 +1,11 @@
 package com.devsplan.ketchup.reserve.dto;
 
 import com.devsplan.ketchup.rsc.dto.ResourceDTO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -11,7 +14,11 @@ public class ReserveDTO {
 
     private int rsvNo;
     private String rsvDescr;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime rsvStartDttm;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime rsvEndDttm;
     private String reserver;
 
