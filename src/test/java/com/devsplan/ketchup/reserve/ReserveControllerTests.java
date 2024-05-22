@@ -30,7 +30,7 @@ public class ReserveControllerTests {
     @MockBean
     private ReserveService reserveService;
 
-    private final String token = "Bearer eyJkYXRlIjoxNzE2MDQ0NjkwMDk0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLrjIDtkZwiLCJkZXBObyI6MywiaW1nVXJsIjoiNTdiMzMzYzRhZTg5NGM2ZGFhODIxODkwZWQ4OTdkNDkucG5nIiwibWVtYmVyTm8iOiIzIiwicG9zaXRpb25MZXZlbCI6Mywic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDMiLCJyb2xlIjoiTFYzIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6IuydtOynhOyasCIsInBvc2l0aW9uTm8iOjMsImV4cCI6MTcxNjEzMTA5MCwiZGVwTmFtZSI6Iuq4sO2aje2MgCJ9.4qxAVYOD3d-eWf84d7u-q9uS78I4Xfn0QyiCGiks9PU";
+    private final String token = "Bearer eyJkYXRlIjoxNzE2Mjg4NTU0MjcwLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwiaW1nVXJsIjoiNzY1NWY5YzkxYjYyNDMxZjg4OTYyYmMxYjY4ZjIzZTUucG5nIiwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6Iuq5gO2YhOyngCIsInBvc2l0aW9uTm8iOjIsImV4cCI6MTcxNjM3NDk1NCwiZGVwTmFtZSI6IuuyleustO2MgCJ9.nSobZzOER9U775YF6bwb5zUbyS2y80BoWMHBkTKJIqI";
 
     private RequestBuilder request;
 
@@ -196,7 +196,7 @@ public class ReserveControllerTests {
     @Test
     void deleteReserve() throws Exception {
         // given
-        int rsvNo = 6;
+        int rsvNo = 12;
 
         // when
          MvcResult result = mvc.perform(MockMvcRequestBuilders.delete("/reserves/" + rsvNo)
