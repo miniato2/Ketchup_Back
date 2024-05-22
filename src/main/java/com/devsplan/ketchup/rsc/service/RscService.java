@@ -85,8 +85,8 @@ public class RscService {
             rsc.rscIsAvailable(updateRsc.isRscIsAvailable());
             result += 1;
 
-            // 사용 가능 불가로 변경되는 경우(true) - 예약 일정 삭제
-            if(updateRsc.isRscIsAvailable()) {
+            // 사용 가능 불가로 변경되는 경우(false) - 예약 일정 삭제
+            if(!updateRsc.isRscIsAvailable()) {
                 // 해당 자원에 대한 예약자 조회
                 List<Reserve> reserveList = reserveRepository.findByResources(rsc);
 
