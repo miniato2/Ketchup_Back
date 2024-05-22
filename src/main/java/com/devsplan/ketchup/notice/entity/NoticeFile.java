@@ -8,17 +8,6 @@ import lombok.Builder;
 @Builder(toBuilder = true)
 public class NoticeFile {
 
-//    @Id
-//    @Column(name = "notice_file_no")
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private int noticeFileNo;            // 공지 파일 번호
-//
-//    @Column(name = "notice_no", nullable = false)
-//    private int noticeNo;                  // 공지 번호
-//
-//    @Column(name = "notice_file_imgurl", nullable = false)
-//    private String noticeFileImgUrl;       // 공지 파일 경로
-
     @Id
     @Column(name = "notice_file_no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,19 +44,7 @@ public class NoticeFile {
         return noticeFileName;
     }
 
-    //    public NoticeFile noticeFileImgUrl(String val) {
-//        this.noticeFileImgUrl = val;
-//        return this;
-//    }
-//
-//    public NoticeFile(int noticeFileNo, int noticeNo, String noticeFileImgUrl) {
-//        this.noticeFileNo = noticeFileNo;
-//        this.noticeNo = noticeNo;
-//        this.noticeFileImgUrl = noticeFileImgUrl;
-//    }
-//
-//    public String getNoticeFileImgUrl() {
-//        return noticeFileImgUrl;
-//    }
-
+    public String getNoticeFilePath() {
+        return noticeFilePath;
+    }
 }

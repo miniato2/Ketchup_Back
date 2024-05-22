@@ -33,7 +33,6 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final NoticeFileRepository noticeFileRepository;
     private final ModelMapper modelMapper;
-    private final FileUtils fileUtils;
 
     /* 이미지 저장 할 위치 및 응답 할 이미지 주소 */
     @Value("${image.image-dir}")
@@ -42,8 +41,7 @@ public class NoticeService {
     @Value("${image.image-url}")
     private String IMAGE_URL;
 
-    public NoticeService(FileUtils fileUtils, NoticeRepository noticeRepository, NoticeFileRepository noticeFileRepository, ModelMapper modelMapper) {
-        this.fileUtils = fileUtils;
+    public NoticeService(NoticeRepository noticeRepository, NoticeFileRepository noticeFileRepository, ModelMapper modelMapper) {
         this.noticeRepository = noticeRepository;
         this.noticeFileRepository = noticeFileRepository;
         this.modelMapper = modelMapper;
@@ -52,54 +50,54 @@ public class NoticeService {
     /* 공지사항 목록조회 & 페이징 & 상단고정 */
     public Page<NoticeDTO> selectNoticeList(Criteria cri, String title) {
 
+        // 페이지와 사이즈를 기반으로 페이징 객체를 생성합니다.
         int page = cri.getPageNum() - 1;
         int size = cri.getAmount();
         Pageable paging = PageRequest.of(page, size, Sort.by("noticeNo").descending());
 
-        // 검색어가 있을 경우에는 해당 검색어를 포함하는 공지 목록을 가져옵니다.
-        Page<Notice> noticePage;
-        if (title != null && !title.isEmpty()) {
-            noticePage = noticeRepository.findByNoticeTitleContainingIgnoreCase(title, paging);
-        } else {
-            // 검색어가 없을 경우에는 모든 공지 목록을 가져옵니다.
-            noticePage = noticeRepository.findAll(paging);
-        }
-
-        // 페이징 정보 없이 모든 공지를 가져오기
+        // 모든 공지를 최신 순으로 가져옵니다.
         List<Notice> allNotices = noticeRepository.findAll(Sort.by("noticeCreateDttm").descending());
         System.out.println("===================== 공지 목록 조회 =====================");
         System.out.println("allNotices : " + allNotices.size());
 
-        // 상단에 고정된 공지와 일반 공지로 나누기
+        // 상단에 고정된 필독 공지를 가져옵니다.
         List<Notice> fixedNotices = allNotices.stream()
                 .filter(notice -> notice.getNoticeFix() == 'Y')
-                .collect(Collectors.toList());
-        System.out.println("fixedNotices : " + fixedNotices.size());
+                .toList();
 
+        // 일반 공지를 가져옵니다.
         List<Notice> normalNotices = allNotices.stream()
                 .filter(notice -> notice.getNoticeFix() != 'Y')
                 .collect(Collectors.toList());
-        System.out.println("normalNotices : " + normalNotices.size());
 
-        // 검색어에 따라 필터링
+        // 검색어에 따라 필터링합니다.
         if (title != null && !title.isEmpty()) {
             normalNotices = normalNotices.stream()
                     .filter(notice -> notice.getNoticeTitle().toLowerCase().contains(title.toLowerCase()))
                     .collect(Collectors.toList());
         }
-        System.out.println("title normalNotices : " + normalNotices.size());
 
-        // 상단에 고정된 공지를 목록 가장 상단에 추가
-        normalNotices.addAll(0, fixedNotices);
+        // 전체 공지 수를 계산합니다.
+        int totalElements = normalNotices.size() + fixedNotices.size();
 
-        // 전체 공지 수
-        int totalElements = normalNotices.size();
-        System.out.println("normalNotices.size : " + totalElements);
+        // 현재 페이지에 10개의 일반 공지를 구분하여 반환합니다.
+        List<Notice> currentNormalItems = getCurrentItems(page, size, normalNotices);
 
-        // 페이지 객체 생성하여 반환
-        return new PageImpl<>(normalNotices.stream()
+        // 필독 공지를 현재 페이지의 일반 공지 앞에 추가합니다.
+        List<Notice> combinedItems = new ArrayList<>(fixedNotices);
+        combinedItems.addAll(currentNormalItems);
+
+        // 페이지 객체를 생성하여 반환합니다.
+        return new PageImpl<>(combinedItems.stream()
                 .map(notice -> modelMapper.map(notice, NoticeDTO.class))
                 .collect(Collectors.toList()), paging, totalElements);
+    }
+
+    // 현재 페이지에 보여질 일반 공지 목록을 가져옵니다.
+    private List<Notice> getCurrentItems(int page, int size, List<Notice> normalNotices) {
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, normalNotices.size());
+        return normalNotices.subList(startIndex, endIndex);
     }
 
     /* 공지사항 상세조회(첨부파일 다운) */
@@ -112,14 +110,11 @@ public class NoticeService {
 
         NoticeDTO noticeDTO = modelMapper.map(foundNotice, NoticeDTO.class);
 
-        // 게시물에 첨부된 파일 다운로드 링크 생성
         List<NoticeFile> noticeFiles = findNoticeFileByNoticeNo(noticeNo);
         List<NoticeFileDTO> noticeFileDTOs = new ArrayList<>();
 
         for (NoticeFile noticeFile : noticeFiles) {
             NoticeFileDTO noticeFileDTO = modelMapper.map(noticeFile, NoticeFileDTO.class);
-            String downloadLink = IMAGE_URL + noticeFile.getNoticeFileName();
-            noticeFileDTO.setDownloadLink(downloadLink);
             noticeFileDTOs.add(noticeFileDTO);
         }
 
@@ -175,8 +170,8 @@ public class NoticeService {
                         break;
                     }
                     String fileName = file.getOriginalFilename();
-                    String newFileName = UUID.randomUUID().toString().replace("-", "");
-                    String savedFilePath = fileUtils.saveFile(IMAGE_DIR, newFileName, file);
+                    String newFileName = fileName + UUID.randomUUID().toString().replace("-", "");
+                    String savedFilePath = FileUtils.saveFile(IMAGE_DIR, newFileName, file);
 
                     // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
                     File newFile = new File(savedFilePath);
@@ -235,7 +230,7 @@ public class NoticeService {
 
     /* 공지사항 수정(첨부파일) */
     @Transactional
-    public String updateNoticeWithFile(int noticeNo, NoticeDTO noticeDTO, List<MultipartFile> files, String memberNo) {
+    public String updateNoticeWithFile(int noticeNo, NoticeDTO noticeDTO, List<MultipartFile> files, List<Integer> deleteFileNo, String memberNo) {
         try {
             Notice foundNotice = noticeRepository.findById(noticeNo).orElseThrow(IllegalArgumentException::new);
 
@@ -247,6 +242,24 @@ public class NoticeService {
 
                 Notice savedNotice = noticeRepository.save(foundNotice);
 
+
+                // 파일 삭제 처리
+                if (deleteFileNo != null && !deleteFileNo.isEmpty()) {
+
+                    log.info("updateNoticeWithFile :", deleteFileNo);
+
+                    for (int fileNo : deleteFileNo) {
+                        NoticeFile noticeFile = noticeFileRepository.findById(fileNo).orElse(null);
+                        if (noticeFile != null) {
+                            File file = new File(noticeFile.getNoticeFilePath());
+                            if (file.exists()) {
+                                file.delete();
+                            }
+                            noticeFileRepository.delete(noticeFile);
+                        }
+                    }
+                }
+
                 if (files != null && !files.isEmpty()) {
                     int fileCount = 0; // 등록된 파일 수를 세는 변수 추가
                     for (MultipartFile file : files) {
@@ -255,8 +268,7 @@ public class NoticeService {
                         }
                         String fileName = file.getOriginalFilename();
                         String newFileName = UUID.randomUUID().toString().replace("-", "") + "." + fileName ;
-                        String savedFilePath = fileUtils.saveFile(IMAGE_DIR, newFileName, file);
-                        String filePath = savedFilePath + "//" + fileName;
+                        String savedFilePath = FileUtils.saveFile(IMAGE_DIR, newFileName, file);
 
                         // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
                         File newFile = new File(savedFilePath);
@@ -265,7 +277,7 @@ public class NoticeService {
                         NoticeFileDTO noticeFileDTO = new NoticeFileDTO();
                         noticeFileDTO.setNoticeNo(savedNotice.getNoticeNo());
                         noticeFileDTO.setNoticeFileName(newFileName);
-                        noticeFileDTO.setNoticeFilePath(filePath);
+                        noticeFileDTO.setNoticeFilePath(savedFilePath);
                         noticeFileDTO.setNoticeFileOriName(fileName);
 
                         NoticeFile noticeFile = modelMapper.map(noticeFileDTO, NoticeFile.class);
@@ -309,14 +321,10 @@ public class NoticeService {
             hasPermission = hasPermission || notice.getMemberNo().equals(memberNo);
 
             if (hasPermission) {
-                // 공지사항과 연관된 파일 조회
                 List<NoticeFile> noticeFiles = noticeFileRepository.findByNoticeNo(noticeNo);
-                // 파일 삭제
+
                 noticeFileRepository.deleteAll(noticeFiles);
-
-                // 공지사항 삭제
                 noticeRepository.delete(notice);
-
                 return true; // 성공적으로 삭제됨
 
             } else {
