@@ -14,4 +14,6 @@ public interface PositionRepository extends JpaRepository<Position, Integer> {
 
 
     List<Position> findByPositionStatus(char y);
+
+
 }

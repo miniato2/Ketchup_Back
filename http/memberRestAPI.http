@@ -351,6 +351,8 @@ Authorization: Bearer eyJkYXRlIjoxNzE0NjIyMTI5MDIzLCJ0eXBlIjoiand0IiwiYWxnIjoiSF
 
 }
 
+
+
 ### 퇴사 처리
 PUT http://localhost:8080/auth/resign/6
 Content-Type: application/json

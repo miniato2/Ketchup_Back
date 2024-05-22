@@ -283,7 +283,6 @@ public class MemberService {
 
                 member = member.memberName(updateMemberDTO.getMemberName()).build();
                 member = member.phone(updateMemberDTO.getPhone()).build();
-                member = member.birthDate(updateMemberDTO.getBirthDate()).build();
                 member = member.address(updateMemberDTO.getAddress()).build();
                 member = member.privateEmail(updateMemberDTO.getPrivateEmail()).build();
                 member = member.companyEmail(updateMemberDTO.getCompanyEmail()).build();
@@ -347,7 +346,6 @@ public class MemberService {
 
             member = member.memberName(updateMemberDTO.getMemberName()).build();
             member = member.phone(updateMemberDTO.getPhone()).build();
-            member = member.birthDate(updateMemberDTO.getBirthDate()).build();
             member = member.address(updateMemberDTO.getAddress()).build();
             member = member.privateEmail(updateMemberDTO.getPrivateEmail()).build();
             member = member.companyEmail(updateMemberDTO.getCompanyEmail()).build();
@@ -360,5 +358,11 @@ public class MemberService {
         System.out.println("[MemberService] updateMember End ===================================" + member);
         memberRepository.save(member);
         return  "사원 업데이트 성공";
+    }
+
+    public void deletePosition(int positionNo) {
+     Position deletedPosition  =  positionRepository.findPositionByPositionNo(positionNo);
+        positionRepository.delete(deletedPosition);
+
     }
 }
