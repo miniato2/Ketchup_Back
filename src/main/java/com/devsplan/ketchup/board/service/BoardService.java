@@ -88,12 +88,11 @@ public class BoardService {
                         break;
                     }
                     String fileName = file.getOriginalFilename();
-                    String newFileName = UUID.randomUUID().toString().replace("-", "");
-                    String savedFilePath = FileUtils.saveFile(IMAGE_DIR, newFileName, file);
-                    String filePath = savedFilePath + "/" + fileName;
+                    String newFileName = fileName + UUID.randomUUID().toString().replace("-", "");
+                    String filePath = FileUtils.saveFile(IMAGE_DIR, newFileName, file);
 
                     // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
-                    File newFile = new File(savedFilePath);
+                    File newFile = new File(filePath);
                     file.transferTo(newFile);
 
                     BoardFileDTO boardFileDTO = new BoardFileDTO();
@@ -193,6 +192,27 @@ public class BoardService {
         return boardFileRepository.findByBoardNo(boardNo);
     }
 
+    /* 상세조회 이전 게시물 조회 */
+    public BoardDTO getPreviousBoard(int boardNo, int departmentNo) {
+        Board previousBoard = boardRepository.findTopByDepartmentNoAndBoardNoLessThanOrderByBoardNoDesc(departmentNo, boardNo);
+        if(previousBoard != null) {
+            return modelMapper.map(previousBoard, BoardDTO.class);
+        } else {
+            return null;
+        }
+    }
+
+    /* 상세조회 이후 게시물 조회 */
+    public BoardDTO getNextBoard(int boardNo, int departmentNo) {
+        Board nextBoard = boardRepository.findTopByDepartmentNoAndBoardNoGreaterThanOrderByBoardNoAsc(departmentNo, boardNo);
+
+        if(nextBoard != null) {
+            return modelMapper.map(nextBoard, BoardDTO.class);
+        } else {
+            return null;
+        }
+    }
+
     /* 부서별 자료실 게시물 수정 */
     @Transactional
     public String updateBoard(int boardNo, BoardDTO boardInfo, String memberNo) {
@@ -242,12 +262,11 @@ public class BoardService {
                             break;
                         }
                         String fileName = file.getOriginalFilename();
-                        String newFileName = UUID.randomUUID().toString().replace("-", "") + "." + fileName;
-                        String savedFilePath = FileUtils.saveFile(IMAGE_DIR, newFileName, file);
-                        String filePath = savedFilePath + "//" + fileName;
+                        String newFileName = fileName + UUID.randomUUID().toString().replace("-", "");
+                        String filePath = FileUtils.saveFile(IMAGE_DIR, newFileName, file);
 
                         // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
-                        File newFile = new File(savedFilePath);
+                        File newFile = new File(filePath);
                         file.transferTo(newFile);
 
                         BoardFileDTO boardFileDTO = new BoardFileDTO();

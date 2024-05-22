@@ -11,8 +11,7 @@ import java.util.List;
 
 public interface BoardRepository extends JpaRepository <Board, Integer> {
     Page<Board> findByDepartmentNo(int departmentNo, Pageable pageable);
-//    Page<Board> findByDepartmentNoAndBoardTitleContaining(int departmentNo, Pageable pageable, String title);
     Page<Board> findByDepartmentNoAndBoardTitleContainingIgnoreCase(int departmentNo, Pageable paging, String title);
-    Page<Board> findByBoardTitleContainingIgnoreCase(Pageable paging, String title);
-
+    Board findTopByDepartmentNoAndBoardNoLessThanOrderByBoardNoDesc(int departmentNo, int boardNo);
+    Board findTopByDepartmentNoAndBoardNoGreaterThanOrderByBoardNoAsc(int departmentNo, int boardNo);
 }
