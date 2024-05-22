@@ -14,7 +14,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
 
@@ -48,7 +50,7 @@ public class NoticeController {
         }
     }
 
-    /* 공지 상세 조회(파일 다운) */
+    /* 공지 상세 조회 */
     @GetMapping("/{noticeNo}")
     public ResponseEntity<ResponseDTO> selectNoticeDetail(@PathVariable("noticeNo") int noticeNo) {
         try {
@@ -58,8 +60,15 @@ public class NoticeController {
             if (noticeDTO == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(HttpStatus.NOT_FOUND, "공지사항을 찾을 수 없습니다.", null));
             }
+            NoticeDTO previousNotice = noticeService.getPreviousNotice(noticeNo);
+            NoticeDTO nextNotice = noticeService.getNextNotice(noticeNo);
 
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 조회 성공", noticeDTO));
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("notice", noticeDTO);
+            responseData.put("previousNotice", previousNotice);
+            responseData.put("nextNotice", nextNotice);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 조회 성공", responseData));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
         }
@@ -100,7 +109,7 @@ public class NoticeController {
     public ResponseEntity<ResponseDTO> updateNotice(@PathVariable int noticeNo
                                                     , @RequestPart("noticeDTO")NoticeDTO noticeDTO
                                                     , @RequestPart(required = false, name = "files")List<MultipartFile> files
-                                                    , @RequestParam  List<Integer> noticeFileNo
+                                                    , @RequestParam(required = false) List<Integer> noticeFileNo
                                                     , @RequestHeader("Authorization") String token) {
         try {
             String memberNo = decryptToken(token).get("memberNo", String.class);
@@ -111,7 +120,7 @@ public class NoticeController {
             if (files != null && !files.isEmpty()) {
                 data = noticeService.updateNoticeWithFile(noticeNo, noticeDTO, files, noticeFileNo, memberNo);
             } else {
-                data = noticeService.updateNotice(noticeNo, noticeDTO, memberNo);
+                data = noticeService.updateNotice(noticeNo, noticeDTO, noticeFileNo, memberNo);
             }
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "공지 수정 성공", data));
