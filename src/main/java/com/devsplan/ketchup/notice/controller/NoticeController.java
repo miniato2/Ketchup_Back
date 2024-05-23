@@ -39,10 +39,11 @@ public class NoticeController {
             Criteria cri = new Criteria(Integer.parseInt(offset),10);
             PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
 
-            Page<NoticeDTO> noticeList = noticeService.selectNoticeList(cri, title);
-            pagingResponseDTO.setData(noticeList);
+            Map<String, Object> noticeListMap = noticeService.selectNoticeList(cri, title);
+            pagingResponseDTO.setData(noticeListMap);
 
-            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) noticeList.getTotalElements()));
+            Page<NoticeDTO> normalNoticePage = (Page<NoticeDTO>) noticeListMap.get("normalNotices");
+            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) normalNoticePage.getTotalElements()));
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "목록 조회 성공", pagingResponseDTO));
         } catch (Exception e) {
