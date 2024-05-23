@@ -109,7 +109,7 @@ public class ApprovalService {
 
         //파일 저장
         try {
-            if (multipartFileList != null || !multipartFileList.isEmpty()) {
+            if (multipartFileList != null && !multipartFileList.isEmpty()) {
 
                 for (MultipartFile multipartFile : multipartFileList) {
                     String fileName = UUID.randomUUID().toString().replace("-", "");
@@ -253,7 +253,7 @@ public class ApprovalService {
                 }
                 break;
             case "반려" :
-                approval = approval.appStatus("반려").refusal(appUpdateDTO.getRefusal()).build();
+                approval = approval.appStatus("반려").appFinalDate(appDate).refusal(appUpdateDTO.getRefusal()).build();
                 appLine = appLine.alDate(appDate).build();
                 result = 1;
                 break;
