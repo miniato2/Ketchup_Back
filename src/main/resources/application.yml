@@ -1,4 +1,4 @@
-# db connection info & fileupload config
+## db connection info & fileupload config
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

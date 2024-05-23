@@ -1,6 +1,7 @@
 package com.devsplan.ketchup.board.controller;
 
 import com.devsplan.ketchup.board.dto.BoardDTO;
+import com.devsplan.ketchup.board.entity.Board;
 import com.devsplan.ketchup.board.service.BoardService;
 import com.devsplan.ketchup.common.*;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -39,30 +40,54 @@ public class BoardController {
             Criteria cri = new Criteria(Integer.parseInt(offset),10);
             PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
 
-            // 클레임에서 depNo 추출
+//            // 클레임에서 depNo 추출
+//            String role = decryptToken(token).get("role", String.class);
+//            log.debug("Received request: role={}, depNo={}, title={}, page={}", role, depNo, title, offset);
+//            System.out.println("==================================================");
+//            System.out.println("role : " + role);
+//            System.out.println("depNo : " + depNo);
+//
+//            Page<BoardDTO> boardList;
+//
+//            if (role.equals("LV3")) {
+//                // 부서 번호가 없는 경우 모든 부서의 자료실 정보를 조회합니다.
+//                boardList = boardService.selectAllBoards(depNo, cri, title);
+//            } else {
+//                // 특정 부서의 자료실 정보를 조회합니다.
+//                boardList = boardService.selectBoardList(depNo, cri, title);
+//            }
+//
+//            pagingResponseDTO.setData(boardList); // 페이지의 실제 데이터 설정
+//            System.out.println("===========================================");
+//            System.out.println("[ boardList ] : " + boardList);
+//            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int)boardList.getTotalElements())); // 페이지 정보 설정
+//            System.out.println("pagingResponseDTO : " + pagingResponseDTO);
+//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "목록 조회 성공", pagingResponseDTO));
+
+            Integer roleDepNo = decryptToken(token).get("depNo", Integer.class);
+            log.debug("Received request: roleDepNo={}, depNo={}, title={}, page={}", roleDepNo, depNo, title, offset);
+
+            // Check if the user role is LV3
             String role = decryptToken(token).get("role", String.class);
-            log.debug("Received request: role={}, depNo={}, title={}, page={}", role, depNo, title, offset);
-            System.out.println("==================================================");
-            System.out.println("role : " + role);
-            System.out.println("depNo : " + depNo);
-
-            Page<BoardDTO> boardList;
-
             if (role.equals("LV3")) {
-                // 부서 번호가 없는 경우 모든 부서의 자료실 정보를 조회합니다.
-                boardList = boardService.selectAllBoards(cri, title);
+                // If LV3, retrieve posts for all departments
+                Page<BoardDTO> boardList = boardService.selectAllBoards(depNo, cri, title);
+                pagingResponseDTO.setData(boardList);
+                pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) boardList.getTotalElements()));
+                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "Post list retrieval successful", pagingResponseDTO));
             } else {
-                // 특정 부서의 자료실 정보를 조회합니다.
-                boardList = boardService.selectBoardList(depNo, cri, title);
+                // Otherwise, check if the department number matches the user's department
+                if (Objects.equals(roleDepNo, depNo)) {
+                    // If the user's department matches the requested department, retrieve posts for that department
+                    Page<BoardDTO> boardList = boardService.selectBoardList(depNo, cri, title);
+                    pagingResponseDTO.setData(boardList);
+                    pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) boardList.getTotalElements()));
+                    return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "Post list retrieval successful", pagingResponseDTO));
+                } else {
+                    // If the user's department doesn't match the requested department, return a forbidden response
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseDTO(HttpStatus.FORBIDDEN, "Permission denied", null));
+                }
             }
-
-            pagingResponseDTO.setData(boardList); // 페이지의 실제 데이터 설정
-            System.out.println("===========================================");
-            System.out.println("[ boardList ] : " + boardList);
-            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int)boardList.getTotalElements())); // 페이지 정보 설정
-            System.out.println("pagingResponseDTO : " + pagingResponseDTO);
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "목록 조회 성공", pagingResponseDTO));
-
         } catch (ExpiredJwtException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
         } catch (JwtException e) {
@@ -80,7 +105,7 @@ public class BoardController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
             Integer depNo = decryptToken(token).get("depNo", Integer.class);
-
+            String role = decryptToken(token).get("role", String.class);
             // 게시물 상세 정보 조회
             BoardDTO boardDTO = boardService.selectBoardDetail(boardNo);
 
@@ -88,16 +113,24 @@ public class BoardController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ResponseDTO(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다.", null));
             }
-
-            // 해당 게시물을 볼 수 있는지 확인
-            if (boardDTO.getDepartmentNo() != depNo) {
+            // LV3 권한이면 모든 게시물에 대한 접근을 허용
+            if (!role.equals("LV3") && boardDTO.getDepartmentNo() != depNo) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new ResponseDTO(HttpStatus.FORBIDDEN, "해당 게시물에 접근할 수 있는 권한이 없습니다.", null));
+
             }
+
+            BoardDTO previousBoard = boardService.getPreviousBoard(boardNo, depNo);
+            BoardDTO nextBoard = boardService.getNextBoard(boardNo, depNo);
+
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("board", boardDTO);
+            responseData.put("previousBoard", previousBoard);
+            responseData.put("nextBoard", nextBoard);
 
             return ResponseEntity.ok()
                     .headers(headers)
-                    .body(new ResponseDTO(HttpStatus.OK, "상세 조회 성공", boardDTO));
+                    .body(new ResponseDTO(HttpStatus.OK, "상세 조회 성공", responseData));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));

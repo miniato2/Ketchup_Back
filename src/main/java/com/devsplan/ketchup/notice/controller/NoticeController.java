@@ -8,6 +8,7 @@ import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -99,14 +100,16 @@ public class NoticeController {
     public ResponseEntity<ResponseDTO> updateNotice(@PathVariable int noticeNo
                                                     , @RequestPart("noticeDTO")NoticeDTO noticeDTO
                                                     , @RequestPart(required = false, name = "files")List<MultipartFile> files
+                                                    , @RequestParam  List<Integer> noticeFileNo
                                                     , @RequestHeader("Authorization") String token) {
         try {
             String memberNo = decryptToken(token).get("memberNo", String.class);
-
+            log.info("Member No from token: {}", memberNo);
+            log.info("updateNotice deleteNoticeFileNo: {}", noticeFileNo);
             Object data;
             // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
             if (files != null && !files.isEmpty()) {
-                data = noticeService.updateNoticeWithFile(noticeNo, noticeDTO, files, memberNo);
+                data = noticeService.updateNoticeWithFile(noticeNo, noticeDTO, files, noticeFileNo, memberNo);
             } else {
                 data = noticeService.updateNotice(noticeNo, noticeDTO, memberNo);
             }
@@ -114,10 +117,13 @@ public class NoticeController {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "공지 수정 성공", data));
 
         } catch (ExpiredJwtException e) {
+            log.error("토큰 만료: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
         } catch (JwtException e) {
+            log.error("유효하지 않은 토큰: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("유효하지 않은 토큰입니다."));
         } catch (Exception e) {
+            log.error("서버 오류: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
         }
     }

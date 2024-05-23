@@ -28,6 +28,42 @@ public class Position {
 
     public Position() {
     }
+    public Position(int positionNo, String positionName, int positionLevel, Authority authority, char positionStatus) {
+        this.positionNo = positionNo;
+        this.positionName = positionName;
+        this.positionLevel = positionLevel;
+        this.authority = authority;
+        this.positionStatus = positionStatus;
+    }
+
+    public Position positionNo(int positionNo){
+        this.positionNo = positionNo;
+        return this;
+    }
+
+    public Position positionName(String positionName){
+        this.positionName = positionName;
+        return this;
+    }
+
+    public Position positionLevel(int positionLevel){
+        this.positionLevel = positionLevel;
+        return this;
+    }
+
+    public Position authority(Authority authority){
+        this.authority = authority;
+        return this;
+    }
+    public Position positionStatus(char positionStatus){
+        this.positionStatus= positionStatus;
+        return this;
+
+    }
+
+    public Position build() {
+        return new Position(positionNo,positionName,positionLevel,authority,positionStatus);
+    }
 
     public int getPositionNo() {
         return positionNo;
@@ -57,13 +93,6 @@ public class Position {
         return new ArrayList<>();
     }
 
-    public Position(int positionNo, String positionName, int positionLevel, Authority authority, char positionStatus) {
-        this.positionNo = positionNo;
-        this.positionName = positionName;
-        this.positionLevel = positionLevel;
-        this.authority = authority;
-        this.positionStatus = positionStatus;
-    }
 
 
 
