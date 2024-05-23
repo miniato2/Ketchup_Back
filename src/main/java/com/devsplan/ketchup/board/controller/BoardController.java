@@ -40,30 +40,6 @@ public class BoardController {
             Criteria cri = new Criteria(Integer.parseInt(offset),10);
             PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
 
-//            // 클레임에서 depNo 추출
-//            String role = decryptToken(token).get("role", String.class);
-//            log.debug("Received request: role={}, depNo={}, title={}, page={}", role, depNo, title, offset);
-//            System.out.println("==================================================");
-//            System.out.println("role : " + role);
-//            System.out.println("depNo : " + depNo);
-//
-//            Page<BoardDTO> boardList;
-//
-//            if (role.equals("LV3")) {
-//                // 부서 번호가 없는 경우 모든 부서의 자료실 정보를 조회합니다.
-//                boardList = boardService.selectAllBoards(depNo, cri, title);
-//            } else {
-//                // 특정 부서의 자료실 정보를 조회합니다.
-//                boardList = boardService.selectBoardList(depNo, cri, title);
-//            }
-//
-//            pagingResponseDTO.setData(boardList); // 페이지의 실제 데이터 설정
-//            System.out.println("===========================================");
-//            System.out.println("[ boardList ] : " + boardList);
-//            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int)boardList.getTotalElements())); // 페이지 정보 설정
-//            System.out.println("pagingResponseDTO : " + pagingResponseDTO);
-//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "목록 조회 성공", pagingResponseDTO));
-
             Integer roleDepNo = decryptToken(token).get("depNo", Integer.class);
             log.debug("Received request: roleDepNo={}, depNo={}, title={}, page={}", roleDepNo, depNo, title, offset);
 
@@ -177,6 +153,7 @@ public class BoardController {
     public ResponseEntity<ResponseDTO> updateBoard(@PathVariable int boardNo
                                                     , @RequestPart("boardDTO") BoardDTO boardDTO
                                                     , @RequestPart(required = false, value="files") List<MultipartFile> files
+                                                    , @RequestParam(required = false) List<Integer> boardFileNo
                                                     , @RequestHeader("Authorization") String token) {
         try {
             // 토큰에서 회원 번호 추출
@@ -194,9 +171,9 @@ public class BoardController {
             Object data;
             // 파일이 첨부되었는지 여부에 따라 서비스 메서드 호출 방식을 변경
             if (files != null && !files.isEmpty()) {
-                data = boardService.updateBoardWithFile(boardNo, boardDTO, files, memberNo);
+                data = boardService.updateBoardWithFile(boardNo, boardDTO, files, boardFileNo, memberNo);
             } else {
-                data = boardService.updateBoard(boardNo, boardDTO, memberNo);
+                data = boardService.updateBoard(boardNo, boardDTO, boardFileNo, memberNo);
             }
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "게시물 수정 성공", data));

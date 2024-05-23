@@ -13,9 +13,6 @@ public class BoardFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int boardFileNo;             // 게시물 파일 번호
 
-//    @Column(name = "board_file_imgurl")
-//    private String boardFileImgUrl;
-
     @Column(name = "board_no", nullable = false)
     private int boardNo;                 // 게시물 번호
 
@@ -43,12 +40,6 @@ public class BoardFile {
         return this;
     }
 
-
-//    public BoardFile boardFileImgUrl(String val) {
-//        this.boardFileImgUrl = val;
-//        return this;
-//    }
-
     public BoardFile boardNo(int val) {
         this.boardNo = val;
         return this;
@@ -58,14 +49,7 @@ public class BoardFile {
         return boardFileName;
     }
 
-//    public BoardFile(int boardFileNo, String boardFileImgUrl, int boardNo) {
-//        this.boardFileNo = boardFileNo;
-//        this.boardFileImgUrl = boardFileImgUrl;
-//        this.boardNo = boardNo;
-//    }
-
-
-//    public String getBoardFileImgUrl() {
-//        return boardFileImgUrl;
-//    }
+    public String getBoardFilePath() {
+        return boardFilePath;
+    }
 }
