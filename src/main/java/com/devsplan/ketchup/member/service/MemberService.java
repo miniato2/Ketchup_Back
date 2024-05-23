@@ -12,6 +12,7 @@ import com.devsplan.ketchup.member.repository.DepRepository;
 import com.devsplan.ketchup.member.repository.MemberRepository;
 import com.devsplan.ketchup.member.repository.PositionRepository;
 import com.devsplan.ketchup.util.FileUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class MemberService {
 
     private final ModelMapper modelMapper;
@@ -117,13 +119,29 @@ public class MemberService {
     @Transactional
     public void updatePosition(PositionDTO updatePositionDTO){
 
-        System.out.println("수정할 직급 : "+updatePositionDTO);
 
-        Position updatePosition = modelMapper.map(updatePositionDTO, Position.class);
+        if(updatePositionDTO.getPositionName()==null){
+            PositionDTO newPosition = findPositionByPositionNo(updatePositionDTO.getPositionNo());
 
-        System.out.println("ENTITY : "+ updatePosition);
+             newPosition.setPositionStatus( (newPosition.getPositionStatus() == 'Y') ? 'N' : 'Y');
 
-        positionRepository.save(updatePosition);
+             log.info("이거찾아"+modelMapper.map(newPosition, Position.class));
+
+            positionRepository.save(modelMapper.map(newPosition, Position.class));
+
+        }
+
+        else {
+
+
+            System.out.println("수정할 직급 : " + updatePositionDTO);
+
+            Position updatePosition = modelMapper.map(updatePositionDTO, Position.class);
+
+            System.out.println("ENTITY : " + updatePosition);
+
+            positionRepository.save(updatePosition);
+        }
     }
 
 
@@ -251,6 +269,18 @@ public class MemberService {
     public List<PositionDTO> findAllPositionWithNoPaging() {
 
         List<Position> positions = positionRepository.findByPositionStatus('y');
+
+        List<PositionDTO> positionList = positions.stream()
+                .map(position -> modelMapper.map(position,PositionDTO.class))
+                .collect(Collectors.toList());
+
+        return positionList;
+    }
+
+
+    public List<PositionDTO> findAllPosition() {
+
+        List<Position> positions = positionRepository.findAll();
 
         List<PositionDTO> positionList = positions.stream()
                 .map(position -> modelMapper.map(position,PositionDTO.class))
