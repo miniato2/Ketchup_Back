@@ -50,7 +50,68 @@ public class NoticeService {
     }
 
     /* 공지사항 목록조회 & 페이징 & 상단고정 */
-    public Page<NoticeDTO> selectNoticeList(Criteria cri, String title) {
+    public Map<String, Object> selectNoticeList(Criteria cri, String title) {
+        // 페이지와 사이즈를 기반으로 페이징 객체를 생성합니다.
+        int page = cri.getPageNum() - 1;
+        int size = cri.getAmount();
+        Pageable paging = PageRequest.of(page, size, Sort.by("noticeNo").descending());
+
+        // 모든 공지를 최신 순으로 가져옵니다.
+        List<Notice> allNotices = noticeRepository.findAll(Sort.by("noticeCreateDttm").descending());
+
+        // 상단에 고정된 필독 공지를 가져옵니다.
+        List<Notice> fixedNotices = allNotices.stream()
+                .filter(notice -> notice.getNoticeFix() == 'Y')
+                .toList();
+
+        // 일반 공지를 가져옵니다.
+        List<Notice> normalNotices = allNotices.stream()
+                .filter(notice -> notice.getNoticeFix() != 'Y')
+                .collect(Collectors.toList());
+
+        // 검색어에 따라 필터링합니다.
+        if (title != null && !title.isEmpty()) {
+            normalNotices = normalNotices.stream()
+                    .filter(notice -> notice.getNoticeTitle().toLowerCase().contains(title.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // 전체 공지 수를 계산합니다.
+        int totalElements = normalNotices.size();
+
+        // 현재 페이지에 10개의 일반 공지를 구분하여 반환합니다.
+        List<Notice> currentNormalItems = getCurrentItems(page, size, normalNotices);
+
+        // 필독 공지를 DTO로 변환합니다.
+        List<NoticeDTO> fixedNoticeDTOs = fixedNotices.stream()
+                .map(notice -> modelMapper.map(notice, NoticeDTO.class))
+                .collect(Collectors.toList());
+
+        // 일반 공지를 DTO로 변환합니다.
+        List<NoticeDTO> normalNoticeDTOs = currentNormalItems.stream()
+                .map(notice -> modelMapper.map(notice, NoticeDTO.class))
+                .collect(Collectors.toList());
+
+        // 페이지 정보를 생성합니다.
+        Page<NoticeDTO> normalNoticePage = new PageImpl<>(normalNoticeDTOs, paging, totalElements);
+
+        // 응답 데이터를 생성합니다.
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("fixedNotices", fixedNoticeDTOs);
+        responseData.put("normalNotices", normalNoticePage);
+
+        return responseData;
+    }
+
+    // 현재 페이지에 보여질 일반 공지 목록을 가져옵니다.
+    private List<Notice> getCurrentItems(int page, int size, List<Notice> normalNotices) {
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, normalNotices.size());
+        return normalNotices.subList(startIndex, endIndex);
+    }
+
+    /* 공지사항 목록조회 & 페이징 & 상단고정 */
+    /*public Page<NoticeDTO> selectNoticeList(Criteria cri, String title) {
 
         // 페이지와 사이즈를 기반으로 페이징 객체를 생성합니다.
         int page = cri.getPageNum() - 1;
@@ -100,7 +161,7 @@ public class NoticeService {
         int startIndex = page * size;
         int endIndex = Math.min(startIndex + size, normalNotices.size());
         return normalNotices.subList(startIndex, endIndex);
-    }
+    }*/
 
     /* 공지사항 상세조회(첨부파일 다운) */
     public NoticeDTO selectNoticeDetail(int noticeNo) {

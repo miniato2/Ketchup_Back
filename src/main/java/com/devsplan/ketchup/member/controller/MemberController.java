@@ -103,6 +103,7 @@ public class MemberController {
     @PutMapping ("/signupPosition/{positionNo}")
     public String updatePosition(@PathVariable int positionNo, @RequestBody PositionDTO positionDTO){
 
+        System.out.println("직급 수정 여기도 못와????");
         positionDTO.setPositionNo(positionNo);
         memberService.updatePosition(positionDTO);
 
@@ -183,6 +184,17 @@ public class MemberController {
     public ResponseEntity<ResponseDTO> findAllPositionsWithNoPage(){
 
         List<PositionDTO> positionList = memberService.findAllPositionWithNoPaging();
+
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공", positionList));
+
+    }
+
+    @GetMapping("/Positions")
+    public ResponseEntity<ResponseDTO> findAllPositions(){
+
+        List<PositionDTO> positionList = memberService.findAllPosition();
 
 
 
