@@ -184,7 +184,7 @@ public class ApprovalService {
 
     //참조선으로 등록된 기안 조회
     @Transactional
-    public Page<ApprovalSelectDTO> selectRefApp(String memberNo, String status, String searchValue, Criteria cri) {
+    public Page<ApprovalSelectDTO> selectRefApp(String memberNo, List<String> status, String searchValue, Criteria cri) {
         int index = cri.getPageNum() - 1;
         int count = cri.getAmount();
         Pageable paging = PageRequest.of(index, count, Sort.by("approvalNo").descending());
