@@ -1,5 +1,6 @@
 package com.devsplan.ketchup.rsc.service;
 
+import com.devsplan.ketchup.common.Criteria;
 import com.devsplan.ketchup.mail.entity.Mail;
 import com.devsplan.ketchup.mail.entity.Receiver;
 import com.devsplan.ketchup.mail.repository.MailRepository;
@@ -9,10 +10,13 @@ import com.devsplan.ketchup.reserve.repository.ReserveRepository;
 import com.devsplan.ketchup.rsc.dto.ResourceDTO;
 import com.devsplan.ketchup.rsc.entity.Resource;
 import com.devsplan.ketchup.rsc.repository.RscRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RscService {
@@ -20,12 +24,18 @@ public class RscService {
     private final ReserveRepository reserveRepository;
     private final MailRepository mailRepository;
     private final ReceiverRepository receiverRepository;
+    private final ModelMapper modelMapper;
 
-    public RscService(RscRepository rscRepository, ReserveRepository reserveRepository, MailRepository mailRepository, ReceiverRepository receiverRepository) {
+    public RscService(RscRepository rscRepository,
+                      ReserveRepository reserveRepository,
+                      MailRepository mailRepository,
+                      ReceiverRepository receiverRepository,
+                      ModelMapper modelMapper) {
         this.rscRepository = rscRepository;
         this.reserveRepository = reserveRepository;
         this.mailRepository = mailRepository;
         this.receiverRepository = receiverRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Transactional
@@ -45,19 +55,14 @@ public class RscService {
         return insertRsc.getRscNo();
     }
 
-    public List<ResourceDTO> selectRscList(String part) {
-        List<Resource> rscList = rscRepository.findByRscCategory(part);
+    public Page<ResourceDTO> selectRscList(Criteria cri, String part) {
+        int page = cri.getPageNum() - 1;
+        int size = cri.getAmount();
+        Pageable paging = PageRequest.of(page, size, Sort.by("rscNo").descending());
 
-        return rscList.stream()
-                .map(rsc -> new ResourceDTO(
-                        rsc.getRscNo(),
-                        rsc.getRscCategory(),
-                        rsc.getRscName(),
-                        rsc.getRscInfo(),
-                        rsc.getRscCap(),
-                        rsc.isRscIsAvailable(),
-                        rsc.getRscDescr()
-                )).toList();
+        Page<Resource> rscList = rscRepository.findByRscCategory(part, paging);
+
+        return rscList.map(rsc -> modelMapper.map(rsc, ResourceDTO.class));
     }
 
     public ResourceDTO selectResourceDetail(int rscNo) {
