@@ -180,6 +180,17 @@ public class MemberController {
 
     }
 
+    @GetMapping("/Deps")
+    public ResponseEntity<ResponseDTO> findAllDeps(){
+
+        List<DepDTO> depList = memberService.findAllDeps();
+
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공", depList));
+
+    }
+
     @GetMapping("/noPagePositions")
     public ResponseEntity<ResponseDTO> findAllPositionsWithNoPage(){
 

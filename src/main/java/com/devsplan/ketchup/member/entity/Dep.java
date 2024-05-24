@@ -2,6 +2,8 @@ package com.devsplan.ketchup.member.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="TBL_DEP")
 public class Dep {
@@ -12,22 +14,36 @@ public class Dep {
     private int depNo;
     @Column(name="DEP_NAME")
     private String depName;
-    @Column(name="DEP_LEADER")
-    private String leader;
-    @Column(name="DEP_NUMBER")
-    private int number;
     @Column(name="DEP_STATUS")
     private char status;
+    @Transient // 데이터베이스에 매핑되지 않는 임시 필드로 지정
+    private long memberCount;
+
+
+
 
     protected Dep() {
     }
 
-    public Dep(int depNo, String depName, String leader, int number, char status) {
+    public Dep(int depNo, String depName, char status) {
         this.depNo = depNo;
         this.depName = depName;
-        this.leader = leader;
-        this.number = number;
         this.status = status;
+
+
+    }
+
+    public Dep(int depNo, String depName, long memberCount) {
+        this.depNo = depNo;
+        this.depName = depName;
+        this.memberCount = memberCount;
+    }
+
+    public Dep(int depNo, String depName, char status, long memberCount) {
+        this.depNo = depNo;
+        this.depName = depName;
+        this.status = status;
+        this.memberCount = memberCount;
     }
 
     public Dep depNo(int depNo){
@@ -41,16 +57,7 @@ public class Dep {
 
     }
 
-    public Dep leader(String leader){
-        this.leader = leader;
-        return this;
 
-    }
-
-    public Dep number(int number){
-        this.number = number;
-        return this;
-    }
 
     public Dep status(char status){
         this.status= status;
@@ -58,8 +65,12 @@ public class Dep {
 
     }
 
+    public long getMemberCount() {
+        return memberCount;
+    }
+
     public Dep build() {
-        return new Dep(depNo,depName,leader,number,status);
+        return new Dep(depNo,depName,status);
     }
 
     public int getDepNo() {
@@ -68,14 +79,6 @@ public class Dep {
 
     public String getDepName() {
         return depName;
-    }
-
-    public String getLeader() {
-        return leader;
-    }
-
-    public int getNumber() {
-        return number;
     }
 
     public char getStatus() {
@@ -87,9 +90,8 @@ public class Dep {
         return "Dep{" +
                 "depNo=" + depNo +
                 ", depName='" + depName + '\'' +
-                ", leader='" + leader + '\'' +
-                ", number=" + number +
                 ", status=" + status +
+                ", memberCount=" + memberCount +
                 '}';
     }
 }
