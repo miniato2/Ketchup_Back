@@ -20,27 +20,30 @@ public class ReserveDTO {
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime rsvEndDttm;
-    private String reserver;
+    private String reserverId;
+    private String reserverName;
 
     private ResourceDTO resources;
 
     public ReserveDTO() {
     }
 
-    public ReserveDTO(int rsvNo, String rsvDescr, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String reserver, ResourceDTO resources) {
+    public ReserveDTO(int rsvNo, String rsvDescr, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String reserverId, String reserverName, ResourceDTO resources) {
         this.rsvNo = rsvNo;
         this.rsvDescr = rsvDescr;
         this.rsvStartDttm = rsvStartDttm;
         this.rsvEndDttm = rsvEndDttm;
-        this.reserver = reserver;
+        this.reserverId = reserverId;
+        this.reserverName = reserverName;
         this.resources = resources;
     }
 
-    public ReserveDTO(String rsvDescr, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String reserver, ResourceDTO resourceDTO) {
+    public ReserveDTO(String rsvDescr, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, String reserverId, String reserverName, ResourceDTO resourceDTO) {
         this.rsvDescr = rsvDescr;
         this.rsvStartDttm = rsvStartDttm;
         this.rsvEndDttm = rsvEndDttm;
-        this.reserver = reserver;
+        this.reserverId = reserverId;
+        this.reserverName = reserverName;
         this.resources = resourceDTO;
     }
 

@@ -5,7 +5,6 @@ spring:
     url: jdbc:mysql://localhost:3306/ketchup
     username: devsplan
     password: devsplan
-
   servlet:
     multipart:
       enabled: true
