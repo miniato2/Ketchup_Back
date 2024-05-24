@@ -6,10 +6,8 @@ import com.devsplan.ketchup.board.entity.Board;
 import com.devsplan.ketchup.board.entity.BoardFile;
 import com.devsplan.ketchup.board.repository.BoardFileRepository;
 import com.devsplan.ketchup.board.repository.BoardRepository;
+import com.devsplan.ketchup.comment.repository.CommentRepository;
 import com.devsplan.ketchup.common.Criteria;
-import com.devsplan.ketchup.notice.dto.NoticeFileDTO;
-import com.devsplan.ketchup.notice.entity.Notice;
-import com.devsplan.ketchup.notice.entity.NoticeFile;
 import com.devsplan.ketchup.util.FileUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -42,7 +41,7 @@ public class BoardService {
     private String IMAGE_URL;
 
     @Autowired
-    public BoardService(BoardRepository boardRepository, ModelMapper modelMapper, BoardFileRepository boardFileRepository) {
+    public BoardService(BoardRepository boardRepository, BoardFileRepository boardFileRepository, ModelMapper modelMapper) {
         this.boardRepository = boardRepository;
         this.boardFileRepository = boardFileRepository;
         this.modelMapper = modelMapper;
@@ -50,13 +49,12 @@ public class BoardService {
 
     /* 부서별 자료실 게시물 등록 */
     @Transactional
-    public Object insertBoard(BoardDTO boardDTO/*, String memberNo, int depNo*/) {
+    public Object insertBoard(BoardDTO boardDTO) {
         log.info("[BoardService] insertBoard Start ===================");
 
         try {
             // 게시글 엔티티 생성
             boardDTO.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
-
             Board board = modelMapper.map(boardDTO, Board.class);
 
             // 게시글 저장
@@ -82,8 +80,6 @@ public class BoardService {
             boardDTO.setBoardCreateDttm(new Timestamp(System.currentTimeMillis()));
             Board savedBoard = modelMapper.map(boardDTO, Board.class);
             boardRepository.save(savedBoard);
-
-            // 파일이 있으면 각 파일을 저장하고, BoardFile 엔티티를 생성하여 연결
 
             uploadFiles(savedBoard, files);
 
@@ -111,10 +107,7 @@ public class BoardService {
         } else {
             boardList = boardRepository.findByDepartmentNo(departmentNo, paging);
         }
-
-        Page<BoardDTO> boardDTOList = boardList.map(board -> modelMapper.map(board, BoardDTO.class));
-
-        return boardDTOList;
+        return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
     }
 
     /* 부서 전체 게시물 목록조회(권한자-대표) */
@@ -133,7 +126,6 @@ public class BoardService {
             }
 
             return boardList.map(board -> modelMapper.map(board, BoardDTO.class));
-
         } catch (Exception e) {
             log.error("목록 조회 실패: ", e);
             throw new RuntimeException("목록 조회 실패");
@@ -214,7 +206,6 @@ public class BoardService {
                 } else {
                     return "게시물 수정 실패: 엔티티가 잘못 저장되었습니다.";
                 }
-
             } else {
                 return "게시물 수정 권한이 없습니다.";
             }
@@ -302,6 +293,7 @@ public class BoardService {
                     }
                     String fileName = file.getOriginalFilename();
                     String newFileName = fileName + UUID.randomUUID().toString().replace("-", "");
+                    /*String newFileURL = IMAGE_DIR + "/boards";*/
                     String filePath = FileUtils.saveFile(IMAGE_DIR, newFileName, file);
 
                     // 파일을 저장할 디렉토리 생성 (만약 디렉토리가 없다면)
@@ -329,8 +321,7 @@ public class BoardService {
     public void deleteFiles(List<Integer> fileNos) {
         for (int fileNo : fileNos) {
             try {
-                BoardFile boardFile = boardFileRepository.findById(fileNo)
-                        .orElseThrow(() -> new IllegalArgumentException("File not found with ID: " + fileNo));
+                BoardFile boardFile = boardFileRepository.findById(fileNo).orElseThrow(() -> new IllegalArgumentException("File not found with ID: " + fileNo));
 
                 File file = new File(boardFile.getBoardFilePath());
                 if (file.exists()) {
@@ -349,4 +340,5 @@ public class BoardService {
             }
         }
     }
+
 }
