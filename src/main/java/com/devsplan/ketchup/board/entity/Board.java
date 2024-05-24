@@ -1,10 +1,13 @@
 package com.devsplan.ketchup.board.entity;
 
+import com.devsplan.ketchup.comment.entity.Comment;
 import jakarta.persistence.*;
 import lombok.Builder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_board")
@@ -36,8 +39,8 @@ public class Board {
     @LastModifiedDate
     private Timestamp boardUpdateDttm;
 
-//    @Column(name = "board_imgurl")
-//    private String boardImgUrl;
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     public Board boardTitle(String val) {
         this.boardTitle = val;
@@ -59,12 +62,7 @@ public class Board {
         return this;
     }
 
-//    public Board boardImgUrl(String val) {
-//        this.boardImgUrl = val;
-//        return this;
-//    }
-
-    public Board(int boardNo, String boardTitle, String boardContent, String memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm/*, String boardImgUrl*/) {
+    public Board(int boardNo, String boardTitle, String boardContent, String memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm, List<Comment> comments) {
         this.boardNo = boardNo;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
@@ -72,7 +70,17 @@ public class Board {
         this.departmentNo = departmentNo;
         this.boardCreateDttm = boardCreateDttm;
         this.boardUpdateDttm = boardUpdateDttm;
-//        this.boardImgUrl = boardImgUrl;
+        this.comments = comments;
+    }
+
+    public Board(int boardNo, String boardTitle, String boardContent, String memberNo, int departmentNo, Timestamp boardCreateDttm, Timestamp boardUpdateDttm) {
+        this.boardNo = boardNo;
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+        this.memberNo = memberNo;
+        this.departmentNo = departmentNo;
+        this.boardCreateDttm = boardCreateDttm;
+        this.boardUpdateDttm = boardUpdateDttm;
     }
 
     protected Board() {}
