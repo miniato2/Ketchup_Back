@@ -1,12 +1,15 @@
 package com.devsplan.ketchup.rsc.repository;
 
 import com.devsplan.ketchup.rsc.entity.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
 public interface RscRepository extends JpaRepository<Resource, Integer> {
-    List<Resource> findByRscCategory(String part);
+    Page<Resource> findByRscCategory(String part, Pageable paging);
+
     Resource findByRscNo(int rscNo);
     int deleteByRscNo(int rscNo);
 }

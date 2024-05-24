@@ -1,11 +1,15 @@
 package com.devsplan.ketchup.rsc.controller;
 
+import com.devsplan.ketchup.common.Criteria;
+import com.devsplan.ketchup.common.PageDTO;
+import com.devsplan.ketchup.common.PagingResponseDTO;
 import com.devsplan.ketchup.common.ResponseDTO;
 import com.devsplan.ketchup.rsc.dto.ResourceDTO;
 import com.devsplan.ketchup.rsc.service.RscService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -36,8 +40,14 @@ public class RscController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDTO> selectResource(@RequestHeader("Authorization") String token, @RequestParam("part") String partValue) {
+    public ResponseEntity<ResponseDTO> selectResource(@RequestHeader("Authorization") String token,
+                                                      @RequestParam("part") String partValue,
+                                                      @RequestParam(name = "offset", defaultValue = "1"
+                                                      ) String offset) {
         Integer depNo = decryptToken(token).get("depNo", Integer.class);
+        Criteria cri = new Criteria(Integer.valueOf(offset),10);
+
+        PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
 
         if(depNo == 2) {
             String rscCate = "";
@@ -47,12 +57,13 @@ public class RscController {
                 rscCate = "차량";
             }
 
-            List<ResourceDTO> rscList = rscService.selectRscList(rscCate);
+            Page<ResourceDTO> rscList = rscService.selectRscList(cri, rscCate);
+            pagingResponseDTO.setData(rscList);
 
-            return ResponseEntity.ok().body(
-                    new ResponseDTO(HttpStatus.OK, "자원 목록 조회",
-                            rscList)
-            );
+            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) rscList.getTotalElements()));
+            System.out.println(pagingResponseDTO);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "자원 목록 조회", pagingResponseDTO));
         }else {
             return ResponseEntity.ok().body(
                     new ResponseDTO(HttpStatus.OK, "자원 관리 접근 권한 없습니다.", 0)
@@ -89,9 +100,10 @@ public class RscController {
     public ResponseEntity<ResponseDTO> deleteResource(@RequestHeader("Authorization") String token, @PathVariable int rscNo) {
         String memberNo = decryptToken(token).get("memberNo", String.class);
 
+        int delRsc = rscService.deleteResource(memberNo, rscNo);
+
         return ResponseEntity.ok().body(
-                new ResponseDTO(HttpStatus.OK, "자원 삭제",
-                        rscService.deleteResource(memberNo, rscNo))
+                new ResponseDTO(HttpStatus.OK, "자원 삭제", delRsc)
         );
     }
 }
