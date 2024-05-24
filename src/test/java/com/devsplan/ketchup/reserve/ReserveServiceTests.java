@@ -97,6 +97,7 @@ public class ReserveServiceTests {
         return Stream.of(
                 Arguments.of(
                         "3",
+                        "이진우",
                         LocalDateTime.of(2024, 6, 23, 13, 30),
                         LocalDateTime.of(2024, 6, 23, 18, 0),
                         5,
@@ -110,6 +111,7 @@ public class ReserveServiceTests {
                 ),
                 Arguments.of(
                         "3",
+                        "이진우",
                         LocalDateTime.of(2024, 6, 23, 10, 0),
                         LocalDateTime.of(2024, 6, 23, 12, 0),
                         5,
@@ -123,6 +125,7 @@ public class ReserveServiceTests {
                 ),
                 Arguments.of(
                         "3",
+                        "이진우",
                         LocalDateTime.of(2024, 6, 23, 15, 0),
                         LocalDateTime.of(2024, 6, 23, 17, 0),
                         5,
@@ -136,6 +139,7 @@ public class ReserveServiceTests {
                 ),
                 Arguments.of(
                         "2",
+                        "박다은",
                         LocalDateTime.of(2024, 6, 23, 17, 0),
                         LocalDateTime.of(2024, 6, 23, 17, 30),
                         5,
@@ -164,14 +168,15 @@ public class ReserveServiceTests {
     @DisplayName("자원 예약 등록 테스트")
     @ParameterizedTest
     @MethodSource("getReserveInfo")
-    public void insertReserveTest(String reserver, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, int rscNo, String rsvDescr, String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
+    public void insertReserveTest(String reserverId, String reserverName, LocalDateTime rsvStartDttm, LocalDateTime rsvEndDttm, int rscNo, String rsvDescr, String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
         // given
         ResourceDTO resourceDTO = new ResourceDTO(rscNo, rscCategory, rscName, rscInfo, rscCap, rscIsAvailable, rscDescr);
         ReserveDTO newReserve = new ReserveDTO(
                 rsvDescr,
                 rsvStartDttm,
                 rsvEndDttm,
-                reserver,
+                reserverId,
+                reserverName,
                 resourceDTO
         );
 
