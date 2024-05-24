@@ -79,6 +79,8 @@ public class MemberController {
     @PostMapping("/signupDep")
     public String signupDep(@RequestBody DepDTO depDTP){
 
+        
+
         memberService.insertDep(depDTP);
 
 
@@ -86,6 +88,8 @@ public class MemberController {
 
 
     }
+
+
 
     @PostMapping("/signupPosition")
     public String signupPosition(@RequestBody PositionDTO positionDTO){
@@ -177,6 +181,17 @@ public class MemberController {
 
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공",depList));
+
+    }
+
+    @GetMapping("/Deps")
+    public ResponseEntity<ResponseDTO> findAllDeps(){
+
+        List<DepDTO> depList = memberService.findAllDeps();
+
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회성공", depList));
 
     }
 

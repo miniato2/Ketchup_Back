@@ -3,9 +3,8 @@ package com.devsplan.ketchup.member.dto;
 public class DepDTO {
     private int depNo;
     private String depName;
-    private String leader;
-    private int number;
     private char status;
+    private long memberCount;
 
     public DepDTO() {
     }
@@ -14,16 +13,34 @@ public class DepDTO {
         this.depNo = depNo;
     }
 
-    public DepDTO(int depNo, String depName, String leader, int number, char status) {
+    public DepDTO(String depName, char status) {
+        this.depName = depName;
+        this.status = status;
+    }
+
+    public DepDTO(int depNo, String depName, char status) {
         this.depNo = depNo;
         this.depName = depName;
-        this.leader = leader;
-        this.number = number;
         this.status = status;
+    }
+
+    public DepDTO(int depNo, String depName, char status, long memberCount) {
+        this.depNo = depNo;
+        this.depName = depName;
+        this.status = status;
+        this.memberCount=memberCount;
+    }
+
+    public long getMemberCount() {
+        return memberCount;
     }
 
     public int getDepNo() {
         return depNo;
+    }
+
+    public void setMemberCount(long memberCount) {
+        this.memberCount = memberCount;
     }
 
     public void setDepNo(int depNo) {
@@ -38,21 +55,7 @@ public class DepDTO {
         this.depName = depName;
     }
 
-    public String getLeader() {
-        return leader;
-    }
 
-    public void setLeader(String leader) {
-        this.leader = leader;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
 
     public char getStatus() {
         return status;
@@ -62,14 +65,15 @@ public class DepDTO {
         this.status = status;
     }
 
+
     @Override
     public String toString() {
         return "DepDTO{" +
-                "depNo='" + depNo + '\'' +
+                "depNo=" + depNo +
                 ", depName='" + depName + '\'' +
-                ", leader='" + leader + '\'' +
-                ", number=" + number +
                 ", status=" + status +
+                ", memberCount=" + memberCount +
                 '}';
     }
+
 }
