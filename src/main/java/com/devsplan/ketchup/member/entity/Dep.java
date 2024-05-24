@@ -16,8 +16,14 @@ public class Dep {
     private String depName;
     @Column(name="DEP_STATUS")
     private char status;
-    @Transient // 데이터베이스에 매핑되지 않는 임시 필드로 지정
+    @Transient
     private long memberCount;
+
+
+    @OneToMany(mappedBy = "department")
+    private List<Member> members; // members 필드 추가
+
+
 
 
 
@@ -25,18 +31,26 @@ public class Dep {
     protected Dep() {
     }
 
+
+
+
+
+    public Dep(String depName, char status) {
+        this.depName = depName;
+        this.status = status;
+    }
+
+    public Dep(int depNo, String depName) {
+        this.depNo = depNo;
+        this.depName = depName;
+
+    }
+
     public Dep(int depNo, String depName, char status) {
         this.depNo = depNo;
         this.depName = depName;
         this.status = status;
 
-
-    }
-
-    public Dep(int depNo, String depName, long memberCount) {
-        this.depNo = depNo;
-        this.depName = depName;
-        this.memberCount = memberCount;
     }
 
     public Dep(int depNo, String depName, char status, long memberCount) {
@@ -65,9 +79,7 @@ public class Dep {
 
     }
 
-    public long getMemberCount() {
-        return memberCount;
-    }
+
 
     public Dep build() {
         return new Dep(depNo,depName,status);
@@ -91,7 +103,7 @@ public class Dep {
                 "depNo=" + depNo +
                 ", depName='" + depName + '\'' +
                 ", status=" + status +
-                ", memberCount=" + memberCount +
+                ", members=" + members +
                 '}';
     }
 }

@@ -13,6 +13,11 @@ public class DepDTO {
         this.depNo = depNo;
     }
 
+    public DepDTO(String depName, char status) {
+        this.depName = depName;
+        this.status = status;
+    }
+
     public DepDTO(int depNo, String depName, char status) {
         this.depNo = depNo;
         this.depName = depName;

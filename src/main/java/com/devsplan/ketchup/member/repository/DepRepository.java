@@ -19,11 +19,25 @@ public interface DepRepository extends JpaRepository<Dep, Integer> {
     List<Dep> findByStatus(char y);
 
 
-    @Query("SELECT new com.devsplan.ketchup.member.entity.Dep(d.depNo, d.depName, d.status, COUNT(m.memberNo)) " +
-            "FROM Member m " +
-            "JOIN m.department d " +
-            "GROUP BY d.depNo, d.depName")
+//    @Query("SELECT new com.devsplan.ketchup.member.entity.Dep(d.depNo, d.depName, d.status, COUNT(m.memberNo)) " +
+//            "FROM Member m " +
+//            "LEFT JOIN m.department d " +
+//            "GROUP BY d.depNo, d.depName")
+//    List<Dep> findAllDepWithMemberCount();
+
+
+
+    @Query("SELECT new com.devsplan.ketchup.member.entity.Dep(d.depNo, d.depName, d.status, " +
+            "COUNT(CASE WHEN m.status = '재직중' THEN 1 ELSE null END)) " +
+            "FROM Dep d " +
+            "LEFT JOIN d.members m " +
+            "GROUP BY d.depNo, d.depName, d.status")
     List<Dep> findAllDepWithMemberCount();
+
+
+
+
+
 
 
 
