@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 @Table(name = "TBL_SCHEDULE")
 public class Schedule {
     @Id
-    @Column(name = "SKD_NO")
+    @Column(name = "SKD_NO", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int skdNo;
 
     @ManyToOne
