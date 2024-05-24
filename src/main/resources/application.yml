@@ -2,9 +2,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/jdbctest
-    username: root
-    password: OL1202043jlee!
+    url: jdbc:mysql://localhost:3306/ketchup
+    username: devsplan
+    password: devsplan
   servlet:
     multipart:
       enabled: true

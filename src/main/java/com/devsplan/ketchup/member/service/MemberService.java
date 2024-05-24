@@ -266,6 +266,21 @@ public class MemberService {
 
     }
 
+    public List<DepDTO> findAllDeps() {
+        List<Dep> deps = depRepository.findAllDepWithMemberCount();
+
+
+
+        System.out.println("나 처음으로 조인한거같아~!!!!!!!!!!"+deps.toString());
+
+        List<DepDTO> depList = deps.stream()
+                .map(dep -> modelMapper.map(dep, DepDTO.class))
+                .collect(Collectors.toList());
+
+        return depList;
+
+    }
+
     public List<PositionDTO> findAllPositionWithNoPaging() {
 
         List<Position> positions = positionRepository.findByPositionStatus('y');

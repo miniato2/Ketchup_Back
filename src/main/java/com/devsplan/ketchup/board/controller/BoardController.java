@@ -1,7 +1,7 @@
 package com.devsplan.ketchup.board.controller;
 
 import com.devsplan.ketchup.board.dto.BoardDTO;
-import com.devsplan.ketchup.board.entity.Board;
+import com.devsplan.ketchup.comment.dto.CommentDTO;
 import com.devsplan.ketchup.board.service.BoardService;
 import com.devsplan.ketchup.common.*;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -185,7 +185,6 @@ public class BoardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
         }
     }
-
 
     /* 게시물 삭제 */
     @DeleteMapping("/{boardNo}")
