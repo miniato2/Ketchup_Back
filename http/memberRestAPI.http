@@ -449,3 +449,24 @@ Content-Disposition: form-data; name="memberImage"; filename="pikachu.png"
 
 < ./pikachu.png
 --WebAppBoundary--
+
+
+### 부서 삭제
+DELETE http://localhost:8080/deps/7
+Content-Type: application/json
+Accept: */*
+Authorization: Bearer eyJkYXRlIjoxNzE2NTEyNjI4MDA5LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwiaW1nVXJsIjoiZWY0MzQxMzMzZWM2NDY3Yjg1NGFlZDMzNjE3Y2FkNGMucG5nIiwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6Iuq5gO2YhOyngCIsInBvc2l0aW9uTm8iOjIsImV4cCI6MTcxNjU5OTAyOCwiZGVwTmFtZSI6IuuyleustO2MgCJ9.m99GpHxu1IznDN2fYxsHo7B5xK9ajvKgNbTchk8n35U
+
+
+###부서명 수정
+PUT http://localhost:8080/Dep/3
+Content-Type: application/json
+Accept: */*
+Authorization: Bearer eyJkYXRlIjoxNzE2Mzc4MjY2ODY3LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwiaW1nVXJsIjoiY2M1Njg0YjVmMDliNGIwNjhiM2JkZTFjNmU5YTBkZjkucG5nIiwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwibWVtYmVyTmFtZSI6Iuq5gO2YhOyngCIsInBvc2l0aW9uTm8iOjIsImV4cCI6MTcxNjQ2NDY2NiwiZGVwTmFtZSI6IuuyleustO2MgCJ9.oC7HEVoQC2idksPDPUjiBBOPixfHa7WAMybCymOPen0
+
+{
+
+"depName": "대표"
+
+
+}
