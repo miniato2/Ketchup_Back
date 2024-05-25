@@ -107,9 +107,12 @@ public class ApprovalServiceTests {
     @Test
     public void selectRefAppTest(){
         //given
-        String memberNo = "3";
-        String status = "완료";
-        String searchValue = "";
+        String memberNo = "2";
+        String status1 = "대기";
+        String searchValue = "제";
+
+        List<String> status = new ArrayList<>();
+        status.add(status1);
 
         Criteria cri = new Criteria(Integer.valueOf(1), 10);
 

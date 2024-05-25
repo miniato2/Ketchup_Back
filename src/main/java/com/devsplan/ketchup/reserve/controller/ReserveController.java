@@ -83,6 +83,7 @@ public class ReserveController {
         if (resource == null) {
             return ResponseEntity.badRequest().body("해당 자원을 찾을 수 없습니다.");
         }
+        System.out.println("newReserve \uD83D\uDD25 \uD83D\uDD25 \uD83D\uDD25 = " + newReserve);
         reserveService.insertReserve(newReserve, resource);
         return ResponseEntity.created(URI.create("/reserves/" + newReserve.getRsvNo())).build();
     }

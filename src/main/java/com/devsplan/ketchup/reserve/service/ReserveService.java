@@ -51,7 +51,8 @@ public class ReserveService {
             reserveDTO.setRsvDescr(reserve.getRsvDescr());
             reserveDTO.setRsvStartDttm(reserve.getRsvStartDttm());
             reserveDTO.setRsvEndDttm(reserve.getRsvEndDttm());
-            reserveDTO.setReserver(reserve.getMemberNo());
+            reserveDTO.setReserverId(reserve.getMemberNo());
+            reserveDTO.setReserverName(reserve.getMemberName());
         }
 
         reserveDTO.setResources(resourceDTO);
@@ -116,9 +117,12 @@ public class ReserveService {
                 newReserve.getRsvStartDttm(),
                 newReserve.getRsvEndDttm(),
                 newReserve.getRsvDescr(),
-                newReserve.getReserver(),
+                newReserve.getReserverId(),
+                newReserve.getReserverName(),
                 resource
         );
+
+        System.out.println("reserve = " + reserve);
         reserveRepository.save(reserve);
     }
 
