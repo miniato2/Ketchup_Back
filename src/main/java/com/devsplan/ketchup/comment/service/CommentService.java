@@ -9,10 +9,12 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.sql.Timestamp;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,59 +24,212 @@ public class CommentService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final ModelMapper modelMapper;
+    private final ThreadPoolTaskScheduler taskScheduler;
 
     @Autowired
-    public CommentService(BoardRepository boardRepository, CommentRepository commentRepository, ModelMapper modelMapper) {
+    public CommentService(BoardRepository boardRepository, CommentRepository commentRepository, ModelMapper modelMapper, ThreadPoolTaskScheduler taskScheduler) {
         this.boardRepository = boardRepository;
         this.commentRepository = commentRepository;
         this.modelMapper = modelMapper;
+        this.taskScheduler = taskScheduler;
     }
 
     /* 댓글 조회 */
     public List<CommentDTO> selectCommentList(int boardNo) {
         try {
             // 게시물에 해당하는 모든 댓글 가져오기
-//            List<Comment> comments = commentRepository.findByBoardNo(boardNo);
+            List<Comment> comments = commentRepository.findByBoard(boardRepository.findById(boardNo).orElse(null));
 
             // 댓글 DTO 리스트로 변환
-//            return comments.stream()
-//                    .map(comment -> modelMapper.map(comment, CommentDTO.class))
-//                    .collect(Collectors.toList());
-            return null;
+            return comments.stream()
+                    .map(comment -> modelMapper.map(comment, CommentDTO.class))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             log.error("댓글 조회 중 오류 발생: " + e.getMessage(), e);
             throw new RuntimeException("댓글 조회 중 오류 발생");
         }
     }
 
-    /* 게시물 댓글 등록 */
+    /* 특정 댓글 조회 */
+    public CommentDTO selectCommentDetail(int boardNo, int commentNo) {
+        try {
+            // 게시물에 해당하는 특정 댓글 가져오기
+            Comment comment = commentRepository.findByBoardBoardNoAndCommentNo(boardNo, commentNo);
+
+            if(comment == null) {
+                throw new RuntimeException("Comment not found");
+            }
+            return modelMapper.map(comment, CommentDTO.class);
+        } catch (Exception e) {
+            log.error("댓글 조회 중 오류 발생: " + e.getMessage(), e);
+            throw new RuntimeException("댓글 조회 중 오류 발생");
+        }
+    }
+
+
+    /* 댓글 등록 */
     @Transactional
     public Object insertComment(int boardNo, CommentDTO commentDTO, String memberNo) {
         try {
-            // 해당 게시물 가져오기
-            Board board = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
-
-            commentDTO.setCommentCreateDttm(new Timestamp(System.currentTimeMillis()));
+            commentDTO.setCommentCreateDt(new Date(System.currentTimeMillis()));
             commentDTO.setMemberNo(memberNo);
 
+            // 해당 게시물 가져오기
+            Board board = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
 
             // 댓글 생성
             Comment comment = modelMapper.map(commentDTO, Comment.class);
             comment.board(board);
 
+            // 부모 댓글이 있는지 확인하고 처리
             if (commentDTO.getParentCommentNo() != null) {
                 Comment parentComment = commentRepository.findById(commentDTO.getParentCommentNo())
-                        .orElseThrow(IllegalArgumentException::new);
+                        .orElseThrow(() -> new IllegalArgumentException("Parent comment not found"));
                 comment.parentComment(parentComment);
             }
 
             Comment savedComment = commentRepository.save(comment);
 
             return modelMapper.map(savedComment, CommentDTO.class);
+        } catch (IllegalArgumentException e) {
+            log.error("Failed to add comment to board: " + e.getMessage(), e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw e;
         } catch (Exception e) {
             log.error("Failed to add comment to board: " + e.getMessage(), e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            throw new RuntimeException("Failed to add comment to board");
+            throw new RuntimeException("Failed to add comment to board", e);
+        }
+    }
+
+    /* 대댓글 등록 */
+    @Transactional
+    public Object insertReply(int boardNo, int parentCommentId, CommentDTO commentDTO, String memberNo) {
+        try {
+            commentDTO.setCommentCreateDt(new Date(System.currentTimeMillis()));
+            commentDTO.setMemberNo(memberNo);
+
+            // 부모 댓글 가져오기
+            Comment parentComment = commentRepository.findById(parentCommentId)
+                    .orElseThrow(() -> new IllegalArgumentException("Parent comment not found"));
+
+            // 해당 게시물 가져오기
+            Board board = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
+
+            // 댓글 생성
+            Comment comment = modelMapper.map(commentDTO, Comment.class);
+            comment.board(board);
+            comment.parentComment(parentComment);
+
+            Comment savedComment = commentRepository.save(comment);
+
+            return modelMapper.map(savedComment, CommentDTO.class);
+        } catch (IllegalArgumentException e) {
+            log.error("Failed to add reply to comment: " + e.getMessage(), e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw e;
+        } catch (Exception e) {
+            log.error("Failed to add reply to comment: " + e.getMessage(), e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw new RuntimeException("Failed to add reply to comment", e);
+        }
+    }
+
+    /* 댓글 수정 */
+    @Transactional
+    public CommentDTO updateComment(int boardNo, int commentNo, CommentDTO commentDTO, String memberNo) {
+        try{
+            // 해당 게시물에 대한 댓글 조회
+            Comment comment = commentRepository.findByBoardBoardNoAndCommentNo(boardNo, commentNo);
+
+            // 댓글 작성자의 회원 번호와 요청한 사용자의 회원 번호 비교
+            if (!comment.getMemberNo().equals(memberNo)) {
+                throw new IllegalArgumentException("댓글을 수정할 수 있는 권한이 없습니다.");
+            }
+
+            // 댓글 내용 업데이트
+            comment.commentContent(commentDTO.getCommentContent());
+            comment.commentUpdateDt(new Date(System.currentTimeMillis()));
+
+
+            // 댓글 저장
+            Comment updatedComment = commentRepository.save(comment);
+
+            return modelMapper.map(updatedComment, CommentDTO.class);
+        } catch (IllegalArgumentException e) {
+            log.error("댓글 수정 실패: " + e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            log.error("댓글 수정 실패: " + e.getMessage(), e);
+            throw new RuntimeException("댓글 수정 중 오류가 발생했습니다.", e);
+        }
+    }
+
+    /* 댓글 삭제 */
+    @Transactional
+    public void deleteComment(int boardNo, int commentNo, String memberNo) {
+        System.out.println("deleteComment [ boardNo ] : " + boardNo);
+        System.out.println("deleteComment [ commentNo ] : " + commentNo);
+        System.out.println("deleteComment [ memberNo ] : " + memberNo);
+
+        try {
+            Comment comment = commentRepository.findByBoardBoardNoAndCommentNo(boardNo, commentNo);
+
+            if (comment == null) {
+                throw new IllegalArgumentException("해당하는 댓글이 없습니다.");
+            }
+
+            if (!comment.getMemberNo().equals(memberNo)) {
+                throw new IllegalArgumentException("댓글 작성자만 삭제할 수 있습니다.");
+            }
+
+            if (!comment.getReplies().isEmpty()) {
+                throw new IllegalArgumentException("대댓글이 있는 댓글은 삭제할 수 없습니다.");
+            }
+
+            // 댓글 삭제 처리
+            comment.deleteComment(true);
+
+            commentRepository.save(comment);
+
+            // 10초 후에 실제 DB에서 삭제
+            schedulePermanentDeletion(commentNo);
+        } catch (IllegalArgumentException e) {
+            log.error("댓글 삭제 실패: {}", e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            log.error("댓글 삭제 실패: {}", e.getMessage(), e);
+            throw new RuntimeException("댓글 삭제 중 오류가 발생했습니다.", e);
+        }
+    }
+
+    @Transactional
+    public void schedulePermanentDeletion(int commentNo) {
+        System.out.println("schedulePermanentDeletion [ commentNo ] : " + commentNo);
+
+        taskScheduler.schedule(() -> {
+            deleteCommentFromDatabase(commentNo);
+        }, Instant.now().plusSeconds(10));
+    }
+
+    /* 실제 데이터베이스에서 댓글 삭제 */
+    @Transactional
+    public void deleteCommentFromDatabase(int commentNo) {
+        System.out.println("deleteCommentFromDatabase [ commentNo ] : " + commentNo);
+
+        try {
+            Comment comment = commentRepository.findById(commentNo).orElse(null);
+            if (comment == null) {
+                log.warn("해당하는 댓글이 없습니다.");
+                return;
+            }
+
+            if (comment.getDeleteComment()) {
+                commentRepository.delete(comment);
+            }
+        } catch (Exception e) {
+            log.error("데이터베이스에서 댓글 삭제 중 오류 발생: {}", e.getMessage(), e);
+            throw new RuntimeException("데이터베이스에서 댓글 삭제 중 오류 발생", e);
         }
     }
 
