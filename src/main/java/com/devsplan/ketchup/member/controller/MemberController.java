@@ -270,6 +270,17 @@ public class MemberController {
 
     }
 
+    @PutMapping("/members/{myNo}")
+    public String updatePW(@PathVariable String myNo, @RequestBody String newPW){
+
+        System.out.println(myNo+"  "+newPW);
+
+        memberService.updatePW(myNo,newPW);
+
+        return "PW update finish!";
+
+    }
+
 
 
 

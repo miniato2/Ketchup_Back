@@ -445,4 +445,15 @@ public class MemberService {
     }
 
 
+    public void updatePW(String myNo, String newPW) {
+
+        Member member = memberRepository.findByMemberNo(myNo).get();
+
+        member = member.memberPW(passwordEncoder.encode(newPW)).build();
+
+        memberRepository.save(member);
+
+    }
+
+
 }
