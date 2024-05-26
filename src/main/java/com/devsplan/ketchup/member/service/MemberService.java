@@ -410,4 +410,50 @@ public class MemberService {
         positionRepository.delete(deletedPosition);
 
     }
+
+    public void deleteDep(int depNo) {
+        Dep deletedDep = depRepository.findDepByDepNo(depNo);
+        depRepository.delete(deletedDep);
+    }
+
+    public void updateDep(int depNo, String newName) {
+        System.out.println("이거찾아"+newName);
+
+        if(newName.equals("status")){
+
+            DepDTO newDep = findDepByDepNo(depNo);
+
+            newDep.setStatus((newDep.getStatus() == 'Y') ? 'N' : 'Y');
+
+          Dep dep= modelMapper.map(newDep,Dep.class);
+
+            depRepository.save(dep);
+
+        }
+
+        else {
+
+
+            Dep dep = depRepository.findDepByDepNo(depNo);
+
+            dep.depName(newName).build();
+
+            depRepository.save(dep);
+
+        }
+
+    }
+
+
+    public void updatePW(String myNo, String newPW) {
+
+        Member member = memberRepository.findByMemberNo(myNo).get();
+
+        member = member.memberPW(passwordEncoder.encode(newPW)).build();
+
+        memberRepository.save(member);
+
+    }
+
+
 }

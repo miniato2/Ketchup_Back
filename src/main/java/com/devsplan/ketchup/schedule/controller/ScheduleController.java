@@ -63,7 +63,6 @@ public class ScheduleController {
     // 부서별 일정 등록
     @PostMapping("/schedules")
     public ResponseEntity<?> insertSchedule(@RequestBody ScheduleDTO newSchedule) {
-        System.out.println("newSchedule 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥 = " + newSchedule);
         scheduleService.insertSchedule(newSchedule);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();

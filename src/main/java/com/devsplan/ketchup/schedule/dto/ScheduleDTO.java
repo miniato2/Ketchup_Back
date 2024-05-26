@@ -18,14 +18,4 @@ public class ScheduleDTO {
     private String skdEndDttm;
     private String skdLocation;
     private String skdMemo;
-
-//    public ScheduleDTO(int skdNo, DepartmentDTO dptNo, String skdName, String startDateTime, String endDateTime, String skdLocation, String skdMemo) {
-//        this.skdNo = skdNo;
-//        this.dptNo = dptNo;
-//        this.skdName = skdName;
-//        this.skdStartDttm = startDateTime;
-//        this.skdEndDttm = endDateTime;
-//        this.skdLocation = skdLocation;
-//        this.skdMemo = skdMemo;
-//    }
 }

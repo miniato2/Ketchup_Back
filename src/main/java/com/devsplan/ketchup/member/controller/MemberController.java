@@ -107,7 +107,7 @@ public class MemberController {
     @PutMapping ("/signupPosition/{positionNo}")
     public String updatePosition(@PathVariable int positionNo, @RequestBody PositionDTO positionDTO){
 
-        System.out.println("직급 수정 여기도 못와????");
+
         positionDTO.setPositionNo(positionNo);
         memberService.updatePosition(positionDTO);
 
@@ -163,7 +163,7 @@ public class MemberController {
 
     @GetMapping ("/Email/{memberNo}")
     public String sendVerifyEmail(@PathVariable String memberNo){
-        System.out.println(memberNo);
+
 
         String verifyCode = memberService.sendVerifyEmail(memberNo);
 
@@ -238,11 +238,46 @@ public class MemberController {
     @DeleteMapping("/positions/{positionNo}")
     public ResponseEntity<ResponseDTO> deletePosition(@PathVariable int positionNo){
 
-        System.out.println("삭제할 직급 번호 : " + positionNo);
+
 
         memberService.deletePosition(positionNo);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "삭제완료"));
+
+    }
+
+    @DeleteMapping("/deps/{depNo}")
+    public ResponseEntity<ResponseDTO> deleteDep(@PathVariable int depNo){
+
+
+
+        memberService.deleteDep(depNo);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "삭제완료"));
+
+    }
+
+    @PutMapping ("/deps/{depNo}")
+    public String updateDep(@PathVariable int depNo, @RequestBody String newName){
+
+
+
+        memberService.updateDep(depNo,newName);
+
+
+        return "Dep update finish!";
+
+
+    }
+
+    @PutMapping("/members/{myNo}")
+    public String updatePW(@PathVariable String myNo, @RequestBody String newPW){
+
+        System.out.println(myNo+"  "+newPW);
+
+        memberService.updatePW(myNo,newPW);
+
+        return "PW update finish!";
 
     }
 
