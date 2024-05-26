@@ -70,15 +70,13 @@ public class ScheduleService {
     @Transactional
     public void insertSchedule(ScheduleDTO newSchedule) {
 
+        System.out.println("newSchedule 서비스 = " + newSchedule);
+
         DepartmentDTO departmentDTO = newSchedule.getDptNo();
         Department department = new Department(departmentDTO.getDptNo());
 
         // 부서 정보 먼저 저장
         departmentRepository.save(department);
-
-        // 테스트 이후 부서가 없는 일정을 등록하는 것을 방지하기 위해 부서 정보 저장하지 않을 예정
-//        Department department = departmentRepository.findById(newSchedule.getDptNo().getDptNo())
-//                .orElseThrow(() -> new IllegalArgumentException("해당 부서를 찾을 수 없습니다."));
 
         // 부서 정보 먼저 저장 후 일정 정보 저장
         Schedule schedule = new Schedule(
@@ -91,28 +89,6 @@ public class ScheduleService {
                 newSchedule.getSkdMemo()
         );
 
-        // 날짜와 시간 파싱 로직 수정
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm[:ss]");
-//        LocalDateTime skdStartDttm;
-//        LocalDateTime skdEndDttm;
-//        try {
-//            skdStartDttm = LocalDateTime.parse(newSchedule.getSkdStartDttmStr(), formatter);
-//            skdEndDttm = LocalDateTime.parse(newSchedule.getSkdEndDttmStr(), formatter);
-//        } catch (DateTimeParseException e) {
-//            log.error("날짜 형식 파싱 오류", e);
-//            throw new IllegalArgumentException("날짜 형식이 유효하지 않습니다.");
-//        }
-//
-//        Schedule schedule = new Schedule.Builder()
-//                .skdNo(newSchedule.getSkdNo())
-//                .department(department)
-//                .skdName(newSchedule.getSkdName())
-//                .skdLocation(newSchedule.getSkdLocation())
-//                .skdMemo(newSchedule.getSkdMemo())
-//                .skdStartDttm(skdStartDttm)
-//                .skdEndDttm(skdEndDttm)
-//                .build();
-
         scheduleRepository.save(schedule);
     }
 
@@ -120,7 +96,6 @@ public class ScheduleService {
     public void updateSchedule(int skdNo, ScheduleDTO updateSchedule) {
         Schedule foundSchedule = scheduleRepository.findById((long) skdNo).orElseThrow(IllegalArgumentException::new);
 
-        // 새로운 Schedule 객체를 생성하여 수정된 값만 적용
         Schedule updatedSchedule = new Schedule.Builder()
                 .skdNo(foundSchedule.getSkdNo())
                 .department(foundSchedule.getDepartment())

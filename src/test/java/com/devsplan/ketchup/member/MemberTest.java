@@ -42,8 +42,6 @@ public class MemberTest {
                                 new DepDTO(
                                         1,
                                         "개발팀",
-                                        "이후영",
-                                        15,
                                         'Y'
                                 ),
                                 new PositionDTO(
@@ -68,8 +66,6 @@ public class MemberTest {
                         new DepDTO(
                                 1,
                                 "개발팀",
-                                "이후영",
-                                15,
                                 'Y'  // char로 수정
                         )
                 )
