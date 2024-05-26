@@ -6,16 +6,12 @@ import com.devsplan.ketchup.common.PagingResponseDTO;
 import com.devsplan.ketchup.common.ResponseDTO;
 import com.devsplan.ketchup.rsc.dto.ResourceDTO;
 import com.devsplan.ketchup.rsc.service.RscService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
 
@@ -42,10 +38,10 @@ public class RscController {
     @GetMapping
     public ResponseEntity<ResponseDTO> selectResource(@RequestHeader("Authorization") String token,
                                                       @RequestParam("part") String partValue,
-                                                      @RequestParam(name = "offset", defaultValue = "1"
-                                                      ) String offset) {
+                                                      @RequestParam(name = "page", defaultValue = "1"
+                                                      ) String page) {
         Integer depNo = decryptToken(token).get("depNo", Integer.class);
-        Criteria cri = new Criteria(Integer.valueOf(offset),10);
+        Criteria cri = new Criteria(Integer.valueOf(page),10);
 
         PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
 

@@ -2,12 +2,10 @@ package com.devsplan.ketchup.mail.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Table(name = "tbl_mail")
@@ -46,27 +44,7 @@ public class Mail {
     public Mail mailNo(int val) {
         this.mailNo = val;
         return this;
-    } 
-    
-    public Mail senderMem(String val) {
-        this.senderMem = val;
-        return this;
-    } 
-    
-    public Mail mailTitle(String val) {
-        this.mailTitle = val;
-        return this;
-    } 
-    
-    public Mail mailContent(String val) {
-        this.mailContent = val;
-        return this;
-    } 
-    
-    public Mail sendMailTime(Timestamp val) {
-        this.sendMailTime = val;
-        return this;
-    } 
+    }
     
     public Mail sendCancelStatus(char val) {
         this.sendCancelStatus = val;
