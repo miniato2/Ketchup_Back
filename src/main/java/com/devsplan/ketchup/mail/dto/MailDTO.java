@@ -21,43 +21,6 @@ public class MailDTO {
     private List<ReceiverDTO> receivers;    // 수신자 목록
     private List<MailFileDTO> mailFiles;    // 첨부 파일 목록
 
-    public MailDTO(String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus) {
-        this.mailTitle = mailTitle;
-        this.mailContent = mailContent;
-        this.sendCancelStatus = sendCancelStatus;
-        this.sendDelStatus = sendDelStatus;
-    }
-
-    public MailDTO(String senderMem, String mailTitle, String mailContent, char sendCancelStatus, char sendDelStatus, int replyMailNo) {
-        this.senderMem = senderMem;
-        this.mailTitle = mailTitle;
-        this.mailContent = mailContent;
-        this.sendCancelStatus = sendCancelStatus;
-        this.sendDelStatus = sendDelStatus;
-        this.replyMailNo = replyMailNo;
-    }
-
-    public MailDTO(int mailNo, String senderMem, String mailTitle, String mailContent, Timestamp sendMailTime, char sendCancelStatus, char sendDelStatus) {
-        this.mailNo = mailNo;
-        this.senderMem = senderMem;
-        this.mailTitle = mailTitle;
-        this.mailContent = mailContent;
-        this.sendMailTime = sendMailTime;
-        this.sendCancelStatus = sendCancelStatus;
-        this.sendDelStatus = sendDelStatus;
-    }
-
-    public MailDTO(int mailNo, String senderMem, String mailTitle, String mailContent, Timestamp sendMailTime, char sendCancelStatus, char sendDelStatus, List<ReceiverDTO> receivers) {
-        this.mailNo = mailNo;
-        this.senderMem = senderMem;
-        this.mailTitle = mailTitle;
-        this.mailContent = mailContent;
-        this.sendMailTime = sendMailTime;
-        this.sendCancelStatus = sendCancelStatus;
-        this.sendDelStatus = sendDelStatus;
-        this.receivers = receivers;
-    }
-
     public MailDTO(int mailNo, String senderMem, String mailTitle, String mailContent, Timestamp sendMailTime, char sendCancelStatus, char sendDelStatus, int replyMailNo, List<ReceiverDTO> receivers) {
         this.mailNo = mailNo;
         this.senderMem = senderMem;

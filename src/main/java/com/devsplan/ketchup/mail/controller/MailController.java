@@ -5,13 +5,7 @@ import com.devsplan.ketchup.common.PageDTO;
 import com.devsplan.ketchup.common.PagingResponseDTO;
 import com.devsplan.ketchup.common.ResponseDTO;
 import com.devsplan.ketchup.mail.dto.MailDTO;
-import com.devsplan.ketchup.mail.dto.MailFileDTO;
-import com.devsplan.ketchup.mail.dto.ReceiverDTO;
 import com.devsplan.ketchup.mail.service.MailService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.devsplan.ketchup.util.TokenUtils.decryptToken;
@@ -66,33 +59,34 @@ public class MailController {
         }
     }
 
-    // 메일 조회
     @GetMapping
     public ResponseEntity<ResponseDTO> selectMailList(@RequestHeader("Authorization") String token,
                                                       @RequestParam("part") String partValue,
                                                       @RequestParam(value = "search", required = false) String search,
-                                                      @RequestParam(value = "searchvalue", required = false) String searchValue) {
-        // 사원 번호
+                                                      @RequestParam(value = "searchvalue", required = false) String searchValue,
+                                                      @RequestParam(name = "page", defaultValue = "1"
+                                                      ) String page) {
         String memberNo = decryptToken(token).get("memberNo", String.class);
+        Criteria cri = new Criteria(Integer.valueOf(page),10);
+
+        PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
 
         String result = "";
-        List<MailDTO> mailList = null;
+        Page<MailDTO> mailList = null;
         if(partValue.equals("send")) {
-            mailList = mailService.selectSendMailList(memberNo, search, searchValue);
+            mailList = mailService.selectSendMailList(cri, memberNo, search, searchValue);
             result = "보낸 메일 조회";
         }else if(partValue.equals("receive")) {
-            mailList = mailService.selectReceiveMailList(memberNo, search, searchValue);
+            mailList = mailService.selectReceiveMailList(cri, memberNo, search, searchValue);
             result = "받은 메일 조회";
         }
 
-        System.out.println("🧧🧧🧧🧧🧧🧧🧧🧧🧧🧧🧧🧧");
-        System.out.println(mailList);
-
+        pagingResponseDTO.setData(mailList);
         if(mailList != null) {
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, result + "성공", mailList));
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(result + "실패"));
+            pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) mailList.getTotalElements()));
         }
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, result + "성공", pagingResponseDTO));
     }
 
     @GetMapping("/{mailNo}")
@@ -133,49 +127,6 @@ public class MailController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(result + "실패"));
         }
     }
-
-//    @PostMapping("/{mailNo}/reply")
-//    public ResponseEntity<ResponseDTO> replyMail(@RequestHeader("Authorization") String token,
-//                                                 @PathVariable int mailNo,
-//                                                 @RequestPart("mailInfo") MailDTO mailDto,
-//                                                 @RequestPart("mailFile") MultipartFile mailFile){
-//        // 사원 번호
-//        String memberNo = decryptToken(token).get("memberNo", String.class);
-//
-//        // 이전 메일 가져오기
-//        MailDTO prevMail = mailService.selectMailDetail(mailNo);
-//
-//        MailDTO replyMail = new MailDTO(
-//                memberNo,
-//                "RE:" + prevMail.getMailTitle(),
-//                mailDto.getMailContent() + prevMail.getMailContent(),
-//                'N',
-//                'N'
-//        );
-//
-//        int replyMailNo = mailService.replyMail(replyMail);
-//
-//        if(replyMailNo == 0) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("메일 답장 실패"));
-//        }else {
-//            List<ReceiverDTO> replyReceivers = new ArrayList<>();
-//            ReceiverDTO replyReceiver = new ReceiverDTO(
-//                    replyMailNo,
-//                    prevMail.getSenderMem(),
-//                    'N'
-//            );
-//
-//            replyReceivers.add(replyReceiver);
-//
-////            mailService.insertReceiver(replyReceivers);
-//
-//            if(mailFile != null) {
-////                mailService.insertMailFile(replyMailNo, mailFile);
-//            }
-//
-//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 답장 성공", null));
-//        }
-//    }
 
     @PutMapping("/times/{mailNo}")
     public ResponseEntity<ResponseDTO> updateReadMailTime(@RequestHeader("Authorization") String token, @PathVariable int mailNo) {

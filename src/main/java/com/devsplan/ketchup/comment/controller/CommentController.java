@@ -27,7 +27,7 @@ public class CommentController {
 
     /* 댓글 조회 */
     @GetMapping("/{boardNo}/comments")
-    public ResponseEntity<ResponseDTO> getCommentsByBoardNo(@PathVariable int boardNo) {
+    public ResponseEntity<ResponseDTO> selectCommentList(@PathVariable int boardNo) {
         try {
 
             List<CommentDTO> commentList = commentService.selectCommentList(boardNo);
@@ -36,6 +36,20 @@ public class CommentController {
             log.error("댓글 조회 중 오류 발생: " + e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "댓글 조회 중 오류 발생", null));
+        }
+    }
+
+    /* 특정 댓글 조회 */
+    @GetMapping("/{boardNo}/comments/{commentNo}")
+    public ResponseEntity<ResponseDTO> selectCommentDetail(@PathVariable int boardNo, @PathVariable int commentNo) {
+        try {
+
+            CommentDTO comment = commentService.selectCommentDetail(boardNo, commentNo);
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "특정 댓글 조회 성공", comment));
+        } catch (Exception e) {
+            log.error("댓글 조회 중 오류 발생: " + e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "특정 댓글 조회 중 오류 발생", null));
         }
     }
 
@@ -58,5 +72,68 @@ public class CommentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
         }
     }
+
+    /* 대댓글 등록 */
+    @PostMapping("/{boardNo}/comments/{parentCommentId}/replies")
+    public ResponseEntity<ResponseDTO> insertReply(@PathVariable("boardNo") int boardNo
+                                                    , @PathVariable("parentCommentId") int parentCommentId
+                                                    , @RequestBody CommentDTO commentDTO
+                                                    , @RequestHeader("Authorization") String token) {
+        try {
+            String memberNo = decryptToken(token).get("memberNo", String.class);
+
+            Object data = commentService.insertReply(boardNo, parentCommentId, commentDTO, memberNo);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "대댓글 작성 성공", data));
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
+        } catch (JwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("유효하지 않은 토큰입니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
+        }
+    }
+
+    /* 댓글 수정 */
+    @PutMapping("/{boardNo}/comments/{commentNo}")
+    public ResponseEntity<ResponseDTO> updateComment(@PathVariable int boardNo
+                                                    , @PathVariable int commentNo
+                                                    , @RequestBody CommentDTO commentDTO
+                                                    , @RequestHeader("Authorization") String token) {
+        try {
+            String memberNo = decryptToken(token).get("memberNo", String.class);
+
+            CommentDTO comment = commentService.updateComment(boardNo, commentNo, commentDTO, memberNo);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "댓글 수정 성공", comment));
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("토큰이 만료되었습니다."));
+        } catch (JwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("유효하지 않은 토큰입니다."));
+        } catch (Exception e) {
+            log.error("공지 등록 실패: {}", e.getMessage(), e);
+            throw new RuntimeException("공지 등록 중 오류가 발생했습니다: " + e.getMessage()); // 수정된 부분
+        }
+    }
+
+    /* 댓글 삭제 */
+    @DeleteMapping("/{boardNo}/comments/{commentNo}")
+    public ResponseEntity<ResponseDTO> deleteComment(@PathVariable int boardNo
+                                                    , @PathVariable int commentNo
+                                                    , @RequestHeader("Authorization") String token) {
+        try {
+            String memberNo = decryptToken(token).get("memberNo", String.class);
+
+            commentService.deleteComment(boardNo, commentNo, memberNo);
+            return ResponseEntity.ok().body(new ResponseDTO("댓글이 성공적으로 삭제되었습니다."));
+
+        }  catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage(), null));
+        } catch (Exception e) {
+            log.error("서버 오류: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null));
+        }
+    }
+
 
 }
