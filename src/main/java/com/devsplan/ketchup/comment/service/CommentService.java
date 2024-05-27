@@ -5,6 +5,8 @@ import com.devsplan.ketchup.board.repository.BoardRepository;
 import com.devsplan.ketchup.comment.dto.CommentDTO;
 import com.devsplan.ketchup.comment.entity.Comment;
 import com.devsplan.ketchup.comment.repository.CommentRepository;
+import com.devsplan.ketchup.member.repository.MemberRepository;
+import com.devsplan.ketchup.member.service.MemberService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -15,6 +17,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,13 +26,15 @@ import java.util.stream.Collectors;
 public class CommentService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+    private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
     private final ThreadPoolTaskScheduler taskScheduler;
 
     @Autowired
-    public CommentService(BoardRepository boardRepository, CommentRepository commentRepository, ModelMapper modelMapper, ThreadPoolTaskScheduler taskScheduler) {
+    public CommentService(BoardRepository boardRepository, CommentRepository commentRepository, MemberRepository memberRepository, ModelMapper modelMapper, ThreadPoolTaskScheduler taskScheduler) {
         this.boardRepository = boardRepository;
         this.commentRepository = commentRepository;
+        this.memberRepository = memberRepository;
         this.modelMapper = modelMapper;
         this.taskScheduler = taskScheduler;
     }
@@ -41,13 +46,34 @@ public class CommentService {
             List<Comment> comments = commentRepository.findByBoard(boardRepository.findById(boardNo).orElse(null));
 
             // 댓글 DTO 리스트로 변환
-            return comments.stream()
+            List<CommentDTO> commentDTOList = comments.stream()
                     .map(comment -> modelMapper.map(comment, CommentDTO.class))
                     .collect(Collectors.toList());
+
+            // 대댓글 추가
+            for (CommentDTO commentDTO : commentDTOList) {
+                List<CommentDTO> replies = findReplies(commentDTO.getCommentNo(), commentDTOList);
+                commentDTO.setReplies(replies);
+            }
+
+            return commentDTOList;
         } catch (Exception e) {
             log.error("댓글 조회 중 오류 발생: " + e.getMessage(), e);
             throw new RuntimeException("댓글 조회 중 오류 발생");
         }
+    }
+
+    /* 대댓글 찾기 */
+    private List<CommentDTO> findReplies(int parentCommentNo, List<CommentDTO> commentDTOList) {
+        List<CommentDTO> replies = new ArrayList<>();
+        for (CommentDTO commentDTO : commentDTOList) {
+            if (commentDTO.getParentCommentNo() != null && commentDTO.getParentCommentNo() == parentCommentNo) {
+                List<CommentDTO> childReplies = findReplies(commentDTO.getCommentNo(), commentDTOList);
+                commentDTO.setReplies(childReplies);
+                replies.add(commentDTO);
+            }
+        }
+        return replies;
     }
 
     /* 특정 댓글 조회 */
@@ -66,6 +92,30 @@ public class CommentService {
         }
     }
 
+    /* 대댓글 조회 */
+    public List<CommentDTO> selectRepliesToComment(int boardNo, int commentNo) {
+        try {
+            // Get the parent comment
+            Comment parentComment = commentRepository.findByBoardBoardNoAndCommentNo(boardNo, commentNo);
+
+            if (parentComment == null) {
+                throw new IllegalArgumentException("Parent comment not found");
+            }
+
+            // Get replies to the parent comment
+            List<Comment> replies = parentComment.getReplies();
+
+            // Convert replies to DTOs
+            List<CommentDTO> replyDTOs = replies.stream()
+                    .map(reply -> modelMapper.map(reply, CommentDTO.class))
+                    .collect(Collectors.toList());
+
+            return replyDTOs;
+        } catch (Exception e) {
+            log.error("대댓글 조회 중 오류 발생: " + e.getMessage(), e);
+            throw new RuntimeException("대댓글 조회 중 오류 발생");
+        }
+    }
 
     /* 댓글 등록 */
     @Transactional
@@ -77,9 +127,13 @@ public class CommentService {
             // 해당 게시물 가져오기
             Board board = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
 
+            // 멤버 정보 가져오기
+            String memberName = memberRepository.findByMemberNo(memberNo).orElseThrow(IllegalArgumentException::new).getMemberName();
+
             // 댓글 생성
             Comment comment = modelMapper.map(commentDTO, Comment.class);
             comment.board(board);
+            comment.memberName(memberName);
 
             // 부모 댓글이 있는지 확인하고 처리
             if (commentDTO.getParentCommentNo() != null) {
@@ -104,26 +158,32 @@ public class CommentService {
 
     /* 대댓글 등록 */
     @Transactional
-    public Object insertReply(int boardNo, int parentCommentId, CommentDTO commentDTO, String memberNo) {
+    public Object insertReply(int boardNo, String parentCommentNo, CommentDTO commentDTO, String memberNo) {
         try {
             commentDTO.setCommentCreateDt(new Date(System.currentTimeMillis()));
             commentDTO.setMemberNo(memberNo);
 
             // 부모 댓글 가져오기
-            Comment parentComment = commentRepository.findById(parentCommentId)
+            Comment parentComment = commentRepository.findById(Integer.valueOf(parentCommentNo))
                     .orElseThrow(() -> new IllegalArgumentException("Parent comment not found"));
 
             // 해당 게시물 가져오기
             Board board = boardRepository.findById(boardNo).orElseThrow(IllegalArgumentException::new);
 
+            // 멤버 정보 가져오기
+            String memberName = memberRepository.findByMemberNo(memberNo).orElseThrow(IllegalArgumentException::new).getMemberName();
+
             // 댓글 생성
             Comment comment = modelMapper.map(commentDTO, Comment.class);
             comment.board(board);
             comment.parentComment(parentComment);
+            comment.memberName(memberName);
 
             Comment savedComment = commentRepository.save(comment);
 
-            return modelMapper.map(savedComment, CommentDTO.class);
+            CommentDTO insertReply = selectCommentDetail(boardNo, savedComment.getCommentNo());
+
+            return insertReply;
         } catch (IllegalArgumentException e) {
             log.error("Failed to add reply to comment: " + e.getMessage(), e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();

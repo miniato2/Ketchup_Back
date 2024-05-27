@@ -25,6 +25,9 @@ public class Comment {
     @Column(name = "member_no", nullable = false)
     private String memberNo;                //사번 (댓글 작성자)
 
+    @Column(name = "member_name", nullable = false)
+    private String memberName;              //이름
+
     @Column(name = "comment_content", nullable = false)
     private String commentContent;          //댓글 내용
 
@@ -46,12 +49,13 @@ public class Comment {
 
     protected Comment() {}
 
-    public Comment(int commentNo, Board board, String memberNo, String commentContent
+    public Comment(int commentNo, Board board, String memberNo, String memberName, String commentContent
                     , Date commentCreateDt, Date commentUpdateDt, Comment parentComment
                     , List<Comment> replies, boolean deleteComment) {
         this.commentNo = commentNo;
         this.board = board;
         this.memberNo = memberNo;
+        this.memberName = memberName;
         this.commentContent = commentContent;
         this.commentCreateDt = commentCreateDt;
         this.commentUpdateDt = commentUpdateDt;
@@ -76,6 +80,7 @@ public class Comment {
         return memberNo;
     }
 
+
     public boolean getDeleteComment() {
         return deleteComment;
     }
@@ -86,6 +91,11 @@ public class Comment {
 
     public Comment board(Board val) {
         this.board = val;
+        return this;
+    }
+
+    public Comment memberName(String val) {
+        this.memberName = val;
         return this;
     }
 
