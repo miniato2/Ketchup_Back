@@ -9,9 +9,10 @@ import java.util.List;
 
 public interface MailRepository extends JpaRepository<Mail, Integer> {
     Page<Mail> findBySenderMemAndSendDelStatusAndMailTitleContaining(String senderMem, char delStatus, String searchValue, Pageable paging);
-    Mail findByMailNoAndSendDelStatus(int mailNo, char delStatus);
+//    Mail findByMailNoAndSendDelStatus(int mailNo, char delStatus);
     Mail findByMailNo(int mailNo);
-    Page<Mail> findByMailTitleContaining(String searchValue, Pageable paging);
-//    Page<Mail> findBySenderMemContaining(String searchValue, Pageable paging);
+    List<Mail> findByMailTitleContaining(String searchValue);
+
+//    Page<Mail> findBySenderMemContaining(String searchValue, Pageable paging); // 발신자, 수신자 검색
     Page<Mail> findBySenderMemAndSendDelStatus(String senderMem, char delStatus, Pageable paging);
 }
