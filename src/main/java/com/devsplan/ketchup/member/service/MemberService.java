@@ -219,6 +219,10 @@ public class MemberService {
 
        String authCode = createAuthCode();
 
+       findMember.verifyCode(authCode).build();
+
+       memberRepository.save(findMember);
+
 
         simpleMessage.setTo(email);
 
@@ -238,10 +242,14 @@ public class MemberService {
 
 
     private String createAuthCode() {
+        int min = 100000; // 최소값: 100000 (6자리)
+        int max = 999999; // 최대값: 999999 (6자리)
 
-        return String.valueOf((int)(Math.random() * 1000000));
+        // Math.random()은 0 이상 1 미만의 값을 반환하므로, 100000을 더해서 범위를 조정합니다.
+        int code = (int) (Math.random() * (max - min + 1)) + min;
+
+        return String.valueOf(code);
     }
-
 
     public List<MemberDTO> findAllMembersWithNoPaging() {
         List<Member> members = memberRepository.findByStatus("재직중"); // 모든 회원 조회
@@ -447,13 +455,39 @@ public class MemberService {
 
     public void updatePW(String myNo, String newPW) {
 
+        if(newPW.equals("1111")){
+
         Member member = memberRepository.findByMemberNo(myNo).get();
 
         member = member.memberPW(passwordEncoder.encode(newPW)).build();
 
+        member = member.isFirstLogin("Y");
+
         memberRepository.save(member);
+        }
+
+      else{
+
+            Member member = memberRepository.findByMemberNo(myNo).get();
+
+            member = member.memberPW(passwordEncoder.encode(newPW)).build();
+
+            member = member.isFirstLogin("N");
+
+            memberRepository.save(member);
+        }
 
     }
 
 
+    public boolean verifyReceiveCode(String memberNo, String receiveCode) {
+        MemberDTO memberDTO = findMember(memberNo).get();
+
+        if (memberDTO.getVerifyCode().equals(receiveCode)){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
 }

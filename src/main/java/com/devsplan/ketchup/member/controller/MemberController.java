@@ -161,16 +161,31 @@ public class MemberController {
 
 
 
-    @GetMapping ("/Email/{memberNo}")
+    @GetMapping ("/email/{memberNo}")
     public String sendVerifyEmail(@PathVariable String memberNo){
-
+        System.out.println("이메일 발송 여기까지는 와?");
 
         String verifyCode = memberService.sendVerifyEmail(memberNo);
 
         return verifyCode;
 
-
     }
+
+    @PostMapping("/verifyEmail/{myNo}/{verifyCode}")
+    public ResponseEntity<ResponseDTO> verifyCode(@PathVariable(name = "myNo") String memberNo,@PathVariable(name = "verifyCode")String receiveCode){
+
+        System.out.println("전달받은 맴버 코드"+ memberNo);
+        System.out.println("전달받은코드 "+ receiveCode);
+           boolean result = memberService.verifyReceiveCode(memberNo, receiveCode);
+
+          if (result){
+              return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"인증성공"));
+          }else{
+              return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"인증실패"));
+          }
+    }
+
+
 
 
     @GetMapping("/noPageDeps")
@@ -247,7 +262,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/deps/{depNo}")
-    public ResponseEntity<ResponseDTO> deleteDep(@PathVariable int depNo){
+    public ResponseEntity<ResponseDTO> deleteDep(@PathVariable() int depNo){
 
 
 
@@ -270,10 +285,10 @@ public class MemberController {
 
     }
 
-    @PutMapping("/members/{myNo}")
+    @PutMapping("/PW/{myNo}")
     public String updatePW(@PathVariable String myNo, @RequestBody String newPW){
 
-        System.out.println(myNo+"  "+newPW);
+        System.out.println("-------------------비밀번호 수정-----------------"+myNo+"  "+newPW);
 
         memberService.updatePW(myNo,newPW);
 
