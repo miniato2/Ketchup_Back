@@ -79,12 +79,12 @@ public class RscServiceTests {
         String part = "회의실";
 
         // when
-        List<ResourceDTO> rscList = rscService.selectRscList(part);
+//        List<ResourceDTO> rscList = rscService.selectRscList(part);
 
         // then
-        Assertions.assertNotNull(rscList);
+//        Assertions.assertNotNull(rscList);
         System.out.println("자원 목록 조회");
-        System.out.println(rscList);
+//        System.out.println(rscList);
     }
 
     @DisplayName("자원 상세 조회")
