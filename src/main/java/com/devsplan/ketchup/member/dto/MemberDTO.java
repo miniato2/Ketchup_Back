@@ -30,6 +30,9 @@ public class MemberDTO {
 
     private LocalDateTime resignDateTime;
 
+    private String isFirstLogin;
+
+
 
     public MemberDTO() {
 
@@ -98,7 +101,7 @@ public class MemberDTO {
         this.resignDateTime = resignDateTime;
     }
 
-    public MemberDTO(String memberNo, String memberName, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, DepDTO department, PositionDTO position, String account, String status, String imgUrl, String verifyCode, LocalDateTime resignDateTime) {
+    public MemberDTO(String memberNo, String memberName, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, DepDTO department, PositionDTO position, String account, String status, String imgUrl, String verifyCode, LocalDateTime resignDateTime, String isFirstLogin) {
         this.memberNo = memberNo;
         this.memberName = memberName;
         this.memberPW = memberPW;
@@ -115,6 +118,7 @@ public class MemberDTO {
         this.imgUrl = imgUrl;
         this.verifyCode = verifyCode;
         this.resignDateTime = resignDateTime;
+        this.isFirstLogin = isFirstLogin;
     }
 
     public String getVerifyCode() {
@@ -245,6 +249,15 @@ public class MemberDTO {
         this.imgUrl = imgUrl;
     }
 
+    public String getIsFirstLogin() {
+        return isFirstLogin;
+    }
+
+    public void setFirstLogin(String firstLogin) {
+        isFirstLogin = firstLogin;
+    }
+
+
     @Override
     public String toString() {
         return "MemberDTO{" +
@@ -264,6 +277,7 @@ public class MemberDTO {
                 ", imgUrl='" + imgUrl + '\'' +
                 ", verifyCode='" + verifyCode + '\'' +
                 ", resignDateTime=" + resignDateTime +
+                ", isFirstLogin=" + isFirstLogin +
                 '}';
     }
 }

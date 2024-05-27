@@ -455,11 +455,27 @@ public class MemberService {
 
     public void updatePW(String myNo, String newPW) {
 
+        if(newPW.equals("1111")){
+
         Member member = memberRepository.findByMemberNo(myNo).get();
 
         member = member.memberPW(passwordEncoder.encode(newPW)).build();
 
+        member = member.isFirstLogin("Y");
+
         memberRepository.save(member);
+        }
+
+      else{
+
+            Member member = memberRepository.findByMemberNo(myNo).get();
+
+            member = member.memberPW(passwordEncoder.encode(newPW)).build();
+
+            member = member.isFirstLogin("N");
+
+            memberRepository.save(member);
+        }
 
     }
 

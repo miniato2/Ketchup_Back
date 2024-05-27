@@ -285,10 +285,10 @@ public class MemberController {
 
     }
 
-    @PutMapping("/members/{myNo}")
+    @PutMapping("/PW/{myNo}")
     public String updatePW(@PathVariable String myNo, @RequestBody String newPW){
 
-        System.out.println(myNo+"  "+newPW);
+        System.out.println("-------------------비밀번호 수정-----------------"+myNo+"  "+newPW);
 
         memberService.updatePW(myNo,newPW);
 

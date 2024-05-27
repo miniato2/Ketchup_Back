@@ -45,6 +45,9 @@ public class Member {
     @Column(name = "MEMBER_VERIFYCODE")
     private String verifyCode;
 
+    @Column(name = "MEMBER_ISFIRSTLOGIN")
+    private String isFirstLogin;
+
     protected Member() {
     }
 
@@ -66,7 +69,7 @@ public class Member {
         this.resignDateTime = resignDateTime;
     }
 
-    public Member(String memberNo, String memberName, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, Dep department, Position position, String account, String status, String imgUrl, LocalDateTime resignDateTime, String verifyCode) {
+    public Member(String memberNo, String memberName, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, Dep department, Position position, String account, String status, String imgUrl, LocalDateTime resignDateTime, String verifyCode,String isFirstLogin) {
         this.memberNo = memberNo;
         this.memberName = memberName;
         this.memberPW = memberPW;
@@ -83,6 +86,8 @@ public class Member {
         this.imgUrl = imgUrl;
         this.resignDateTime = resignDateTime;
         this.verifyCode = verifyCode;
+        this.isFirstLogin = isFirstLogin;
+
     }
 
     public Member memberNo(String memberNo){
@@ -166,8 +171,13 @@ public class Member {
         return this;
     }
 
+    public Member isFirstLogin(String isFirstLogin){
+        this.isFirstLogin = isFirstLogin;
+        return this;
+    }
+
     public Member build() {
-        return new Member(memberNo,memberName,memberPW,phone,birthDate,gender,address,privateEmail,companyEmail,department,position,account,status,imgUrl,resignDateTime,verifyCode);
+        return new Member(memberNo,memberName,memberPW,phone,birthDate,gender,address,privateEmail,companyEmail,department,position,account,status,imgUrl,resignDateTime,verifyCode,isFirstLogin);
     }
 
     public String getMemberNo() {

@@ -49,7 +49,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         List<String> roleLessList = Arrays.asList("/signup","/signupPosition","/signupDep");
 
 
-        if (roleLessList.contains(request.getRequestURI()) || request.getRequestURI().contains("")) {
+        if (roleLessList.contains(request.getRequestURI()) ||
+                request.getRequestURI().contains("verifyEmail") ||
+                request.getRequestURI().contains("email")  ||
+                request.getRequestURI().contains("PW")) {
             chain.doFilter(request, response);
             return;
         }
