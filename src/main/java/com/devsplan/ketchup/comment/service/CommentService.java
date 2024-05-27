@@ -129,11 +129,13 @@ public class CommentService {
 
             // 멤버 정보 가져오기
             String memberName = memberRepository.findByMemberNo(memberNo).orElseThrow(IllegalArgumentException::new).getMemberName();
+            String positionName = memberRepository.findByMemberNo(memberNo).orElseThrow(IllegalArgumentException::new).getPosition().getPositionName();
 
             // 댓글 생성
             Comment comment = modelMapper.map(commentDTO, Comment.class);
             comment.board(board);
             comment.memberName(memberName);
+            comment.positionName(positionName);
 
             // 부모 댓글이 있는지 확인하고 처리
             if (commentDTO.getParentCommentNo() != null) {
@@ -172,12 +174,13 @@ public class CommentService {
 
             // 멤버 정보 가져오기
             String memberName = memberRepository.findByMemberNo(memberNo).orElseThrow(IllegalArgumentException::new).getMemberName();
-
+            String positionName = memberRepository.findByMemberNo(memberNo).orElseThrow(IllegalArgumentException::new).getPosition().getPositionName();
             // 댓글 생성
             Comment comment = modelMapper.map(commentDTO, Comment.class);
             comment.board(board);
             comment.parentComment(parentComment);
             comment.memberName(memberName);
+            comment.positionName(positionName);
 
             Comment savedComment = commentRepository.save(comment);
 
