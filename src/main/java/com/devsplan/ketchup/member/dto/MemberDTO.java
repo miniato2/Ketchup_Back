@@ -26,6 +26,8 @@ public class MemberDTO {
     private String status;
     private String imgUrl;
 
+    private String verifyCode;
+
     private LocalDateTime resignDateTime;
 
 
@@ -94,6 +96,33 @@ public class MemberDTO {
         this.status = status;
         this.imgUrl = imgUrl;
         this.resignDateTime = resignDateTime;
+    }
+
+    public MemberDTO(String memberNo, String memberName, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, DepDTO department, PositionDTO position, String account, String status, String imgUrl, String verifyCode, LocalDateTime resignDateTime) {
+        this.memberNo = memberNo;
+        this.memberName = memberName;
+        this.memberPW = memberPW;
+        this.phone = phone;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.address = address;
+        this.privateEmail = privateEmail;
+        this.companyEmail = companyEmail;
+        this.department = department;
+        this.position = position;
+        this.account = account;
+        this.status = status;
+        this.imgUrl = imgUrl;
+        this.verifyCode = verifyCode;
+        this.resignDateTime = resignDateTime;
+    }
+
+    public String getVerifyCode() {
+        return verifyCode;
+    }
+
+    public void setVerifyCode(String verifyCode) {
+        this.verifyCode = verifyCode;
     }
 
     public LocalDateTime getResignDateTime() {
@@ -219,7 +248,7 @@ public class MemberDTO {
     @Override
     public String toString() {
         return "MemberDTO{" +
-                "memberNo=" + memberNo +
+                "memberNo='" + memberNo + '\'' +
                 ", memberName='" + memberName + '\'' +
                 ", memberPW='" + memberPW + '\'' +
                 ", phone='" + phone + '\'' +
@@ -231,8 +260,10 @@ public class MemberDTO {
                 ", department=" + department +
                 ", position=" + position +
                 ", account='" + account + '\'' +
-                ", status=" + status +
+                ", status='" + status + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
+                ", verifyCode='" + verifyCode + '\'' +
+                ", resignDateTime=" + resignDateTime +
                 '}';
     }
 }

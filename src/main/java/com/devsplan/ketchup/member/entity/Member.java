@@ -42,6 +42,9 @@ public class Member {
     @Column(name = "MEMBER_RESIGNDATETIME")
     private LocalDateTime resignDateTime;
 
+    @Column(name = "MEMBER_VERIFYCODE")
+    private String verifyCode;
+
     protected Member() {
     }
 
@@ -61,6 +64,25 @@ public class Member {
         this.status = status;
         this.imgUrl = imgUrl;
         this.resignDateTime = resignDateTime;
+    }
+
+    public Member(String memberNo, String memberName, String memberPW, String phone, String birthDate, char gender, String address, String privateEmail, String companyEmail, Dep department, Position position, String account, String status, String imgUrl, LocalDateTime resignDateTime, String verifyCode) {
+        this.memberNo = memberNo;
+        this.memberName = memberName;
+        this.memberPW = memberPW;
+        this.phone = phone;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.address = address;
+        this.privateEmail = privateEmail;
+        this.companyEmail = companyEmail;
+        this.department = department;
+        this.position = position;
+        this.account = account;
+        this.status = status;
+        this.imgUrl = imgUrl;
+        this.resignDateTime = resignDateTime;
+        this.verifyCode = verifyCode;
     }
 
     public Member memberNo(String memberNo){
@@ -139,8 +161,13 @@ public class Member {
 
     }
 
+    public Member verifyCode(String verifyCode){
+        this.verifyCode = verifyCode;
+        return this;
+    }
+
     public Member build() {
-        return new Member(memberNo,memberName,memberPW,phone,birthDate,gender,address,privateEmail,companyEmail,department,position,account,status,imgUrl,resignDateTime);
+        return new Member(memberNo,memberName,memberPW,phone,birthDate,gender,address,privateEmail,companyEmail,department,position,account,status,imgUrl,resignDateTime,verifyCode);
     }
 
     public String getMemberNo() {
@@ -199,9 +226,15 @@ public class Member {
         return imgUrl;
     }
 
+    public String getVerifyCode() {
+        return verifyCode;
+    }
+
     public LocalDateTime getResignDateTime() {
         return resignDateTime;
     }
+
+
 
     @Override
     public String toString() {
@@ -220,6 +253,8 @@ public class Member {
                 ", account='" + account + '\'' +
                 ", status='" + status + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
+                ", resignDateTime=" + resignDateTime +
+                ", verifyCode='" + verifyCode + '\'' +
                 '}';
     }
 }

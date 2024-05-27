@@ -46,13 +46,15 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        List<String> roleLessList = Arrays.asList("/signup","/signupDep","/signupPosition"); //
+        List<String> roleLessList = Arrays.asList("/signup","/signupPosition","/signupDep");
 
 
-        if (roleLessList.contains((request.getRequestURI()))) {
+        if (roleLessList.contains(request.getRequestURI()) || request.getRequestURI().contains("")) {
             chain.doFilter(request, response);
             return;
         }
+
+
 
         String header = request.getHeader(AuthConstants.AUTH_HEADER);
 
@@ -67,42 +69,21 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     Authority authority = Authority.valueOf(claims.get("role").toString());
 
 
-
                     MemberDTO tMember = new MemberDTO();
                     PositionDTO tPosition = new PositionDTO();
                     tPosition.setAuthority(authority);
 
                     tMember.setPosition(tPosition);
 
-                    System.out.println(tPosition);
-
-
-                    System.out.println("----------------------토큰에담긴 사원번호------");
-                    System.out.println(claims.get("memberNo").toString());
                     tMember.setMemberNo(claims.get("memberNo").toString());
                     //토큰에 사원설정시 부서번호 추가
 
-
-                    System.out.println("----------------------해당 사원의 직급 번호------");
-                    System.out.println(claims.get("positionNo").toString());
-
-                    System.out.println("----------------------해당 사원의 직급 이름------");
-                    System.out.println(claims.get("positionName").toString());
-                    System.out.println(tPosition.getPositionNo());
-                    System.out.println("----------------------여기가 직급번호 세팅직전-----------");
                     tPosition.setPositionNo( Integer.parseInt( ( claims.get("positionNo").toString() ) ) );
 //                  tPosition.setPositionName(claims.get("positionName").toString());
 
 
                     // Role을 설정합니다.
-                    System.out.println("----------------------요청보낼때 토큰 role 설정해주는곳------");
-                    System.out.println("받은 role "+claims.get("role").toString());
 
-
-                    System.out.println("----------------------------------------------------------------------");
-                    System.out.println(tMember.toString());
-                    System.out.println(tMember.getPosition().toString());
-                    System.out.println(tMember.getPosition().getAuthority().toString());
                     authentication.setMember(tMember);
 
 
