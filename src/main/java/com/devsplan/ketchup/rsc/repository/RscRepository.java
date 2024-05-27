@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface RscRepository extends JpaRepository<Resource, Integer> {
     Page<Resource> findByRscCategory(String part, Pageable paging);
-
     Resource findByRscNo(int rscNo);
     int deleteByRscNo(int rscNo);
 }

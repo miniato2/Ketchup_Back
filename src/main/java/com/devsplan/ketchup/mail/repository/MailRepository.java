@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MailRepository extends JpaRepository<Mail, Integer> {
-    List<Mail> findBySenderMemAndSendDelStatusAndMailTitleContaining(String senderMem, char delStatus, String searchValue);
+    Page<Mail> findBySenderMemAndSendDelStatusAndMailTitleContaining(String senderMem, char delStatus, String searchValue, Pageable paging);
     Mail findByMailNoAndSendDelStatus(int mailNo, char delStatus);
     Mail findByMailNo(int mailNo);
-    List<Mail> findByMailTitleContaining(String searchValue);
-    List<Mail> findBySenderMemContaining(String searchValue);
-    List<Mail> findBySenderMemAndSendDelStatus(String senderMem, char delStatus);
+    Page<Mail> findByMailTitleContaining(String searchValue, Pageable paging);
+//    Page<Mail> findBySenderMemContaining(String searchValue, Pageable paging);
+    Page<Mail> findBySenderMemAndSendDelStatus(String senderMem, char delStatus, Pageable paging);
 }

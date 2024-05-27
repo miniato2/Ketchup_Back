@@ -19,12 +19,6 @@ public class ResourceDTO {
         this.rscDescr = rscDescr;
     }
 
-    public ResourceDTO(int rscNo, boolean rscIsAvailable, String rscDescr) {
-        this.rscNo = rscNo;
-        this.rscIsAvailable = rscIsAvailable;
-        this.rscDescr = rscDescr;
-    }
-
     public ResourceDTO(String rscCategory, String rscName, String rscInfo, int rscCap, boolean rscIsAvailable, String rscDescr) {
         this.rscCategory = rscCategory;
         this.rscName = rscName;
@@ -42,11 +36,6 @@ public class ResourceDTO {
         this.rscCap = rscCap;
         this.rscIsAvailable = rscIsAvailable;
         this.rscDescr = rscDescr;
-    }
-
-    public ResourceDTO(int rscNo, String rscName) {
-        this.rscNo = rscNo;
-        this.rscName = rscName;
     }
 
     public ResourceDTO(Resource resource) {
