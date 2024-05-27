@@ -10,6 +10,4 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findByBoard(Board board);
     Comment findByBoardBoardNoAndCommentNo(int boardNo, int commentNo);
-    List<Comment> findByParentComment(Comment comment);
-
 }
