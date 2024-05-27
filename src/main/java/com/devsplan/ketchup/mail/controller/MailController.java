@@ -136,4 +136,13 @@ public class MailController {
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "받은 메일 읽음", data));
     }
+
+    @GetMapping("/receive/unread")
+    public ResponseEntity<ResponseDTO> selectUnReadMail(@RequestHeader("Authorization") String token) {
+        String memberNo = decryptToken(token).get("memberNo", String.class);
+
+        int unReadNum = mailService.selectUnReadMail(memberNo);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "안읽은 메일 조회", unReadNum));
+    }
 }

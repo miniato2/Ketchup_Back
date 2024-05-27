@@ -142,68 +142,60 @@ public class MailService {
     public Page<MailDTO> selectReceiveMailList(Criteria cri, String receiverMem, String search, String searchValue) {
         int page = cri.getPageNum() - 1;
         int size = cri.getAmount();
-        Pageable paging = PageRequest.of(page, size, Sort.by("mailNo").descending());
 
-        System.out.println("🍥🍥🍥🍥🍥");
-        System.out.println(paging.getSort());
-
-        Page<Mail> mailAllList = null;
+        List<Mail> mailList = null;
         if (search != null) {
             if (search.equals("mailTitle") && !searchValue.isEmpty()) {
-                mailAllList = mailRepository.findByMailTitleContaining(searchValue, paging);
+                mailList = mailRepository.findByMailTitleContaining(searchValue);
             } else if (search.equals("senderMem") && !searchValue.isEmpty()) {
-//                mailAllList = mailRepository.findBySenderMemContaining(searchValue, paging).getContent();
+                // mailList = mailRepository.findBySenderMemContaining(searchValue);
             }
         } else {
-            mailAllList = mailRepository.findAll(paging);
+            mailList = mailRepository.findAll();
         }
 
         List<Receiver> receivers = receiverRepository.findByReceiverMemAndReceiverDelStatus(receiverMem, 'N');
 
         List<MailDTO> receiverMail = new ArrayList<>();
-        for (Receiver list : receivers) {
-            System.out.println("🌼🌼🌼🌼🌼");
-            System.out.println(list);
-            for (Mail mailList : mailAllList) {
-                System.out.println("💐💐💐💐💐");
-                System.out.println(mailList);
-                if (list.getMailNo() == mailList.getMailNo() && list.getReceiverDelStatus() == 'N') {
-                    Timestamp readTime = list.getReadTime();
-
+        for (Receiver receiver : receivers) {
+            for (Mail mail : mailList) {
+                if (receiver.getMailNo() == mail.getMailNo() && receiver.getReceiverDelStatus() == 'N') {
+                    Timestamp readTime = receiver.getReadTime();
                     List<ReceiverDTO> receiverReadTime = new ArrayList<>();
-
                     ReceiverDTO receiveDTO = new ReceiverDTO(readTime);
                     receiverReadTime.add(receiveDTO);
 
                     MailDTO mailDTO = new MailDTO(
-                            mailList.getMailNo(),
-                            mailList.getSenderMem(),
-                            mailList.getMailTitle(),
-                            mailList.getMailContent(),
-                            mailList.getSendMailTime(),
-                            mailList.getSendCancelStatus(),
-                            mailList.getSendDelStatus(),
-                            mailList.getReplyMailNo(),
+                            mail.getMailNo(),
+                            mail.getSenderMem(),
+                            mail.getMailTitle(),
+                            mail.getMailContent(),
+                            mail.getSendMailTime(),
+                            mail.getSendCancelStatus(),
+                            mail.getSendDelStatus(),
+                            mail.getReplyMailNo(),
                             receiverReadTime
                     );
-
-                    System.out.println("🍀🍀🍀🍀🍀");
-                    System.out.println(mailDTO);
 
                     receiverMail.add(mailDTO);
                 }
             }
         }
 
-        System.out.println("🍁🍁🍁🍁🍁");
-        System.out.println(receiverMail);
+        Collections.sort(receiverMail, Comparator.comparing(MailDTO::getMailNo).reversed());
 
-        return new PageImpl<>(receiverMail, paging, receivers.size());
+        int start = page * size;
+        int end = Math.min(start + size, receiverMail.size());
+        List<MailDTO> pagedMailList = receiverMail.subList(start, end);
+
+        Pageable pageable = PageRequest.of(page, size);
+        return new PageImpl<>(pagedMailList, pageable, receiverMail.size());
     }
 
     // 메일 상세 조회
     public MailDTO selectMailDetail(int mailNo) {
-        Mail mailDetail = mailRepository.findByMailNoAndSendDelStatus(mailNo, 'N');
+//        Mail mailDetail = mailRepository.findByMailNoAndSendDelStatus(mailNo, 'N');
+        Mail mailDetail = mailRepository.findByMailNo(mailNo);
         List<Receiver> mailReceiver = receiverRepository.findByMailNo(mailNo);
         List<MailFile> mailFileList = mailFileRepository.findByMailNo(mailNo);
 
@@ -304,5 +296,12 @@ public class MailService {
         System.out.println(updateMail);
 
         return updateMail;
+    }
+
+    public int selectUnReadMail(String memberNo) {
+        List<Receiver> findMail = receiverRepository.findByReceiverMemAndReadTimeAndReceiverDelStatus(memberNo, null, 'N');
+
+        System.out.println(findMail.size());
+        return findMail.size();
     }
 }
