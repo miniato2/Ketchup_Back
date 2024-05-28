@@ -12,7 +12,7 @@ public interface MailRepository extends JpaRepository<Mail, Integer> {
 //    Mail findByMailNoAndSendDelStatus(int mailNo, char delStatus);
     Mail findByMailNo(int mailNo);
     List<Mail> findByMailTitleContaining(String searchValue);
-
-//    Page<Mail> findBySenderMemContaining(String searchValue, Pageable paging); // 발신자, 수신자 검색
     Page<Mail> findBySenderMemAndSendDelStatus(String senderMem, char delStatus, Pageable paging);
+    List<Mail> findBySenderMemContaining(String searchValue);
+    Page<Mail> findBySenderMemAndSendDelStatusContaining(String senderMem, char n, String searchValue, Pageable paging);
 }

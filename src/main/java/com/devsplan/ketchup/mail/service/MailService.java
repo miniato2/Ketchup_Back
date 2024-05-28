@@ -105,7 +105,7 @@ public class MailService {
             if (search.equals("mailTitle") && !searchValue.isEmpty()) {
                 mailList = mailRepository.findBySenderMemAndSendDelStatusAndMailTitleContaining(senderMem, 'N', searchValue, paging);
             } else if (search.equals("senderMem") && !searchValue.isEmpty()) {
-//                mailList = mailRepository.findBySenderMemAndSendDelStatusAndReceiverMemContaining(senderMem, 'N', searchValue);
+                mailList = mailRepository.findBySenderMemAndSendDelStatusContaining(senderMem, 'N', searchValue, paging);
             }
         } else {
             mailList = mailRepository.findBySenderMemAndSendDelStatus(senderMem, 'N', paging);
@@ -148,7 +148,7 @@ public class MailService {
             if (search.equals("mailTitle") && !searchValue.isEmpty()) {
                 mailList = mailRepository.findByMailTitleContaining(searchValue);
             } else if (search.equals("senderMem") && !searchValue.isEmpty()) {
-                // mailList = mailRepository.findBySenderMemContaining(searchValue);
+                mailList = mailRepository.findBySenderMemContaining(searchValue);
             }
         } else {
             mailList = mailRepository.findAll();
@@ -194,7 +194,6 @@ public class MailService {
 
     // 메일 상세 조회
     public MailDTO selectMailDetail(int mailNo) {
-//        Mail mailDetail = mailRepository.findByMailNoAndSendDelStatus(mailNo, 'N');
         Mail mailDetail = mailRepository.findByMailNo(mailNo);
         List<Receiver> mailReceiver = receiverRepository.findByMailNo(mailNo);
         List<MailFile> mailFileList = mailFileRepository.findByMailNo(mailNo);
