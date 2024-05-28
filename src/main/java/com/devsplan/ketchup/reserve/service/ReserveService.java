@@ -122,7 +122,6 @@ public class ReserveService {
                 resource
         );
 
-        System.out.println("reserve = " + reserve);
         reserveRepository.save(reserve);
     }
 

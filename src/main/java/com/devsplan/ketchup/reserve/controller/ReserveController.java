@@ -75,7 +75,6 @@ public class ReserveController {
     // 자원 예약 등록
     @PostMapping()
     public ResponseEntity<?> insertReserve(@RequestBody ReserveDTO newReserve) {
-        log.debug("newReserve: {}", newReserve);
         if (newReserve.getResources() == null) {
             return ResponseEntity.badRequest().body("자원 정보가 비어있습니다.");
         }

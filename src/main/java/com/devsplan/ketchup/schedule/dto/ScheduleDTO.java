@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,14 +19,9 @@ public class ScheduleDTO {
     private String skdEndDttm;
     private String skdLocation;
     private String skdMemo;
-
-//    public ScheduleDTO(int skdNo, DepartmentDTO dptNo, String skdName, String startDateTime, String endDateTime, String skdLocation, String skdMemo) {
-//        this.skdNo = skdNo;
-//        this.dptNo = dptNo;
-//        this.skdName = skdName;
-//        this.skdStartDttm = startDateTime;
-//        this.skdEndDttm = endDateTime;
-//        this.skdLocation = skdLocation;
-//        this.skdMemo = skdMemo;
-//    }
+    private String authorId;
+    private String authorName;
+    private List<ParticipantDTO> participants;
+    private String skdStatus;
 }
+
