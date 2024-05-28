@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RscService {
@@ -103,9 +102,10 @@ public class RscService {
 
                         System.out.println("예약자 예약 취소 메일 전송");
 
-                        String emailSubject = list.getResources().getRscCategory().equals("회의실") ? "회의실 예약 취소 안내" : "차량 예약 취소 안내";
-                        String emailContent = list.getResources().getRscCategory().equals("회의실") ?
-                                "불가피한 사정으로 회의실의 사용이 불가하여 예약이 취소되었음을 안내드립니다." : "불가피한 사정으로 차량의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
+                        String emailSubject = list.getResources().getRscCategory().equals("회의실") ? "회의실(" + rsc.getRscName() + ") 예약 취소 안내" : "차량(" + rsc.getRscName() + ") 예약 취소 안내";
+//                        String emailContent = list.getResources().getRscCategory().equals("회의실") ?
+//                                "불가피한 사정으로 " + rsc.getRscName() + "의 사용이 불가하여 예약이 취소되었음을 안내드립니다." : "불가피한 사정으로 " + rsc.getRscName() + "의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
+                        String emailContent = "불가피한 사정으로 <b>" + rsc.getRscName() + "(" + list.getRsvStartDttm() + " - " + list.getRsvEndDttm() + ") </b>의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
 
                         Mail rsvCancelMail = new Mail(
                                 memberNo,
@@ -153,9 +153,10 @@ public class RscService {
 
                 System.out.println("예약자 예약 취소 메일 전송");
 
-                String emailSubject = list.getResources().getRscCategory().equals("회의실") ? "회의실 예약 취소 안내" : "차량 예약 취소 안내";
-                String emailContent = list.getResources().getRscCategory().equals("회의실") ?
-                        "불가피한 사정으로 회의실의 사용이 불가하여 예약이 취소되었음을 안내드립니다." : "불가피한 사정으로 차량의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
+                String emailSubject = list.getResources().getRscCategory().equals("회의실") ? "회의실(" + rsc.getRscName() + ") 예약 취소 안내" : "차량(" + rsc.getRscName() + ") 예약 취소 안내";
+//                        String emailContent = list.getResources().getRscCategory().equals("회의실") ?
+//                                "불가피한 사정으로 " + rsc.getRscName() + "의 사용이 불가하여 예약이 취소되었음을 안내드립니다." : "불가피한 사정으로 " + rsc.getRscName() + "의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
+                String emailContent = "불가피한 사정으로 <b>" + rsc.getRscName() + "(" + list.getRsvStartDttm() + " - " + list.getRsvEndDttm() + ") </b>의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
 
                 Mail rsvCancelMail = new Mail(
                         memberNo,

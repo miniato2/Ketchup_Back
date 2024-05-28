@@ -29,7 +29,6 @@ public class CommentController {
     @GetMapping("/{boardNo}/comments")
     public ResponseEntity<ResponseDTO> selectCommentList(@PathVariable int boardNo) {
         try {
-
             List<CommentDTO> commentList = commentService.selectCommentList(boardNo);
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "댓글 조회 성공", commentList));
         } catch (Exception e) {
@@ -53,11 +52,24 @@ public class CommentController {
         }
     }
 
+    /* 대댓글 조회 */
+    @GetMapping("/{boardNo}/comments/{parentCommentNo}/replies")
+    public ResponseEntity<ResponseDTO> selectRepliesToComment(@PathVariable int boardNo, @PathVariable int parentCommentNo) {
+        try {
+            List<CommentDTO> replies = commentService.selectRepliesToComment(boardNo, parentCommentNo);
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "대댓글 조회 성공", replies));
+        } catch (Exception e) {
+            log.error("대댓글 조회 중 오류 발생: " + e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "대댓글 조회 중 오류 발생", null));
+        }
+    }
+
     /* 댓글 등록 */
     @PostMapping("/{boardNo}/comments")
     public ResponseEntity<ResponseDTO> insertComment(@PathVariable("boardNo") int boardNo
-            ,@RequestBody CommentDTO commentDTO
-            ,@RequestHeader("Authorization") String token) {
+                                                    ,@RequestBody CommentDTO commentDTO
+                                                    ,@RequestHeader("Authorization") String token) {
         try {
             String memberNo = decryptToken(token).get("memberNo", String.class);
 
@@ -74,15 +86,15 @@ public class CommentController {
     }
 
     /* 대댓글 등록 */
-    @PostMapping("/{boardNo}/comments/{parentCommentId}/replies")
+    @PostMapping("/{boardNo}/comments/{parentCommentNo}/replies")
     public ResponseEntity<ResponseDTO> insertReply(@PathVariable("boardNo") int boardNo
-                                                    , @PathVariable("parentCommentId") int parentCommentId
+                                                    , @PathVariable("parentCommentNo") String parentCommentNo
                                                     , @RequestBody CommentDTO commentDTO
                                                     , @RequestHeader("Authorization") String token) {
         try {
             String memberNo = decryptToken(token).get("memberNo", String.class);
 
-            Object data = commentService.insertReply(boardNo, parentCommentId, commentDTO, memberNo);
+            Object data = commentService.insertReply(boardNo, parentCommentNo, commentDTO, memberNo);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "대댓글 작성 성공", data));
         } catch (ExpiredJwtException e) {
