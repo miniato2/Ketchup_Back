@@ -18,6 +18,7 @@ public class CommentDTO {
     private int boardNo;                    //게시물번호
     private String memberNo;                //사번 (댓글 작성자)
     private String memberName;              //이름
+    private String positionName;            //직급이름
     private String commentContent;          //댓글 내용
     private Date commentCreateDt;           //생성 시간
     private Date commentUpdateDt;           //업데이트 시간
