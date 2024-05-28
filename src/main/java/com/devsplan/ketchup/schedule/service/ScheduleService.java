@@ -1,18 +1,18 @@
 package com.devsplan.ketchup.schedule.service;
 
 import com.devsplan.ketchup.schedule.dto.DepartmentDTO;
+import com.devsplan.ketchup.schedule.dto.ParticipantDTO;
 import com.devsplan.ketchup.schedule.dto.ScheduleDTO;
 import com.devsplan.ketchup.schedule.entity.Department;
+import com.devsplan.ketchup.schedule.entity.Participant;
 import com.devsplan.ketchup.schedule.entity.Schedule;
 import com.devsplan.ketchup.schedule.repository.DepartmentRepository;
+import com.devsplan.ketchup.schedule.repository.ParticipantRepository;
 import com.devsplan.ketchup.schedule.repository.ScheduleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,13 +22,15 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final DepartmentRepository departmentRepository;
+    private final ParticipantRepository participantRepository;
 
-    public ScheduleService(ScheduleRepository scheduleRepository, DepartmentRepository departmentRepository) {
+    public ScheduleService(ScheduleRepository scheduleRepository, DepartmentRepository departmentRepository, ParticipantRepository participantRepository) {
         this.scheduleRepository = scheduleRepository;
         this.departmentRepository = departmentRepository;
+        this.participantRepository = participantRepository;
     }
 
-      public List<ScheduleDTO> selectScheduleListByDepartment(int dptNo) {
+    public List<ScheduleDTO> selectScheduleListByDepartment(int dptNo) {
         Department department = departmentRepository.findById(dptNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 부서를 찾을 수 없습니다: " + dptNo));
         List<Schedule> scheduleList = scheduleRepository.findByDepartment(department);
@@ -42,61 +44,60 @@ public class ScheduleService {
                     scheduleDTO.setSkdEndDttm(schedule.getSkdEndDttm());
                     scheduleDTO.setSkdLocation(schedule.getSkdLocation());
                     scheduleDTO.setSkdMemo(schedule.getSkdMemo());
+                    scheduleDTO.setAuthorId(schedule.getAuthorId());
+                    scheduleDTO.setAuthorName(schedule.getAuthorName());
+                    scheduleDTO.setParticipants(schedule.getParticipants().stream()
+                            .map(participant -> new ParticipantDTO(participant.getParticipantNo(), participant.getParticipantName(), participant.getParticipantMemberNo()))
+                            .collect(Collectors.toList()));
+                    scheduleDTO.setSkdStatus(schedule.getSkdStatus());
                     return scheduleDTO;
                 }).collect(Collectors.toList());
     }
 
-    public ScheduleDTO selectScheduleDetail(int dptNo, int skdNo) {
-        Department department = departmentRepository.findById(dptNo)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 부서를 찾을 수 없습니다: " + dptNo));
-
-        Schedule scheduleDetail = scheduleRepository.findByDepartmentAndSkdNo(department, skdNo);
-
-        if (scheduleDetail != null) {
-            ScheduleDTO scheduleDTO = new ScheduleDTO();
-            scheduleDTO.setSkdNo(scheduleDetail.getSkdNo());
-            scheduleDTO.setDptNo(new DepartmentDTO(scheduleDetail.getDepartment().getDptNo()));
-            scheduleDTO.setSkdName(scheduleDetail.getSkdName());
-            scheduleDTO.setSkdStartDttm(scheduleDetail.getSkdStartDttm());
-            scheduleDTO.setSkdEndDttm(scheduleDetail.getSkdEndDttm());
-            scheduleDTO.setSkdLocation(scheduleDetail.getSkdLocation());
-            scheduleDTO.setSkdMemo(scheduleDetail.getSkdMemo());
-            return scheduleDTO;
-        } else {
-            return null;
-        }
+    public List<ParticipantDTO> getParticipantsBySchedule(Schedule schedule) {
+        List<Participant> participants = participantRepository.findBySchedule(schedule);
+        return participants.stream()
+                .map(participant -> new ParticipantDTO(participant.getParticipantNo(), participant.getParticipantName(), participant.getParticipantMemberNo()))
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public void insertSchedule(ScheduleDTO newSchedule) {
-
-        System.out.println("newSchedule 서비스 = " + newSchedule);
-
         DepartmentDTO departmentDTO = newSchedule.getDptNo();
-        Department department = new Department(departmentDTO.getDptNo());
+        Department department = departmentRepository.findById(departmentDTO.getDptNo())
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 부서를 찾을 수 없습니다: " + departmentDTO.getDptNo()));
 
-        // 부서 정보 먼저 저장
-        departmentRepository.save(department);
-
-        // 부서 정보 먼저 저장 후 일정 정보 저장
-        Schedule schedule = new Schedule(
-                newSchedule.getSkdNo(),
-                department,
-                newSchedule.getSkdName(),
-                newSchedule.getSkdStartDttm(),
-                newSchedule.getSkdEndDttm(),
-                newSchedule.getSkdLocation(),
-                newSchedule.getSkdMemo()
-        );
+        Schedule schedule = Schedule.builder()
+                .department(department)
+                .skdName(newSchedule.getSkdName())
+                .skdStartDttm(newSchedule.getSkdStartDttm())
+                .skdEndDttm(newSchedule.getSkdEndDttm())
+                .skdLocation(newSchedule.getSkdLocation())
+                .skdMemo(newSchedule.getSkdMemo())
+                .authorName(newSchedule.getAuthorName())
+                .authorId(newSchedule.getAuthorId())
+                .skdStatus(newSchedule.getSkdStatus())
+                .build();
 
         scheduleRepository.save(schedule);
+
+        List<Participant> participants = newSchedule.getParticipants().stream()
+                .map(dto -> Participant.builder()
+                        .participantName(dto.getParticipantName())
+                        .participantMemberNo(dto.getParticipantMemberNo())
+                        .schedule(schedule)
+                        .build())
+                .collect(Collectors.toList());
+
+        participantRepository.saveAll(participants);
     }
 
     @Transactional
     public void updateSchedule(int skdNo, ScheduleDTO updateSchedule) {
-        Schedule foundSchedule = scheduleRepository.findById((long) skdNo).orElseThrow(IllegalArgumentException::new);
+        Schedule foundSchedule = scheduleRepository.findById((long) skdNo)
+                .orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다: " + skdNo));
 
-        Schedule updatedSchedule = new Schedule.Builder()
+        Schedule updatedSchedule = Schedule.builder()
                 .skdNo(foundSchedule.getSkdNo())
                 .department(foundSchedule.getDepartment())
                 .skdName(updateSchedule.getSkdName() != null ? updateSchedule.getSkdName() : foundSchedule.getSkdName())
@@ -104,14 +105,29 @@ public class ScheduleService {
                 .skdEndDttm(updateSchedule.getSkdEndDttm() != null ? updateSchedule.getSkdEndDttm() : foundSchedule.getSkdEndDttm())
                 .skdLocation(updateSchedule.getSkdLocation() != null ? updateSchedule.getSkdLocation() : foundSchedule.getSkdLocation())
                 .skdMemo(updateSchedule.getSkdMemo() != null ? updateSchedule.getSkdMemo() : foundSchedule.getSkdMemo())
+                .authorName(updateSchedule.getAuthorName())
+                .authorId(updateSchedule.getAuthorId())
+                .skdStatus(updateSchedule.getSkdStatus())
                 .build();
 
-        // 새로운 Schedule 객체 저장
         scheduleRepository.save(updatedSchedule);
+
+        List<Participant> participants = updateSchedule.getParticipants().stream()
+                .map(dto -> Participant.builder()
+                        .participantName(dto.getParticipantName())
+                        .participantMemberNo(dto.getParticipantMemberNo())
+                        .schedule(updatedSchedule)
+                        .build())
+                .collect(Collectors.toList());
+
+        participantRepository.saveAll(participants);
     }
 
     @Transactional
     public void deleteById(int skdNo) {
-        scheduleRepository.deleteById((long) skdNo);
+        Schedule foundSchedule = scheduleRepository.findById((long) skdNo)
+                .orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다: " + skdNo));
+        participantRepository.deleteBySchedule(foundSchedule);
+        scheduleRepository.delete(foundSchedule);
     }
 }

@@ -1,6 +1,7 @@
 package com.devsplan.ketchup.schedule;
 
 import com.devsplan.ketchup.schedule.dto.DepartmentDTO;
+import com.devsplan.ketchup.schedule.dto.ParticipantDTO;
 import com.devsplan.ketchup.schedule.dto.ScheduleDTO;
 import com.devsplan.ketchup.schedule.repository.ScheduleRepository;
 import com.devsplan.ketchup.schedule.service.ScheduleService;
@@ -14,10 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
 public class ScheduleServiceTests {
@@ -42,37 +42,35 @@ public class ScheduleServiceTests {
         System.out.println("부서별 일정 목록 조회 = " + foundSchedule);
     }
 
-    @DisplayName("부서별 일정 상세 조회")
-    @Test
-    void selectScheduleDetail() {
-        // given
-        int dptNo = 3;
-        int skdNo = 222;
-
-        // when
-        ScheduleDTO foundSchedule = scheduleService.selectScheduleDetail(dptNo, skdNo);
-
-        // then
-        Assertions.assertNotNull(foundSchedule);
-        System.out.println("부서별 일정 상세 조회 = " + foundSchedule);
-    }
-
-//    private static Stream<Arguments> getScheduleInfo() {
-//        return Stream.of(
-//                    Arguments.of(12, 5, "new event", LocalDateTime.of(2024, 5, 8, 10, 0), LocalDateTime.of(2024, 5, 10, 23, 0), "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
-//        );
+//    @DisplayName("부서별 일정 상세 조회")
+//    @Test
+//    void selectScheduleDetail() {
+//        // given
+//        int dptNo = 3;
+//        int skdNo = 222;
+//
+//        // when
+//        ScheduleDTO foundSchedule = scheduleService.selectScheduleDetail(dptNo, skdNo);
+//
+//        // then
+//        Assertions.assertNotNull(foundSchedule);
+//        System.out.println("부서별 일정 상세 조회 = " + foundSchedule);
 //    }
 
     private static Stream<Arguments> getScheduleInfo() {
+        List<ParticipantDTO> participants = new ArrayList<>();
+        participants.add(new ParticipantDTO(null, "이진우", "3"));
+        participants.add(new ParticipantDTO(null, "김현지", "3"));
+
         return Stream.of(
-                Arguments.of(999, 5, "백ServiceTests에서 보내는 일정", "2024-05-22 10:00", "2024-05-22 12:00", "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.")
+                Arguments.of(999, 5, "백ServiceTests에서 보내는 일정", "2024-05-22 10:00", "2024-05-22 12:00", "신규 위치", "신규 등록 일정이 정상적으로 반영되었습니다.", "5", "김현지", participants, "진행 중")
         );
     }
 
     @DisplayName("부서별 일정 등록")
     @ParameterizedTest
     @MethodSource("getScheduleInfo")
-    void insertSchedule(int skdNo, int dptNo, String skdName, String skdStartDttm, String skdEndDttm, String skdLocation, String skdMemo) {
+    void insertSchedule(int skdNo, int dptNo, String skdName, String skdStartDttm, String skdEndDttm, String skdLocation, String skdMemo, String authorId, String authorName, List<ParticipantDTO> participants, String skdStatus) {
         // given
         ScheduleDTO newSchedule = new ScheduleDTO(
                 skdNo,
@@ -81,7 +79,11 @@ public class ScheduleServiceTests {
                 skdStartDttm,
                 skdEndDttm,
                 skdLocation,
-                skdMemo
+                skdMemo,
+                authorId,
+                authorName,
+                participants,
+                skdStatus
         );
 
         // when, then
@@ -94,16 +96,20 @@ public class ScheduleServiceTests {
     @DisplayName("부서별 일정 수정")
     @ParameterizedTest
     @MethodSource("getScheduleInfo")
-    void updateSchedule(int skdNo, int dptNo, String skdName, String skdStartDttm, String skdEndDttm, String skdLocation, String skdMemo) {
+    void updateSchedule(int skdNo, int dptNo, String skdName, String skdStartDttm, String skdEndDttm, String skdLocation, String skdMemo, String authorId, String authorName, List<ParticipantDTO> participants, String skdStatus) {
         // given
         ScheduleDTO updateSchedule = new ScheduleDTO(
-                222,
+                skdNo,
                 new DepartmentDTO(dptNo),
                 "다시 수정됨?",
-                "2024-05-13 8:00",
-                "2024-05-13 9:00",
+                skdStartDttm,
+                skdEndDttm,
                 "서비스 테스트에서 수정",
-                "서비스 테스트에서 수정"
+                skdMemo,
+                authorId,
+                authorName,
+                participants,
+                skdStatus
         );
 
         // then
@@ -113,10 +119,8 @@ public class ScheduleServiceTests {
     @DisplayName("부서별 일정 삭제")
     @Test
     void deleteSchedule() {
-        // /schedules/{scheduleno}
-
         // given
-        int skdNo = 2;
+        int skdNo = 999;
         Long skdNoLong = (long) skdNo;
 
         // when
@@ -125,5 +129,4 @@ public class ScheduleServiceTests {
         // then
         Assertions.assertNull(scheduleRepository.findById(skdNoLong).orElse(null));
     }
-
 }
