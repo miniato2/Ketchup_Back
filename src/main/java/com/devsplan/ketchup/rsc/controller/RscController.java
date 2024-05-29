@@ -45,7 +45,7 @@ public class RscController {
 
         PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
 
-        if(depNo == 2) {
+        if(depNo == 6) {
             String rscCate = "";
             if(partValue.equals("conferences")) {
                 rscCate = "회의실";

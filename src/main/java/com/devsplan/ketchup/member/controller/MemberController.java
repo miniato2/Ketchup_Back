@@ -273,11 +273,11 @@ public class MemberController {
     }
 
     @PutMapping ("/deps/{depNo}")
-    public String updateDep(@PathVariable int depNo, @RequestBody String newName){
+    public String updateDep(@PathVariable int depNo, @RequestBody DepDTO updateDepDTO){
 
 
 
-        memberService.updateDep(depNo,newName);
+        memberService.updateDep(depNo,updateDepDTO);
 
 
         return "Dep update finish!";
@@ -288,7 +288,7 @@ public class MemberController {
     @PutMapping("/PW/{myNo}")
     public String updatePW(@PathVariable String myNo, @RequestBody String newPW){
 
-        System.out.println("-------------------비밀번호 수정-----------------"+myNo+"  "+newPW);
+
 
         memberService.updatePW(myNo,newPW);
 
