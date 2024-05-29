@@ -40,12 +40,12 @@ public class RscController {
                                                       @RequestParam("part") String partValue,
                                                       @RequestParam(name = "page", defaultValue = "1"
                                                       ) String page) {
-        Integer depNo = decryptToken(token).get("depNo", Integer.class);
+        String depName = decryptToken(token).get("depName", String.class);
         Criteria cri = new Criteria(Integer.valueOf(page),10);
 
         PagingResponseDTO pagingResponseDTO = new PagingResponseDTO();
 
-        if(depNo == 6) {
+        if(depName.equals("총무팀")) {
             String rscCate = "";
             if(partValue.equals("conferences")) {
                 rscCate = "회의실";
@@ -57,7 +57,6 @@ public class RscController {
             pagingResponseDTO.setData(rscList);
 
             pagingResponseDTO.setPageInfo(new PageDTO(cri, (int) rscList.getTotalElements()));
-            System.out.println(pagingResponseDTO);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "자원 목록 조회", pagingResponseDTO));
         }else {
