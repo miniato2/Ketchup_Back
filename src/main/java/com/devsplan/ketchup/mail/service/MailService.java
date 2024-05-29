@@ -41,9 +41,9 @@ public class MailService {
     @Value("${image.image-url}")
     private String IMAGE_URL;
 
+    // 메일 작성
     @Transactional
     public int insertMail(MailDTO mailInfo, List<MultipartFile> mailFiles) throws IOException {
-        // 메일 내용 등록(수신자 제외)
         Mail mail = new Mail(
                 mailInfo.getSenderMem(),
                 mailInfo.getMailTitle(),
@@ -54,13 +54,11 @@ public class MailService {
         );
 
         Mail saveMail = mailRepository.save(mail);
-        // 등록 메일 번호
+
         int sendMailNo = saveMail.getMailNo();
 
-        // 반환할 결과값
         int result = 0;
 
-        // 수신자 등록
         for (ReceiverDTO list : mailInfo.getReceivers()) {
             Receiver receiver = new Receiver(
                     sendMailNo,
@@ -73,7 +71,6 @@ public class MailService {
         }
 
         if (mailFiles != null) {
-            // 파일 업로드
             for (MultipartFile file : mailFiles) {
                 String mailFileName = UUID.randomUUID().toString().replace("-", "");
                 String replaceFileName = FileUtils.saveFile(IMAGE_DIR, mailFileName, file);
@@ -286,13 +283,10 @@ public class MailService {
     public Object updateReadMailTime(String memberNo, int mailNo) {
         Receiver updateMail = receiverRepository.findByMailNoAndReceiverMem(mailNo, memberNo);
 
-//        if(updateMail.getReadTime() == null) {
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
         updateMail.readTime(now);
 
         receiverRepository.save(updateMail);
-//        }
-        System.out.println(updateMail);
 
         return updateMail;
     }
@@ -300,7 +294,6 @@ public class MailService {
     public int selectUnReadMail(String memberNo) {
         List<Receiver> findMail = receiverRepository.findByReceiverMemAndReadTimeAndReceiverDelStatus(memberNo, null, 'N');
 
-        System.out.println(findMail.size());
         return findMail.size();
     }
 }
