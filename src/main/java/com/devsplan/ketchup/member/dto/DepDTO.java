@@ -6,6 +6,7 @@ public class DepDTO {
     private char status;
     private long memberCount;
 
+    private String leader;
     public DepDTO() {
     }
 
@@ -29,6 +30,14 @@ public class DepDTO {
         this.depName = depName;
         this.status = status;
         this.memberCount=memberCount;
+    }
+
+    public DepDTO(int depNo, String depName, char status, long memberCount, String leader) {
+        this.depNo = depNo;
+        this.depName = depName;
+        this.status = status;
+        this.memberCount = memberCount;
+        this.leader = leader;
     }
 
     public long getMemberCount() {
@@ -56,6 +65,13 @@ public class DepDTO {
     }
 
 
+    public String getLeader() {
+        return leader;
+    }
+
+    public void setLeader(String leader) {
+        this.leader = leader;
+    }
 
     public char getStatus() {
         return status;
@@ -73,7 +89,7 @@ public class DepDTO {
                 ", depName='" + depName + '\'' +
                 ", status=" + status +
                 ", memberCount=" + memberCount +
+                ", leader='" + leader + '\'' +
                 '}';
     }
-
 }

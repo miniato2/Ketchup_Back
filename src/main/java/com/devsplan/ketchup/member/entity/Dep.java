@@ -19,6 +19,9 @@ public class Dep {
     @Transient
     private long memberCount;
 
+    @Column(name = "DEP_LEADER")
+    private String leader;
+
 
     @OneToMany(mappedBy = "department")
     private List<Member> members; // members 필드 추가
@@ -53,11 +56,27 @@ public class Dep {
 
     }
 
+
     public Dep(int depNo, String depName, char status, long memberCount) {
         this.depNo = depNo;
         this.depName = depName;
         this.status = status;
         this.memberCount = memberCount;
+    }
+
+    public Dep(int depNo, String depName, char status,String leader, long memberCount) {
+        this.depNo = depNo;
+        this.depName = depName;
+        this.status = status;
+        this.memberCount = memberCount;
+        this.leader = leader;
+    }
+
+    public Dep(int depNo, String depName, char status, String leader) {
+        this.depNo = depNo;
+        this.depName = depName;
+        this.status = status;
+        this.leader = leader;
     }
 
     public Dep depNo(int depNo){
@@ -79,10 +98,18 @@ public class Dep {
 
     }
 
+    public Dep leader(String leader){
+        this.leader= leader;
+        return this;
+
+    }
+
+
+
 
 
     public Dep build() {
-        return new Dep(depNo,depName,status);
+        return new Dep(depNo,depName,status,leader);
     }
 
     public int getDepNo() {
@@ -97,12 +124,26 @@ public class Dep {
         return status;
     }
 
+    public long getMemberCount() {
+        return memberCount;
+    }
+
+    public String getLeader() {
+        return leader;
+    }
+
+    public List<Member> getMembers() {
+        return members;
+    }
+
     @Override
     public String toString() {
         return "Dep{" +
                 "depNo=" + depNo +
                 ", depName='" + depName + '\'' +
                 ", status=" + status +
+                ", memberCount=" + memberCount +
+                ", leader='" + leader + '\'' +
                 ", members=" + members +
                 '}';
     }

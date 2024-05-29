@@ -27,7 +27,7 @@ public interface DepRepository extends JpaRepository<Dep, Integer> {
 
 
 
-    @Query("SELECT new com.devsplan.ketchup.member.entity.Dep(d.depNo, d.depName, d.status, " +
+    @Query("SELECT new com.devsplan.ketchup.member.entity.Dep(d.depNo, d.depName, d.status, d.leader, " +
             "COUNT(CASE WHEN m.status = '재직중' THEN 1 ELSE null END)) " +
             "FROM Dep d " +
             "LEFT JOIN d.members m " +
