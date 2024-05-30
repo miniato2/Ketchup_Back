@@ -54,13 +54,6 @@ public class ScheduleService {
                 }).collect(Collectors.toList());
     }
 
-    public List<ParticipantDTO> getParticipantsBySchedule(Schedule schedule) {
-        List<Participant> participants = participantRepository.findBySchedule(schedule);
-        return participants.stream()
-                .map(participant -> new ParticipantDTO(participant.getParticipantNo(), participant.getParticipantName(), participant.getParticipantMemberNo()))
-                .collect(Collectors.toList());
-    }
-
     @Transactional
     public void insertSchedule(ScheduleDTO newSchedule) {
         DepartmentDTO departmentDTO = newSchedule.getDptNo();
@@ -79,6 +72,8 @@ public class ScheduleService {
                 .skdStatus(newSchedule.getSkdStatus())
                 .build();
 
+        System.out.println("schedule = " + schedule);
+
         scheduleRepository.save(schedule);
 
         List<Participant> participants = newSchedule.getParticipants().stream()
@@ -96,6 +91,9 @@ public class ScheduleService {
     public void updateSchedule(int skdNo, ScheduleDTO updateSchedule) {
         Schedule foundSchedule = scheduleRepository.findById((long) skdNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다: " + skdNo));
+
+        List<Participant> existingParticipants = participantRepository.findBySchedule(foundSchedule);
+        participantRepository.deleteAll(existingParticipants);
 
         Schedule updatedSchedule = Schedule.builder()
                 .skdNo(foundSchedule.getSkdNo())

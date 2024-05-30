@@ -89,6 +89,8 @@ public class MemberService {
 
             Member newMember = modelMapper.map(newMemberDTO,Member.class);
 
+            newMember.isFirstLogin("Y").build();
+
             memberRepository.save(newMember);
 
 
@@ -279,7 +281,6 @@ public class MemberService {
 
 
 
-        System.out.println("나 처음으로 조인한거같아~!!!!!!!!!!"+deps.toString());
 
         List<DepDTO> depList = deps.stream()
                 .map(dep -> modelMapper.map(dep, DepDTO.class))
@@ -424,10 +425,12 @@ public class MemberService {
         depRepository.delete(deletedDep);
     }
 
-    public void updateDep(int depNo, String newName) {
-        System.out.println("이거찾아"+newName);
+    public void updateDep(int depNo, DepDTO updateDepDTO) {
 
-        if(newName.equals("status")){
+        System.out.println(updateDepDTO);
+
+
+        if(updateDepDTO.getDepName().equals("status")){
 
             DepDTO newDep = findDepByDepNo(depNo);
 
@@ -444,7 +447,9 @@ public class MemberService {
 
             Dep dep = depRepository.findDepByDepNo(depNo);
 
-            dep.depName(newName).build();
+            dep.depName(updateDepDTO.getDepName())
+                    .leader(updateDepDTO.getLeader())
+                    .build();
 
             depRepository.save(dep);
 
@@ -455,27 +460,18 @@ public class MemberService {
 
     public void updatePW(String myNo, String newPW) {
 
-        if(newPW.equals("1111")){
+
 
         Member member = memberRepository.findByMemberNo(myNo).get();
 
         member = member.memberPW(passwordEncoder.encode(newPW)).build();
 
-        member = member.isFirstLogin("Y");
-
+        if (newPW.equals("1111")) {
+            member.isFirstLogin("Y").build();
+        } else {
+            member.isFirstLogin("N").build();
+        }
         memberRepository.save(member);
-        }
-
-      else{
-
-            Member member = memberRepository.findByMemberNo(myNo).get();
-
-            member = member.memberPW(passwordEncoder.encode(newPW)).build();
-
-            member = member.isFirstLogin("N");
-
-            memberRepository.save(member);
-        }
 
     }
 

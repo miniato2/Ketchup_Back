@@ -40,26 +40,6 @@ public class ScheduleController {
         return ResponseEntity.ok().headers(headers).body(new ResponseMessage(200, "조회 성공", responseMap));
     }
 
-
-    // 부서별 일정 상세 조회
-//    @GetMapping("/department/{dptNo}/schedules/{skdNo}")
-//    public ResponseEntity<ResponseMessage> selectScheduleDetail(@PathVariable int dptNo, @PathVariable int skdNo) {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//
-//        ScheduleDTO foundSchedule = scheduleService.selectScheduleDetail(dptNo, skdNo);
-//
-//        if (foundSchedule != null) {
-//            Map<String, Object> responseMap = new HashMap<>();
-//            responseMap.put("schedule", foundSchedule);
-//            return ResponseEntity.ok().headers(headers)
-//                    .body(new ResponseMessage(200, "조회 성공", responseMap));
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body(new ResponseMessage(404, "일정을 찾을 수 없습니다.", null));
-//        }
-//    }
-
     // 부서별 일정 등록
     @PostMapping("/schedules")
     public ResponseEntity<?> insertSchedule(@RequestBody ScheduleDTO newSchedule) {
