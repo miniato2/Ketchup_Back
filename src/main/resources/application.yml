@@ -5,7 +5,6 @@ spring:
     url: jdbc:mysql://squirrel.ohgiraffers.com:3360/ketchup
     username: hikdt2312
     password: hikdt2312
-
   servlet:
     multipart:
       enabled: true

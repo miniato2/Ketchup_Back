@@ -13,20 +13,16 @@ Authorization: Bearer eyJkYXRlIjoxNzE2ODY5NTIyODQ1LCJ0eXBlIjoiand0IiwiYWxnIjoiSF
 
 {
   "skdNo": null,
-  "dptNo": 5,
+  "dptNo": 3,
   "skdName": "scheduleRestAPI에서 보내는 일정2",
   "skdStartDttm": "2024-05-10 18:00",
   "skdEndDttm": "2024-05-10 20:00",
   "skdLocation": "코스트코 광명점 5층 ㅇㅅㅇ 부장실",
   "skdMemo": "새로 등록한 일정이 정상적으로 반영되었습니다.",
-  "authorId": "5",
-  "authorName": "김현지",
+  "authorId": "3",
+  "authorName": "이진우",
   "participants": [
-    {"participantNo": null, "participantName": "Participant 1", "participantMemberNo":  "3"},
-    {"participantNo": null, "participantName": "Participant 2", "participantMemberNo":  "3"},
-    {"participantNo": null, "participantName": "Participant 3", "participantMemberNo":  "3"},
-    {"participantNo": null, "participantName": "Participant 4", "participantMemberNo":  "3"},
-    {"participantNo": null, "participantName": "Participant 5", "participantMemberNo":  "3"}
+    {"participantNo": null, "participantName": "이진우", "participantMemberNo":  "3"}
   ]
 }
 
