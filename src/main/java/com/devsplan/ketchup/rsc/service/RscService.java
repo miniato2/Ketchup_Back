@@ -84,28 +84,25 @@ public class RscService {
 
         int result = 0;
 
-        // 자원 사용 가능 여부가 원래의 정보와 다른 경우
         if(rsc.isRscIsAvailable() != updateRsc.isRscIsAvailable()) {
             rsc.rscIsAvailable(updateRsc.isRscIsAvailable());
             result += 1;
 
-            // 사용 가능 불가로 변경되는 경우(false) - 예약 일정 삭제
             if(!updateRsc.isRscIsAvailable()) {
-                // 해당 자원에 대한 예약자 조회
                 List<Reserve> reserveList = reserveRepository.findByResources(rsc);
 
-                // 예약 일정이 존재하는 경우
                 if(!reserveList.isEmpty()) {
                     for(Reserve list : reserveList) {
-                        System.out.println("예약 일정 삭제");
                         result += reserveRepository.deleteByRsvNo(list.getRsvNo());
 
-                        System.out.println("예약자 예약 취소 메일 전송");
+                        String startDate = String.valueOf(list.getRsvStartDttm()).replace("T", " ");
+                        String endDate = String.valueOf(list.getRsvEndDttm()).replace("T", " ");
+                        String reserveDate = startDate + " - " + endDate;
 
-                        String emailSubject = list.getResources().getRscCategory().equals("회의실") ? "회의실(" + rsc.getRscName() + ") 예약 취소 안내" : "차량(" + rsc.getRscName() + ") 예약 취소 안내";
-//                        String emailContent = list.getResources().getRscCategory().equals("회의실") ?
-//                                "불가피한 사정으로 " + rsc.getRscName() + "의 사용이 불가하여 예약이 취소되었음을 안내드립니다." : "불가피한 사정으로 " + rsc.getRscName() + "의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
-                        String emailContent = "불가피한 사정으로 <b>" + rsc.getRscName() + "(" + list.getRsvStartDttm() + " - " + list.getRsvEndDttm() + ") </b>의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
+                        String emailSubject
+                                = list.getResources().getRscCategory().equals("회의실") ? "회의실 - " + rsc.getRscName() + " 예약 취소 안내 (" + reserveDate +")"
+                                : "차량(" + rsc.getRscName() + ") 예약 취소 안내 - " + reserveDate;
+                        String emailContent = "불가피한 사정으로 <b>" + rsc.getRscName() + "(" + reserveDate + ")</b>의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
 
                         Mail rsvCancelMail = new Mail(
                                 memberNo,
@@ -145,18 +142,18 @@ public class RscService {
 
         List<Reserve> reserveList = reserveRepository.findByResources(rsc);
 
-        // 예약 일정이 존재하는 경우
         if(!reserveList.isEmpty()) {
             for(Reserve list : reserveList) {
-                System.out.println("예약 일정 삭제");
                 result += reserveRepository.deleteByRsvNo(list.getRsvNo());
 
-                System.out.println("예약자 예약 취소 메일 전송");
+                String startDate = String.valueOf(list.getRsvStartDttm()).replace("T", " ");
+                String endDate = String.valueOf(list.getRsvEndDttm()).replace("T", " ");
+                String reserveDate = startDate + " - " + endDate;
 
-                String emailSubject = list.getResources().getRscCategory().equals("회의실") ? "회의실(" + rsc.getRscName() + ") 예약 취소 안내" : "차량(" + rsc.getRscName() + ") 예약 취소 안내";
-//                        String emailContent = list.getResources().getRscCategory().equals("회의실") ?
-//                                "불가피한 사정으로 " + rsc.getRscName() + "의 사용이 불가하여 예약이 취소되었음을 안내드립니다." : "불가피한 사정으로 " + rsc.getRscName() + "의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
-                String emailContent = "불가피한 사정으로 <b>" + rsc.getRscName() + "(" + list.getRsvStartDttm() + " - " + list.getRsvEndDttm() + ") </b>의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
+                String emailSubject
+                        = list.getResources().getRscCategory().equals("회의실") ? "회의실 - " + rsc.getRscName() + " 예약 취소 안내 (" + reserveDate +")"
+                        : "차량(" + rsc.getRscName() + ") 예약 취소 안내 - " + reserveDate;
+                String emailContent = "불가피한 사정으로 <b>" + rsc.getRscName() + "(" + reserveDate + ")</b>의 사용이 불가하여 예약이 취소되었음을 안내드립니다.";
 
                 Mail rsvCancelMail = new Mail(
                         memberNo,
