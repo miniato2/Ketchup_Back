@@ -288,7 +288,8 @@ public class ApprovalService {
         List<String> status1 = Arrays.asList("대기", "진행");
         List<String> status2 = Arrays.asList("완료", "회수", "반려");
         List<String> status3 = Arrays.asList("대기", "진행");
-        String status4 = "완료";
+        List<String> status4 = Arrays.asList("대기", "진행", "완료", "반려");
+//        String status4 = "완료";
 
         myApp = approvalRepository.countApprovalByMemberNoAndAppStatusIn(memberNo, status1);
         doneApp = approvalRepository.countApprovalByMemberNoAndAppStatusIn(memberNo, status2);

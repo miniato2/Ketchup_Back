@@ -15,8 +15,8 @@ public interface ApprovalRepository extends JpaRepository<Approval, Integer> {
     @Query("SELECT COUNT (a.approvalNo) from AppSelect a join AppLine b on (a.approvalNo = b.approvalNo) where b.memberNo = :memberNo AND a.sequence = b.alSequence AND a.appStatus IN :status")
     int countReceiveAppByMemberNoAndStatusIn(String memberNo, List<String> status);
 
-    @Query("SELECT COUNT (a.approvalNo) FROM AppSelect a join RefLine b on (a.approvalNo = b.approvalNo) where b.memberNo = :memberNo AND a.appStatus LIKE %:status%")
-    int countRefAppByMemberNoAndAppStatusIn(String memberNo, String status);
+    @Query("SELECT COUNT (a.approvalNo) FROM AppSelect a join RefLine b on (a.approvalNo = b.approvalNo) where b.memberNo = :memberNo AND a.appStatus IN :status")
+    int countRefAppByMemberNoAndAppStatusIn(String memberNo, List<String> status);
 
 
 }
