@@ -21,8 +21,6 @@ public class AppLineAndMember {
     private Member alMember; //사원 번호
     @Column(name = "AL_SEQUENCE")
     private int alSequence; //순서
-    @Column(name = "AL_TYPE")
-    private String alType; //구분 (일반, 전결)
     @Column(name = "AL_DATE")
     private String alDate; //결재일자
 

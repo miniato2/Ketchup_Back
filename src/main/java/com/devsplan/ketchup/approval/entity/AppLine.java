@@ -21,8 +21,6 @@ public class AppLine {
     private String memberNo; //사원 번호
     @Column(name = "AL_SEQUENCE", nullable = false)
     private int alSequence; //순서
-    @Column(name = "AL_TYPE", nullable = false)
-    private String alType; //구분 (일반, 전결)
     @Column(name = "AL_DATE")
     private String alDate; //결재일자
 
@@ -47,17 +45,11 @@ public class AppLine {
         this.alSequence = alSequence;
         return this;
     }
-
-    public AppLine alType(String alType){
-        this.alType = alType;
-        return this;
-    }
-
     public AppLine alDate(String alDate){
         this.alDate = alDate;
         return this;
     }
     public AppLine build(){
-        return new AppLine(appLineNo, approvalNo, memberNo, alSequence, alType, alDate);
+        return new AppLine(appLineNo, approvalNo, memberNo, alSequence, alDate);
     }
 }
