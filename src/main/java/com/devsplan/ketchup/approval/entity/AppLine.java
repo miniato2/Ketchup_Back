@@ -8,7 +8,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-@Entity
+@Entity(name = "appLine")
 @Table(name = "TBL_APPLINE")
 public class AppLine {
     @Id
