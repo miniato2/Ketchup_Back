@@ -8,7 +8,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-@Entity(name = "refLine")
+@Entity(name = "RefLine")
 @Table(name = "TBL_REFLINE")
 public class RefLine {
     @Id
