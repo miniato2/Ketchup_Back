@@ -67,8 +67,6 @@ public class ApprovalController {
 
         Page<ApprovalSelectDTO> appList = null;
 
-//        String memberNo = decryptToken(token).get("memberNo", String.class); //사원 번호
-
         List<String> statusList = new ArrayList<>();
 
         // 검색 결과
