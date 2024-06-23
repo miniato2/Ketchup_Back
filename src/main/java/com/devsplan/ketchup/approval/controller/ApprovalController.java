@@ -100,7 +100,6 @@ public class ApprovalController {
                 appList = approvalService.selectReceiveApp(memberNo, statusList, search, cri);
                 break;
             case 4:
-//                status = "완료";
                 if(status.equals("전체")){
                     statusList.add("대기");
                     statusList.add("진행");
