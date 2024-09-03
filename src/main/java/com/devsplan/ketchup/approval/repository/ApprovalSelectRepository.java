@@ -22,10 +22,10 @@ public interface ApprovalSelectRepository extends JpaRepository<ApprovalSelect, 
     @Query(value = "SELECT a FROM AppSelect a WHERE a.approvalNo IN :appNo AND a.appStatus IN :status AND a.appTitle LIKE %:searchValue%")
     Page<ApprovalSelect> findRefAppWithSearch(List<String> status, String searchValue, List<Integer> appNo, Pageable paging);
 
-    @Query("select a from AppSelect a join AppLine b on (a.approvalNo = b.approvalNo) where b.memberNo = :memberNo AND a.sequence = b.alSequence AND a.appStatus IN :status")
+    @Query("select a from AppSelect a join fetch AppLine b on (a.approvalNo = b.approvalNo) where b.memberNo = :memberNo AND a.sequence = b.alSequence AND a.appStatus IN :status")
     Page<ApprovalSelect> findReceiveApp(String memberNo, List<String> status, Pageable paging);
 
-    @Query("select a from AppSelect a join AppLine b on (a.approvalNo = b.approvalNo) where b.memberNo = :memberNo AND a.sequence = b.alSequence AND a.appStatus IN :status AND a.appTitle LIKE %:searchValue%")
+    @Query("select a from AppSelect a join fetch AppLine b on (a.approvalNo = b.approvalNo) where b.memberNo = :memberNo AND a.sequence = b.alSequence AND a.appStatus IN :status AND a.appTitle LIKE %:searchValue%")
     Page<ApprovalSelect> findReceiveAppWithSearch(String memberNo, List<String> status, String searchValue, Pageable paging);
 
 

@@ -60,7 +60,7 @@ public class ApprovalService {
     }
 
     //기안 상신
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public Object insertApproval(AppInputDTO appInputDTO,
                                  List<MultipartFile> multipartFileList) {
         int result = 0;
@@ -140,7 +140,7 @@ public class ApprovalService {
     }
 
     //내가 작성한 기안 조회
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public Page<ApprovalSelectDTO> selectMyApproval(String memberNo, List<String> status, String searchValue, Criteria cri) {
 
         int index = cri.getPageNum() - 1;
@@ -155,9 +155,7 @@ public class ApprovalService {
             approvalSelectList = approvalSelectRepository.findMyApprovalWithSearch(memberNo, status, searchValue, paging);
         }
 
-        Page<ApprovalSelectDTO> approvalSelectDTOList = approvalSelectList.map(approval -> modelMapper.map(approval, ApprovalSelectDTO.class));
-
-        return approvalSelectDTOList;
+        return approvalSelectList.map(approval -> modelMapper.map(approval, ApprovalSelectDTO.class));
     }
 
 
@@ -222,7 +220,7 @@ public class ApprovalService {
         Approval approval = approvalRepository.findById(approvalNo).get();
 
         if(approval.getAppStatus().equals("대기")){
-            approval = approval.appStatus("회수").build();
+            approval.appStatus("회수").build();
             result = 1;
         }
         return (result > 0) ? "성공" : "실패";
@@ -244,22 +242,22 @@ public class ApprovalService {
                 int count = appLineRepository.countSequence(approvalNo);
                 if(appLine.getAlSequence() == count){
                     approval.appStatus("완료").appFinalDate(appDate).build();
-                    appLine = appLine.alDate(appDate).build();
+                    appLine.alDate(appDate).build();
                     result = 1;
                 }else{
                     approval.appStatus("진행").appFinalDate(appDate).sequence(approval.getSequence() + 1).build();
-                    appLine = appLine.alDate(appDate).build();
+                    appLine.alDate(appDate).build();
                     result = 1;
                 }
                 break;
             case "반려" :
-                approval = approval.appStatus("반려").appFinalDate(appDate).refusal(appUpdateDTO.getRefusal()).build();
-                appLine = appLine.alDate(appDate).build();
+                approval.appStatus("반려").appFinalDate(appDate).refusal(appUpdateDTO.getRefusal()).build();
+                appLine.alDate(appDate).build();
                 result = 1;
                 break;
             case "전결" :
-                approval = approval.appStatus("완료").appFinalDate(appDate).build();
-                appLine = appLine.alDate(appDate).build();
+                approval.appStatus("완료").appFinalDate(appDate).build();
+                appLine.alDate(appDate).build();
                 result = 1;
                 break;
             default :

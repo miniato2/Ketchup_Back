@@ -15,22 +15,31 @@ public class Approval {
     @Id
     @Column(name = "APPROVAL_NO", nullable = false, unique = true)
     private int approvalNo;
+
     @Column(name = "MEMBER_NO")
     private String memberNo;
+
     @Column(name = "FORM_NO", nullable = false)
     private int formNo;
+
     @Column(name = "APP_TITLE", nullable = false)
     private String appTitle;
+
     @Column(name = "APP_CONTENTS",columnDefinition = "LONGTEXT", nullable = false)
     private String appContents;
+
     @Column(name = "APP_DATE", nullable = false)
     private String appDate;
+
     @Column(name = "APP_FINAL_DATE")
     private String appFinalDate;
+
     @Column(name = "APP_STATUS", nullable = false)
     private String appStatus;
+
     @Column(name = "APP_REFUSAL")
     private String refusal;
+
     @Column(name = "APP_SEQUENCE")
     private int sequence;
 

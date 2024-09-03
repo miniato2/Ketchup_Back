@@ -309,7 +309,7 @@ Content-Type: application/json
 Accept: */*
 
 {
-  "memberNo": "5",
+  "memberNo": "4",
   "memberPW": "1234qwer!"
 }
 

@@ -13,14 +13,18 @@ import lombok.ToString;
 @Entity(name = "appMember")
 @Table(name = "TBL_MEMBER")
 public class Member {
+
     @Id
     @Column(name = "MEMBER_NO")
     private String memberNo;
+
     @Column(name = "MEMBER_NAME")
     private String memberName;
+
     @ManyToOne
     @JoinColumn(name= "DEP_NO")
     private Dep department;
+
     @ManyToOne
     @JoinColumn(name= "POSITION_NO")
     private Position position;

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+import org.hibernate.annotations.Immutable;
 
 import java.util.List;
 
@@ -16,33 +17,45 @@ public class ApprovalSelect {
     @Id
     @Column(name = "APPROVAL_NO")
     private int approvalNo;
+
     @ManyToOne
     @JoinColumn(name = "MEMBER_NO")
     private Member member;
+
     @ManyToOne
     @JoinColumn(name = "FORM_NO")
     private Form form;
+
     @Column(name = "APP_TITLE")
     private String appTitle;
+
     @Column(name = "APP_CONTENTS")
     private String appContents;
+
     @Column(name = "APP_DATE")
     private String appDate;
+
     @Column(name = "APP_FINAL_DATE")
     private String appFinalDate;
+
     @Column(name = "APP_STATUS")
     private String appStatus;
+
     @Column(name = "APP_REFUSAL")
     private String refusal;
+
     @Column(name = "APP_SEQUENCE")
     private int sequence;
-    @OneToMany
+
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "APPROVAL_NO")
     private List<AppFile> appFileList;
-    @OneToMany
+
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "APPROVAL_NO")
     private List<AppLineAndMember> appLineList;
-    @OneToMany
+
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "APPROVAL_NO")
     private List<RefLineAndMember> refLineList;
 

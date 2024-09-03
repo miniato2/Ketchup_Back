@@ -12,15 +12,19 @@ import lombok.ToString;
 @Table(name = "TBL_APPLINE")
 public class AppLine {
     @Id
-    @Column(name = "APP_LINE_NO", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "APP_LINE_NO", nullable = false, updatable = false)
     private int appLineNo;
+
     @Column(name = "APPROVAL_NO", nullable = false)
     private int approvalNo; //기안 번호
+
     @Column(name = "MEMBER_NO", nullable = false)
     private String memberNo; //사원 번호
+
     @Column(name = "AL_SEQUENCE", nullable = false)
     private int alSequence; //순서
+
     @Column(name = "AL_DATE")
     private String alDate; //결재일자
 

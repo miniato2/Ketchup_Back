@@ -11,12 +11,15 @@ import lombok.ToString;
 @Entity(name = "RefLine")
 @Table(name = "TBL_REFLINE")
 public class RefLine {
+
     @Id
-    @Column(name = "REF_LINE_NO", nullable = false)
+    @Column(name = "REF_LINE_NO", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int refLineNo;
+
     @Column(name = "APPROVAL_NO", nullable = false)
     private int approvalNo;
+
     @Column(name = "MEMBER_NO", nullable = false)
     private String memberNo;
 
