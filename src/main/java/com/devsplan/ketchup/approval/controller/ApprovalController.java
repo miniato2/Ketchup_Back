@@ -151,4 +151,5 @@ public class ApprovalController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "성공", approvalService.selectApprovalCount(memberNo)));
     }
 
+
 }

@@ -8,7 +8,7 @@
 
 ### 개발 기간
 ![image](https://github.com/JayLee-98/revelup/assets/153487581/72dfea25-3f86-4358-8518-79cd7e81a5a6)
-총 ??일
+총 ?일
 
 ## 팀원 소개
 이후영, 김현지, 최승욱, 박다은, 이진우
