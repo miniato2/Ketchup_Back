@@ -8,16 +8,15 @@
 
 ### 개발 기간
 ![image](https://github.com/JayLee-98/revelup/assets/153487581/72dfea25-3f86-4358-8518-79cd7e81a5a6)
-총 ?일
 
 ## 팀원 소개
 | 이름 | 프로필 |
 | --- | --- |
 | 최승욱 | [<img src="https://img.shields.io/badge/Github-Link-ffffff?logo=Github">](https://github.com/miniato2) |
-| 이후영 | [GitHub](https://github.com/username2) |
-| 이진우 | [GitHub](https://github.com/username3) |
-| 김현지 | [GitHub](https://github.com/username4) |
-| 박다은 | [GitHub](https://github.com/username4) |
+| 이후영 | [<img src="https://img.shields.io/badge/Github-Link-ffffff?logo=Github">](https://github.com/2eehy) |
+| 이진우 | [<img src="https://img.shields.io/badge/Github-Link-ffffff?logo=Github">](https://github.com/JayLee-98) |
+| 김현지 | [<img src="https://img.shields.io/badge/Github-Link-ffffff?logo=Github">](https://github.com/KIMHYEONJI13) |
+| 박다은 | [<img src="https://img.shields.io/badge/Github-Link-ffffff?logo=Github">](https://github.com/daeun100299) |
 
 ## 담당기능
 ## 주요기능
