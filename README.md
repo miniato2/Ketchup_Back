@@ -11,8 +11,15 @@
 총 ?일
 
 ## 팀원 소개
-이후영, 김현지, 최승욱, 박다은, 이진우
+| 이름 | 프로필 |
+| --- | --- |
+| 최승욱 | [<img src="https://img.shields.io/badge/Github-Link-ffffff?logo=Github">](https://github.com/miniato2) |
+| 이후영 | [GitHub](https://github.com/username2) |
+| 이진우 | [GitHub](https://github.com/username3) |
+| 김현지 | [GitHub](https://github.com/username4) |
+| 박다은 | [GitHub](https://github.com/username4) |
 
+## 담당기능
 ## 주요기능
 
 ## 개발 환경
