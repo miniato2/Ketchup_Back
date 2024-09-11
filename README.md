@@ -1,5 +1,6 @@
 # Ketchup
-
+프론트
+https://github.com/miniato2/Ketchup_front
 ## 프로젝트 소개
 
 Ketchup은 조직 내에서 효율적인 커뮤니케이션과 협업을 지원하는 그룹웨어 프로그램 입니다.  
@@ -28,7 +29,14 @@ mysql
 
 ## api 명세
 
-## 담당기능
 ## 주요기능
+
+## 담당기능
+
+전자결재
+-
+-
+-
+-
 
 
