@@ -30,6 +30,10 @@ public class ApprovalController {
     }
 
     //기안 등록
+    /**
+     * apidoc
+     *
+     * */
     @PostMapping("/approvals")
     public ResponseEntity<ResponseDTO> insertApproval(@ModelAttribute AppInputDTO appInputDTO,
                                                       List<MultipartFile> multipartFileList){
