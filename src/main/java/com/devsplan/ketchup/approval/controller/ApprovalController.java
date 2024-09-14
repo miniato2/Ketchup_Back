@@ -31,9 +31,34 @@ public class ApprovalController {
 
     //기안 등록
     /**
-     * apidoc
+     * @api {post} /approvals 기안작성
+     * @apiName insertApproval
+     * @apiGroup Approval
+     * @apiDescription 기안 작성 시 결재자 정보, 참조자 정보, 파일 등을 함께 전송합니다.
      *
-     * */
+     * @apiHeader {String} Authorization Bearer 토큰
+     *
+     * @apiParam {Number} approval.appMemberNo 기안자 회원 번호
+     * @apiParam {Number} approval.formNo 기안 양식 번호
+     * @apiParam {String} approval.appTitle 기안 제목
+     * @apiParam {String} approval.appContents 기안 내용
+     *
+     * @apiParam {Object[]} appLineDTOList 결재 라인 정보
+     * @apiParam {Number} appLineDTOList.alMemberNo 결재자 회원 번호
+     * @apiParam {Number} appLineDTOList.alSequence 결재 순서
+     *
+     * @apiParam {Object[]} refLineDTOList 참조자 정보
+     * @apiParam {Number} refLineDTOList.refMemberNo 참조자 회원 번호
+     *
+     * @apiParam {File[]} multipartFileList 첨부 파일 목록
+     *
+     * @apiSuccess {String} message 성공 메시지
+     * @apiSuccess {Object} data 응답 데이터
+     * @apiSuccess {Number} data.approvalId 생성된 기안 ID
+     *
+     * @apiError (400) {String} message 실패 메시지
+     * @apiError (400) {Object} errors 에러 상세 정보
+     */
     @PostMapping("/approvals")
     public ResponseEntity<ResponseDTO> insertApproval(@ModelAttribute AppInputDTO appInputDTO,
                                                       List<MultipartFile> multipartFileList){
