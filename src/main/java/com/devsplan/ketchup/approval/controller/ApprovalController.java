@@ -77,12 +77,58 @@ public class ApprovalController {
     }
 
     //기안 상세 조회
+    /**
+     * @api {get} /approvals/:approvalNo 기안 상세 조회
+     * @apiName selectApprovalDetail
+     * @apiGroup Approval
+     * @apiDescription 기안 번호를 통해 기안 상세 정보를 조회합니다.
+     *
+     * @apiHeader {String} Authorization Bearer 토큰
+     *
+     * @apiParam {Number} approvalNo 기안 번호 (PathVariable)
+     *
+     * @apiSuccess {Number} approvalNo 기안 번호
+     *
+     * @apiSuccess {Object} member 기안자 정보
+     * @apiSuccess {Number} member.memberNo 기안자 회원 번호
+     * @apiSuccess {String} member.memberName 기안자 이름
+     *
+     * @apiSuccess {Object} form 양식 정보
+     * @apiSuccess {Number} form.formNo 양식 번호
+     * @apiSuccess {String} form.formTitle 양식 제목
+     *
+     * @apiSuccess {String} appTitle 기안 제목
+     * @apiSuccess {String} appContents 기안 내용
+     * @apiSuccess {String} appDate 기안 작성일
+     * @apiSuccess {String} appFinalDate 최종 결재일
+     * @apiSuccess {String} appStatus 기안 상태 (예: 진행 중, 결재 완료, 반려 등)
+     * @apiSuccess {String} refusal 반려 사유 (있을 경우)
+     * @apiSuccess {Number} sequence 결재 단계 번호
+     *
+     * @apiSuccess {Object[]} appFileList 첨부 파일 목록
+     * @apiSuccess {String} appFileList.fileName 첨부 파일 이름
+     * @apiSuccess {String} appFileList.fileSize 첨부 파일 크기
+     *
+     * @apiSuccess {Object[]} appLineList 결재 라인 정보
+     * @apiSuccess {Number} appLineList.alMemberNo 결재자 회원 번호
+     * @apiSuccess {String} appLineList.alMemberName 결재자 이름
+     * @apiSuccess {Number} appLineList.alSequence 결재 순서
+     * @apiSuccess {String} appLineList.alDate 결재일자
+     *
+     * @apiSuccess {Object[]} refLineList 참조 라인 정보
+     * @apiSuccess {Number} refLineList.refMemberNo 참조자 회원 번호
+     * @apiSuccess {String} refLineList.refMemberName 참조자 이름
+     *
+     * @apiError (404) {String} message 기안 정보를 찾을 수 없을 때의 에러 메시지
+     * @apiError (404) {Object} errors 에러 상세 정보
+     */
     @GetMapping("/approvals/{approvalNo}")
     public ResponseEntity<ResponseDTO> selectApprovalDetail(@PathVariable int approvalNo){
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "성공", approvalService.selectApproval(approvalNo)));
     }
 
 
+    
     //기안 목록 조회
     @GetMapping("/approvals")
     public ResponseEntity<ResponseDTO> selectApprovalList(@RequestParam String memberNo,
