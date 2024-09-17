@@ -132,7 +132,55 @@ public class ApprovalController {
     //기안 목록 조회
     /**
      * @api {get} /approvals 기안 목록조회
+     * @apiName selectApprovalList
+     * @apiGroup Approval
+     * @apiDescription 기안 목록을 조회합니다.
      *
+     * @apiParam {String} memberNo 사용자 회원 번호
+     * @apiParam {Number{1-4}} [category=1] 조회할 카테고리 (1: 내 결재, 2: 완료/반려된 결재, 3: 내가 받은 결재, 4: 참조된 결재)
+     * @apiParam {String} [status="전체"] 조회할 결재 상태 (대기, 진행, 완료, 반려, 회수)
+     * @apiParam {String} [search=""] 검색어 (기안 제목 또는 내용)
+     * @apiParam {String} [page=1] 조회할 페이지 번호
+     *
+     * @apiSuccess {Object} data 기안 목록 데이터
+     * @apiSuccess {Object[]} data.approvals 조회된 기안 목록
+     * @apiSuccess {Number} data.approvals.approvalNo 기안 번호
+     *
+     * @apiSuccess {Object} data.approvals.member 기안자 정보
+     * @apiSuccess {Number} data.approvals.member.memberNo 기안자 회원 번호
+     * @apiSuccess {String} data.approvals.member.memberName 기안자 이름
+     *
+     * @apiSuccess {Object} data.approvals.form 양식 정보
+     * @apiSuccess {Number} data.approvals.form.formNo 양식 번호
+     * @apiSuccess {String} data.approvals.form.formTitle 양식 제목
+     *
+     * @apiSuccess {String} data.approvals.appTitle 기안 제목
+     * @apiSuccess {String} data.approvals.appContents 기안 내용
+     * @apiSuccess {String} data.approvals.appDate 기안 작성일
+     * @apiSuccess {String} data.approvals.appFinalDate 최종 결재일
+     * @apiSuccess {String} data.approvals.appStatus 기안 상태 (예: 진행 중, 결재 완료, 반려 등)
+     * @apiSuccess {String} [data.approvals.refusal] 반려 사유 (있을 경우)
+     * @apiSuccess {Number} data.approvals.sequence 결재 단계 번호
+     *
+     * @apiSuccess {Object[]} [data.approvals.appFileList] 첨부 파일 목록 (있을 경우)
+     * @apiSuccess {String} data.approvals.appFileList.fileName 첨부 파일 이름
+     *
+     * @apiSuccess {Object[]} [data.approvals.appLineList] 결재 라인 정보 (있을 경우)
+     * @apiSuccess {Number} data.approvals.appLineList.alMemberNo 결재자 회원 번호
+     * @apiSuccess {String} data.approvals.appLineList.alMemberName 결재자 이름
+     * @apiSuccess {Number} data.approvals.appLineList.alSequence 결재 순서
+     * @apiSuccess {String} [data.approvals.appLineList.alDate] 결재일자 (있을 경우)
+     *
+     * @apiSuccess {Object[]} [data.approvals.refLineList] 참조 라인 정보 (있을 경우)
+     * @apiSuccess {Number} data.approvals.refLineList.refMemberNo 참조자 회원 번호
+     * @apiSuccess {String} data.approvals.refLineList.refMemberName 참조자 이름
+     *
+     * @apiSuccess {Object} data.pageInfo 페이지 정보
+     * @apiSuccess {Number} data.pageInfo.page 현재 페이지 번호
+     * @apiSuccess {Number} data.pageInfo.totalElements 전체 기안 수
+     * @apiSuccess {Number} data.pageInfo.totalPages 전체 페이지 수
+     *
+     * @apiError (404) NotFound 기안 목록을 찾을 수 없을 때
      * */
     @GetMapping("/approvals")
     public ResponseEntity<ResponseDTO> selectApprovalList(@RequestParam String memberNo,
@@ -198,6 +246,20 @@ public class ApprovalController {
     }
 
     //양식 조회
+    /**
+     * @api {get} /forms/:formNo 양식 조회
+     * @apiName selectForm
+     * @apiGroup Approval
+     * @apiDescription 지정된 양식 번호에 해당하는 양식 정보를 조회합니다.
+     *
+     * @apiParam {Number} formNo 양식 번호 (PathVariable)
+     *
+     * @apiSuccess {Number} formNo 양식 번호
+     * @apiSuccess {String} formName 양식 이름
+     * @apiSuccess {String} formContents 양식 내용
+     *
+     * @apiError (404) NotFound 양식 정보를 찾을 수 없을 때
+     */
     @GetMapping("/forms/{formNo}")
     public ResponseEntity<ResponseDTO> selectForm(@PathVariable int formNo){
 
@@ -208,6 +270,27 @@ public class ApprovalController {
     }
 
     //기안 상태 수정
+    /**
+     * @api {put} /approvals/:approvalNo 기안 수정
+     * @apiName updateApprovals
+     * @apiGroup Approval
+     * @apiDescription 기안 번호를 통해 기안상태를 수정합니다.
+     *
+     * @apiHeader {String} Authorization Bearer 토큰
+     *
+     * @apiParam {Number} approvalNo 기안 번호 (PathVariable)
+     *
+     * @apiBody {String} action 수행할 작업 ("수정" 또는 "회수")
+     * @apiBody {String} [refusal] 반려 사유 (action이 "반려"일 경우 사용)
+     *
+     * @apiSuccess {String} status 성공 상태
+     * @apiSuccess {String} message 성공 메시지
+     * @apiSuccess {String} data 수정 또는 회수 결과 메시지
+     *
+     * @apiError (400) BadRequest 잘못된 요청일 경우
+     * @apiError (404) NotFound 기안 번호를 찾을 수 없을 경우
+     * @apiError (403) Forbidden 해당 기안에 대한 수정 권한이 없을 경우
+     */
     @PutMapping("/approvals/{approvalNo}")
     public ResponseEntity<ResponseDTO> updateApprovals(@PathVariable int approvalNo,
                                                        @RequestBody AppUpdateDTO appUpdateDTO,
@@ -224,6 +307,21 @@ public class ApprovalController {
     }
 
     //기안 카테고리 개수 조회
+    /**
+     * @api {get} /approvals/count 기안 카테고리별 개수 조회
+     * @apiName selectApprovalsCount
+     * @apiGroup Approval
+     * @apiDescription 회원 번호를 통해 각 기안 카테고리의 개수를 조회합니다.
+     *
+     * @apiParam {String} memberNo 사용자 회원 번호
+     *
+     * @apiSuccess {Number} myApp 내가 작성한 진행 중인 기안 수
+     * @apiSuccess {Number} doneApp 완료, 반려, 회수된 기안 수
+     * @apiSuccess {Number} receiveApp 내가 받은 기안 수
+     * @apiSuccess {Number} refApp 참조된 기안 수
+     *
+     * @apiError (404) NotFound 해당 회원 번호에 대한 기안 정보를 찾을 수 없을 때 발생
+     */
     @GetMapping("/approvals/count")
     public ResponseEntity<ResponseDTO> selectApprovalsCount(@RequestParam String memberNo){
 
