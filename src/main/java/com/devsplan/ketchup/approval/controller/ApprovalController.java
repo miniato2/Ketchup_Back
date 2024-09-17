@@ -130,6 +130,10 @@ public class ApprovalController {
 
     
     //기안 목록 조회
+    /**
+     * @api {get} /approvals 기안 목록조회
+     *
+     * */
     @GetMapping("/approvals")
     public ResponseEntity<ResponseDTO> selectApprovalList(@RequestParam String memberNo,
                                                           @RequestParam(defaultValue = "1") int category,
