@@ -27,7 +27,18 @@ mysql
 | 김현지 | [<img src="https://img.shields.io/badge/Github-Link-ffffff?logo=Github">](https://github.com/KIMHYEONJI13) |
 | 박다은 | [<img src="https://img.shields.io/badge/Github-Link-ffffff?logo=Github">](https://github.com/daeun100299) |
 
+db
+<div style="display: flex; flex-wrap: nowrap; gap: 10px;">
+  <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/erd.png" alt="ERD" style="width: 45%;" />
+  <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/entity.png" alt="Entity" style="width: 45%;" />
+</div>
+
 ## api 명세
+<div style="display: flex; flex-wrap: nowrap; gap: 10px;">
+  <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/rest1.png" alt="REST API 1" style="width: 33%;" />
+  <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/rest2.png" alt="REST API 2" style="width: 33%;" />
+  <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/rest3.png" alt="REST API 3" style="width: 33%;" />
+</div>
 
 ## 주요기능
 
