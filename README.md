@@ -42,13 +42,16 @@ mysql
 <br><br><br>
 
 ## api 명세
-<div style="display: flex; flex-wrap: nowrap; gap: 10px;">
-  <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/rest1.png" alt="REST API 1" style="width: 33%;" />
-  <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/rest2.png" alt="REST API 2" style="width: 33%;" />
-  <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/rest3.png" alt="REST API 3" style="width: 33%;" />
-</div>
+<details>
+  <summary>보기</summary>
+  <div style="display: flex; flex-wrap: nowrap; gap: 10px;">
+    <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/rest1.png" alt="REST API 1" style="width: 32%;" />
+    <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/rest2.png" alt="REST API 2" style="width: 32%;" />
+    <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/rest3.png" alt="REST API 3" style="width: 32%;" />
+  </div>
+</details>
 
-<br><br><br>
+<br><br>
 
 ## 주요기능
 
