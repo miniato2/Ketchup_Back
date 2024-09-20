@@ -53,21 +53,27 @@ mysql
 
 <br><br>
 
-## 주요기능
-
-<br><br><br>
-
 ## 담당기능
-
-<br><br><br>
-
+<details>
+  <summary>스크린샷</summary>
+  <img src="https://github.com/miniato2/Ketchup_Back/blob/d5c23667cd2f4a145004901166b15d3845e32e0b/img/screenshot.png">
+</details>
 전자결재
--
--
--
--
+<br>
+목록조회
+<br>
+작성
+<br>
+처리
+<br>
 
-<br><br><br>
+
+<br><br>
+
+
+## 시연영상
+
+
 
 
 프론트  
