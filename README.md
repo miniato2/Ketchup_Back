@@ -24,11 +24,19 @@ Ketchup은 조직 내에서 효율적인 커뮤니케이션과 협업을 지원�
 
 ## 개발 환경
 java
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
 spring boot
-react.js
-redux
+<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
 spring data jpa
+<img src="https://img.shields.io/badge/JPA-A5915F.svg?&style=for-the-badge&logo=Java&logoColor=white">
 mysql
+<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+<br>
+javascript
+<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+react.js
+<img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black">
+
 (버전 명시)
 
 <br><br><br>
