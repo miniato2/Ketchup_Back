@@ -49,7 +49,7 @@ react.js
 
 <br><br><br>
 
-## api 명세
+## API 명세
 <details>
   <summary>보기</summary>
   <div style="display: flex; flex-wrap: nowrap; gap: 10px;">
@@ -57,7 +57,9 @@ react.js
     <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/rest2.png" alt="REST API 2" style="width: 32%;" />
     <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/rest3.png" alt="REST API 3" style="width: 32%;" />
   </div>
-</details>
+</details>  
+-ㅇ
+
 
 <br><br>
 
@@ -66,15 +68,15 @@ react.js
   <summary>스크린샷</summary>
   <img src="https://github.com/miniato2/Ketchup_Back/blob/d5c23667cd2f4a145004901166b15d3845e32e0b/img/screenshot.png">
 </details>
-전자결재
-<br>
-목록조회
-<br>
-작성
-<br>
-처리
 <br>
 
+* 전자결재
+  - 기안 상신
+    - 기안 상신과 함께 파일을 업로드할 때, 에러가 발생하면 try-catch를 사용하여 트랜잭션 내에서 업로드된 파일을 모두 삭제하고 @Transactional 어노테이션을 사용하여 트랜잭션을 롤백 처리
+  - 기안 목록조회
+    - 기안의 상태와 순서, 본인이 결재자나 참조자일 경우를 고려해야 하므로 복잡한 쿼리를 처리하기 위해 JPQL을 사용
+    - 목록 조회 시 연관 엔티티를 한번 더 조회하는 N+1 문제를 해결하기 위해 fetch join을 사용
+  - 기안 처리
 
 <br><br>
 
@@ -86,4 +88,5 @@ react.js
 
 프론트  
 https://github.com/miniato2/Ketchup_front
+
 
