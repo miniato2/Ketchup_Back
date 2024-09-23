@@ -58,9 +58,6 @@ react.js
     <img src="https://github.com/miniato2/Ketchup_Back/blob/a175d65ee29360d9d0773884c3fe706523533f43/img/rest3.png" alt="REST API 3" style="width: 32%;" />
   </div>
 </details>  
--ㅇ
-
-
 <br><br>
 
 ## 담당기능
@@ -82,6 +79,8 @@ react.js
 
 
 ## 시연영상
+
+https://github.com/user-attachments/assets/dd98286d-578b-4e66-ac2b-f8fbad34457d
 
 
 
